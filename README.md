@@ -35,3 +35,11 @@ Dit project wordt beschikbaar gesteld onder de **MIT Licentie**. Dit betekent da
 ## 🤝 Bijdragen
 
 Bijdragen aan dit project zijn van harte welkom! Heb je een idee voor een verbetering of een nieuwe feature? Maak een *issue* aan of dien een *pull request* in.
+
+## 💾 Brondvermeldingen
+
+Voor de data heb ik gebruik gemaakt van de datasets van @rijdendetreinen https://www.rijdendetreinen.nl/open-data/
+
+Gebruikte datasets:
+1. Treinstations
+2. Afstanden tussen stations
