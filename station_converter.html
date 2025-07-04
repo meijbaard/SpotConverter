@@ -75,6 +75,18 @@
         
         <!-- Header en Toelichting -->
         <header class="rt-header p-6 rounded-lg shadow-lg text-center">
+            <!-- ** NIEUW: Logo ** -->
+            <div class="flex justify-center items-center mb-4">
+                <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20,75 H80" stroke="white" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M25,80 H75" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
+                    <rect x="30" y="40" width="40" height="25" rx="5" fill="var(--rt-orange)"/>
+                    <circle cx="40" cy="65" r="7" fill="white"/>
+                    <circle cx="60" cy="65" r="7" fill="white"/>
+                    <path d="M15,50 A 35 35 0 1 1 85,50" stroke="var(--rt-yellow)" stroke-width="6" fill="none" stroke-linecap="round"/>
+                    <path d="M85,50 L90,45 M85,50 L90,55" stroke="var(--rt-yellow)" stroke-width="6" stroke-linecap="round"/>
+                </svg>
+            </div>
             <h1 class="text-4xl font-bold">SpotConverter Pro</h1>
             <p class="mt-2 text-lg text-gray-200">
                 Deze tool helpt je om WhatsApp-berichten van treinspotters snel te analyseren. Plak een bericht en zie direct de volledige stationsnamen, de betekenis van spotters-jargon en een inschatting van de passage-tijd voor een gekozen station.
@@ -87,7 +99,7 @@
                 <!-- Input -->
                 <div>
                     <label for="whatsappMessage" class="block text-lg font-bold text-gray-700 mb-2">Plak je WhatsApp bericht hier:</label>
-                    <textarea id="whatsappMessage" class="w-full h-32 border-gray-300 rounded-md shadow-sm" placeholder="Bijv. 14:00 Amf ri Asd" oninput="debounceProcessMessage()"></textarea>
+                    <textarea id="whatsappMessage" class="w-full h-32 border-gray-300 rounded-md shadow-sm" placeholder="Bijv. 14:00 Hgl ri Amf" oninput="debounceProcessMessage()"></textarea>
                 </div>
                 <!-- Instellingen -->
                 <div>
@@ -103,8 +115,8 @@
                     <div id="output" class="p-4 bg-gray-50 rounded-md min-h-[50px]"></div>
                 </div>
                 <div>
-                    <h2 class="text-2xl mb-2">Passage Inschatting:</h2>
-                    <div id="estimation-output" class="p-4 bg-gray-50 rounded-md min-h-[50px] info-box"></div>
+                    <h2 class="text-2xl mb-2">Analyse:</h2>
+                    <div id="estimation-output" class="p-4 bg-gray-50 rounded-md min-h-[50px] info-box space-y-2"></div>
                 </div>
                 <div>
                     <div class="flex justify-between items-center mb-2">
@@ -121,20 +133,36 @@
             <h2 class="text-2xl mb-4">Terugkerende Treinpatronen</h2>
             <div class="space-y-4 text-gray-800">
                  <div>
-                    <h3 class="font-bold text-lg">1. De "Katy Shuttle" (RFO)</h3>
-                    <p>Rijdt zeer frequent tussen Knooppunt Kijfhoek en Polen. De route van/naar Kijfhoek loopt via de spoorlijn Gouda - Woerden - Weesp - Baarn - Amersfoort en <strong>passeert dus Baarn</strong>.</p>
+                    <h4 class="font-bold text-xl">1. De "Katy Shuttle" (RFO)</h4>
+                    <p class="pl-4">Deze shuttle is een van de meest frequente treinen op de Bentheimroute en verbindt Knooppunt Kijfhoek met Polen.</p>
+                    <ul class="list-disc pl-10 mt-2">
+                        <li><strong>Richting West (Nederland in):</strong> Volgt het traject `Duitsland-Amersfoort` en vervolgens `Amersfoort-Rotterdam`. Wordt vaak in de <strong>ochtend en vroege middag</strong> gespot.</li>
+                        <li><strong>Richting Oost (Nederland uit):</strong> Volgt de omgekeerde route. Meestal gespot in de <strong>late middag en avond</strong> (16:00-18:00) rond Amersfoort.</li>
+                    </ul>
                 </div>
                 <div>
-                    <h3 class="font-bold text-lg">2. De "PCC Shuttle" (RTB Cargo)</h3>
-                    <p>Verbindt de Rotterdamse haven met Polen. De route van/naar de Rotterdamse haven loopt via de spoorlijn Gouda - Woerden - Weesp - Baarn - Amersfoort en <strong>passeert dus Baarn</strong>.</p>
+                    <h4 class="font-bold text-xl">2. De "PCC Shuttle" (RTB Cargo)</h4>
+                    <p class="pl-4">Deze shuttle verbindt de Rotterdamse haven met Polen en is een vaste verschijning.</p>
+                     <ul class="list-disc pl-10 mt-2">
+                        <li><strong>Richting West (Nederland in):</strong> Volgt het traject `Duitsland-Amersfoort` en `Amersfoort-Rotterdam`. Meestal gespot in de <strong>ochtenduren</strong>.</li>
+                        <li><strong>Richting Oost (Nederland uit):</strong> Volgt de omgekeerde route. Vaak gespot in de <strong>middag</strong> (14:00-17:00).</li>
+                    </ul>
                 </div>
                 <div>
-                    <h3 class="font-bold text-lg">3. De "Volvo Trein" (Lineas)</h3>
-                    <p>Een vaste shuttle tussen Gent (België) en Zweden. Deze trein <strong>passeert Baarn niet</strong>, de route loopt zuidelijker via de Betuweroute.</p>
+                    <h4 class="font-bold text-xl">3. De "Volvo Trein" (Lineas)</h4>
+                    <p class="pl-4">Een vaste shuttle tussen Gent (België) en Zweden. Deze trein volgt een zuidelijkere route en passeert de kern van de Bentheimroute vaak via Deventer en Zutphen.</p>
+                     <ul class="list-disc pl-10 mt-2">
+                        <li><strong>Richting West (Nederland in):</strong> Komt binnen via het traject `Duitsland-Amersfoort` tot aan Deventer/Zutphen. Vaak gespot in de <strong>vroege ochtend</strong> (07:00-09:00).</li>
+                        <li><strong>Richting Oost (Nederland uit):</strong> Verlaat Nederland via het traject `Duitsland-Amersfoort`. Meestal gespot in de <strong>late middag/vroege avond</strong> (18:00-19:00).</li>
+                    </ul>
                 </div>
                 <div>
-                    <h3 class="font-bold text-lg">4. De "UC Onnen" & "UC Buna Werke" (DB Cargo)</h3>
-                    <p>Dit zijn keteltreinen van DB Cargo. Deze treinen <strong>passeren Baarn niet</strong>.</p>
+                    <h4 class="font-bold text-xl">4. De "UC Onnen" & "UC Buna Werke" (DB Cargo)</h4>
+                     <p class="pl-4">Dit zijn keteltreinen van DB Cargo met een zeer variabel, maar frequent patroon.</p>
+                     <ul class="list-disc pl-10 mt-2">
+                        <li><strong>Route:</strong> Rijden voornamelijk op het traject `Duitsland-Amersfoort` en buigen vaak af richting het noorden (Onnen) of blijven op de hoofdroute.</li>
+                        <li><strong>Tijden:</strong> Deze treinen hebben geen vast tijdspatroon en kunnen op <strong>elk moment van de dag</strong> worden gespot in beide richtingen.</li>
+                    </ul>
                 </div>
             </div>
         </footer>
@@ -151,7 +179,8 @@
             'NVR': 'Niet voor reizigers', 'LM': 'Leeg materieel', 'LLT': 'Losse loc trein',
             'SMS': 'Samenstelling', 'GE': 'Goederenemplacement', 'Badl': 'Beladen aan de loc'
         };
-        const conflictingAbbrs = ['EN', 'DE', 'D', 'A', 'V'];
+        const conflictingAbbrs = ['EN', 'DE', 'D', 'A', 'V', 'OP', 'ALS'];
+        const germanStationCodes = ["RHEINE", "SALZBERGEN", "BH"];
 
         // --- Data Laden ---
         async function loadExternalData() {
@@ -227,7 +256,6 @@
         }
 
         // --- Logica ---
-        // ** VERNIEUWDE FUNCTIE **
         function findTrajectoryForRoute(routeCodes) {
             if (routeCodes.length < 2) return null;
 
@@ -240,15 +268,16 @@
                 return j === sub.length;
             };
 
-            // Case 1: Check for a direct match within a single trajectory first.
             for (const name in trajectories) {
                 const traject = trajectories[name];
-                if (isSubsequence(routeCodes, traject) || isSubsequence(routeCodes, [...traject].reverse())) {
-                    return name; // Found the most direct route.
+                if (isSubsequence(routeCodes, traject)) {
+                    return { name: name, direction: 'forward' };
+                }
+                if (isSubsequence(routeCodes, [...traject].reverse())) {
+                    return { name: name, direction: 'backward' };
                 }
             }
 
-            // Case 2: If no direct match, check for a route spanning two trajectories via the "AMF" hub.
             const startCode = routeCodes[0];
             const endCode = routeCodes[routeCodes.length - 1];
             const hub = "AMF";
@@ -265,10 +294,10 @@
 
                     if (startTraj.includes(hub) && endTraj.includes(hub)) {
                         if (isSubsequence([startCode, hub], startTraj) && isSubsequence([hub, endCode], endTraj)) {
-                            return `${startName} -> ${endName}`;
+                            return { name: `${startName} -> ${endName}`, direction: 'forward' };
                         }
                          if (isSubsequence([startCode, hub], endTraj) && isSubsequence([hub, endCode], startTraj)) {
-                            return `${endName} -> ${startName}`;
+                            return { name: `${endName} -> ${startName}`, direction: 'backward' };
                         }
                     }
                 }
@@ -301,13 +330,12 @@
             let foundMatches = [];
             stationData.forEach(station => {
                 const isConflicting = conflictingAbbrs.includes(station.afkorting.toUpperCase());
-                const flags = isConflicting ? 'g' : 'gi';
-                const regex = new RegExp(`\\b${station.afkorting}\\b`, flags);
+                const regex = new RegExp(`\\b(${station.afkorting})\\b(?!-)`, isConflicting ? 'g' : 'gi');
                 
                 let match;
                 while ((match = regex.exec(messageInput)) !== null) {
                     if (!foundMatches.some(m => m.index === match.index)) {
-                        foundMatches.push({ station: station, index: match.index });
+                        foundMatches.push({ station: station, index: match.index, text: match[1] });
                     }
                 }
             });
@@ -316,58 +344,89 @@
             parsedData.routeCodes = foundMatches.map(m => m.station.afkorting);
 
             // 2. Visuele vervanging
+            let tempMessage = processedMessage;
             foundMatches.forEach(match => {
-                const isConflicting = conflictingAbbrs.includes(match.station.afkorting.toUpperCase());
-                const flags = isConflicting ? 'g' : 'gi';
-                processedMessage = processedMessage.replace(new RegExp(`\\b${match.station.afkorting}\\b`, flags), `<span class="highlight-station">${match.station.naam}</span>`);
+                tempMessage = tempMessage.replace(new RegExp(`\\b${match.text}\\b(?!-)`, 'g'), `<span class="highlight-station">${match.station.naam}</span>`);
             });
+            processedMessage = tempMessage;
 
             for (const abbr in spotterAbbr) {
-                const regex = new RegExp(`\\b${abbr}\\b`, 'gi');
+                const regex = new RegExp(`\\b${abbr}\\b(?!-)`, 'gi');
                 processedMessage = processedMessage.replace(regex, (foundText) => {
                     return `<span class="highlight-abbr" title="${spotterAbbr[abbr]}">${foundText}</span>`;
                 });
             }
 
             // 3. Traject-analyse en berekening
-            let estimationHtml = '<p>Geen route of tijdstip herkend in het bericht.</p>';
-            const matchedTraject = findTrajectoryForRoute(parsedData.routeCodes);
-            parsedData.matchedTraject = matchedTraject;
-
-            if (matchedTraject) {
+            let passageHtml = '';
+            let timeHtml = '';
+            const trajectoryAnalysis = findTrajectoryForRoute(parsedData.routeCodes);
+            parsedData.trajectoryAnalysis = trajectoryAnalysis;
+            
+            if (trajectoryAnalysis) {
+                const { name: matchedTraject, direction } = trajectoryAnalysis;
                 const passesTarget = doesTrajectoryPassStation(matchedTraject, targetStationCode);
-                if (passesTarget) {
-                    if (parsedData.route.length > 0 && parsedData.timestamp) {
-                        const firstSpottedStationName = parsedData.route[0];
-                        const firstSpottedStationCode = parsedData.routeCodes[0];
-
-                        const distance = distanceData[firstSpottedStationCode]?.[targetStationCode];
-
-                        if (distance !== undefined) {
-                            const averageSpeedKmH = 80;
-                            const travelMinutes = Math.round((distance / averageSpeedKmH) * 60);
-                            const [hours, minutes] = parsedData.timestamp.split(':').map(Number);
-                            const spotDate = new Date();
-                            spotDate.setHours(hours, minutes, 0, 0);
-                            spotDate.setMinutes(spotDate.getMinutes() + travelMinutes);
-                            const arrivalTime = spotDate.toTimeString().substring(0, 5);
-                            estimationHtml = `Vermoedelijke passage <span class="font-bold">${targetStationName}</span>: <strong class="highlight-estimation">${arrivalTime} +/- 15min</strong> <br> <span class="text-sm text-gray-600">(Route: ${matchedTraject})</span>`;
-                        } else {
-                            estimationHtml = `<p>Route passeert ${targetStationName}, maar geen afstandsdata gevonden vanaf <span class="font-bold">${firstSpottedStationName}</span>.</p>`;
-                        }
-                    } else {
-                        estimationHtml = `<p>Route passeert ${targetStationName}, maar er is geen tijdstip gevonden in het bericht om een berekening te maken.</p>`;
-                    }
+                let generalDirection = "Onbekend";
+                if (direction === 'forward') {
+                    if (matchedTraject.startsWith('Duitsland')) generalDirection = 'Nederland in';
+                    else generalDirection = 'Westwaarts';
                 } else {
-                    estimationHtml = `<strong>Trein rijdt vermoedelijk niet langs ${targetStationName}.</strong><br><span class="text-sm text-gray-600">(Gevonden route: ${matchedTraject})</span>`;
+                    if (matchedTraject.includes('Duitsland')) generalDirection = 'Nederland uit';
+                    else generalDirection = 'Oostwaarts';
                 }
+                
+                passageHtml = `Rijrichting: 🚂 <strong>${generalDirection}</strong> | Passage ${targetStationName}: <strong>${passesTarget ? '✅ Ja' : '❌ Nee'}</strong>`;
             } else if (parsedData.route.length > 1) {
-                estimationHtml = "<p>Kan geen bekend traject matchen met de gespotte route.</p>";
+                passageHtml = "Kan geen bekend traject matchen met de gespotte route.";
+            } else {
+                passageHtml = "Geen route herkend in het bericht.";
+            }
+
+            if (parsedData.route.length > 0 && parsedData.timestamp) {
+                const firstSpottedStationName = parsedData.route[0];
+                const firstSpottedStationCode = parsedData.routeCodes[0];
+                
+                let hasPassed = false;
+                if (trajectoryAnalysis) {
+                    const { name: matchedTraject, direction } = trajectoryAnalysis;
+                    const allTrajectStations = matchedTraject.split(' -> ').reduce((acc, name) => acc.concat(trajectories[name]), []);
+                    
+                    const spotIndex = allTrajectStations.indexOf(firstSpottedStationCode);
+                    const targetIndex = allTrajectStations.indexOf(targetStationCode);
+
+                    if (spotIndex !== -1 && targetIndex !== -1) {
+                        if (direction === 'forward' && spotIndex > targetIndex) {
+                            hasPassed = true;
+                        } else if (direction === 'backward' && spotIndex < targetIndex) {
+                            hasPassed = true;
+                        }
+                    }
+                }
+
+                if (hasPassed) {
+                    timeHtml = `<p>Geschatte doorkomsttijd niet van toepassing (trein is station al gepasseerd).</p>`;
+                } else {
+                    const distance = distanceData[firstSpottedStationCode]?.[targetStationCode];
+                    if (distance !== undefined) {
+                        const averageSpeedKmH = 80;
+                        const travelMinutes = Math.round((distance / averageSpeedKmH) * 60);
+                        const [hours, minutes] = parsedData.timestamp.split(':').map(Number);
+                        const spotDate = new Date();
+                        spotDate.setHours(hours, minutes, 0, 0);
+                        spotDate.setMinutes(spotDate.getMinutes() + travelMinutes);
+                        const arrivalTime = spotDate.toTimeString().substring(0, 5);
+                        timeHtml = `⏰ Geschatte doorkomsttijd in <span class="font-bold">${targetStationName}</span>: <strong class="highlight-estimation">${arrivalTime}</strong> <br> <span class="text-sm text-gray-600">(vanaf ${firstSpottedStationName})</span>`;
+                    } else {
+                        timeHtml = `<p>Geen afstandsdata gevonden tussen <span class="font-bold">${firstSpottedStationName}</span> en <span class="font-bold">${targetStationName}</span>.</p>`;
+                    }
+                }
+            } else {
+                timeHtml = `<p>Geen station of tijdstip gevonden om een berekening te maken.</p>`;
             }
 
             // 4. Resultaten tonen
             document.getElementById('output').innerHTML = processedMessage;
-            document.getElementById('estimation-output').innerHTML = estimationHtml;
+            document.getElementById('estimation-output').innerHTML = `<div>${passageHtml}</div><div>${timeHtml}</div>`;
             document.getElementById('parsed-data-output').innerHTML = `<pre>${JSON.stringify(parsedData, null, 2)}</pre>`;
         }
 
