@@ -5,12 +5,12 @@ De applicatie is ontworpen met gebruiksgemak en toegankelijkheid als kernprincip
 
 ## [🗂️ Inhoudsopgave]
 
-** [✨ Geavanceerde Features](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-geavanceerde-features-1) **
-** [🚀 Hoe te Gebruiken](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-hoe-te-gebruiken-1) **
-** [🔧 Configuratie & Data](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-configuratie--data-1) **
-** [💾 Bronvermeldingen](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bronvermeldingen-1) **
-** [🤝 Bijdragen](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bijdragen-1) **
-** [📄 Licentie](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-licentie-1) **
+- **[✨ Geavanceerde Features](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-geavanceerde-features-1)**
+- **[🚀 Hoe te Gebruiken](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-hoe-te-gebruiken-1)**
+- **[🔧 Configuratie & Data](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-configuratie--data-1)**
+- **[💾 Bronvermeldingen](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bronvermeldingen-1)**
+- **[🤝 Bijdragen](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bijdragen-1)**
+- **[📄 Licentie](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-licentie-1)**
 
 ## ✨ Geavanceerde Features ##
 
@@ -57,11 +57,11 @@ De belangrijkste en meest voorspelbare spoorroutes zijn voor de betrouwbaarheid 
 
 Voor de data die deze tool aandrijft, is dankbaar gebruik gemaakt van de open datasets van Rijdende Treinen (@rijdendetreinen) en de uitgebreide kennis van Nico Spilt.
 
-** Open Data van Rijdende Treinen: **
+**Open Data van Rijdende Treinen:**
 - De basislijst met Treinstations en hun officiële namen is afkomstig van [OpenData.](https://www.rijdendetreinen.nl/open-data)
 - De afstanden tussen stations, die de basis vormen voor de reistijd-inschattingen, zijn eveneens via dit platform verkregen.
 
-** Aanvullende Afkortingen: **
+**Aanvullende Afkortingen:**
 - De stationsdata is verrijkt met een zeer complete lijst van spotters-afkortingen, verzameld en onderhouden door Nico Spilt op zijn [website.](https://www.nicospilt.com/verkortingen_tabel.htm)
 
 De combinatie van deze bronnen maakt de herkenning en analyse van de tool robuust en betrouwbaar.
