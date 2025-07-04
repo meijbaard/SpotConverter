@@ -1,4 +1,4 @@
-# SpotConverter Pro
+# SpotConverter Pro #
 
 SpotConverter Pro is een geavanceerde webapplicatie, specifiek ontworpen voor en door treinspotters en -enthousiastelingen. Het primaire doel van deze tool is om de vaak cryptische en met jargon doorspekte WhatsApp-berichten over treinwaarnemingen te transformeren in heldere, gestructureerde en direct bruikbare informatie. Waar een simpel spotbericht vaak alleen direct nuttig is voor de ontvanger, ontgrendelt deze tool de onderliggende data. De tool analyseert de inhoud van een spot-bericht, herkent routes op basis van vooraf gedefinieerde spoortrajecten en berekent een geschatte passage-tijd voor een door de gebruiker gekozen station, waardoor je sneller en beter kunt anticiperen op naderende treinen.
 
@@ -17,41 +17,27 @@ Inhoudsopgave
 
     📄 Licentie
 
-## ✨ Geavanceerde Features
+## ✨ Geavanceerde Features ##
 
-    Intelligente Route-Analyse: De kern van de tool. Het herkent de gereden route niet door simpelweg stations te matchen, maar door de gespotte locaties te plotten op bekende, ingebouwde spoortrajecten. De logica is flexibel en kan een correcte route afleiden, zelfs als tussenliggende, minder relevante stations in het spot-bericht worden overgeslagen. Dit betekent dat een bericht als "14:00 Bh ri Asd" correct wordt geïnterpreteerd als een reis over de hoofdassen.
+- Intelligente Route-Analyse: De kern van de tool. Het herkent de gereden route niet door simpelweg stations te matchen, maar door de gespotte locaties te plotten op bekende, ingebouwde spoortrajecten. De logica is flexibel en kan een correcte route afleiden, zelfs als tussenliggende, minder relevante stations in het spot-bericht worden overgeslagen. Dit betekent dat een bericht als "14:00 Bh ri Asd" correct wordt geïnterpreteerd als een reis over de hoofdassen.
+- Combineren van Trajecten: De tool kan complexe, doorgaande reizen begrijpen die meerdere gedefinieerde trajecten overspannen. Het herkent centrale knooppunten (zoals Amersfoort) en kan trajecten zoals Duitsland-Amersfoort en Amersfoort-Amsterdam naadloos aan elkaar "knopen" tot één logische, doorgaande route. Dit voorkomt foute conclusies en maakt de passage-inschatting veel betrouwbaarder.
+- Dynamische Passage-berekening: De tool berekent een geschatte aankomsttijd voor elk willekeurig station in de keuzelijst. Dit gebeurt op basis van een uitgebreide afstandsmatrix en een instelbare gemiddelde snelheid voor goederentreinen (standaard 80 km/u). De tool houdt hierbij correct rekening met het eerstgenoemde station in de spot als het startpunt van de berekening, wat een realistische voorspelling oplevert.
+- Automatische Verwerking: Voor een soepele en snelle gebruikerservaring start de analyse direct bij het plakken of typen van een bericht in het invoerveld. Een ingebouwd 'debounce'-mechanisme zorgt ervoor dat de berekening pas wordt uitgevoerd als de gebruiker even stopt met typen. Dit voorkomt onnodige verwerking bij elke toetsaanslag en zorgt voor een responsieve interface.
+- Verrijking van Jargon: De tool functioneert als een "vertaler" voor spotters-jargon. Veelvoorkomende afkortingen zoals LLT (Losse loc trein), Badl (Beladen aan de loc), of V (Vertrek) worden automatisch herkend en in de uitvoer visueel gemarkeerd. Door met de muis over de afkorting te bewegen, verschijnt een duidelijke tooltip met de volledige betekenis.
+- Dynamisch Data Inladen: Om de tool onderhoudsvriendelijk en altijd actueel te houden, haalt het de stations- en afstandsdata direct van een centrale GitHub-locatie via CSV-bestanden. Wanneer een station wordt toegevoegd of een afstand wordt gecorrigeerd in de online bestanden, is deze wijziging direct en zonder code-aanpassingen beschikbaar voor alle gebruikers.
+- Slimme Afkorting-herkenning: Om foutieve herkenning van veelvoorkomende Nederlandse woorden (zoals 'en' of 'de') die overeenkomen met stationscodes te voorkomen, hanteert de tool een slimme logica. Afkortingen die kunnen conflicteren, worden alleen herkend als ze met een hoofdletter worden geschreven (bijv. EN voor Enschede), terwijl unieke afkortingen (zoals Amf) ongeacht hoofdlettergebruik worden herkend.
+- Moderne Interface: De vormgeving is geïnspireerd op de duidelijke en functionele stijl van rijdendetreinen.nl, met een focus op leesbaarheid en een intuïtieve gebruikerservaring. Kleuren, lettertypes en layout zijn gekozen om de informatie helder en rustig te presenteren.
 
-    Combineren van Trajecten: De tool kan complexe, doorgaande reizen begrijpen die meerdere gedefinieerde trajecten overspannen. Het herkent centrale knooppunten (zoals Amersfoort) en kan trajecten zoals Duitsland-Amersfoort en Amersfoort-Amsterdam naadloos aan elkaar "knopen" tot één logische, doorgaande route. Dit voorkomt foute conclusies en maakt de passage-inschatting veel betrouwbaarder.
+## 🚀 Hoe te Gebruiken ##
+1. Open de Applicatie: Start de tool door het station_converter.html bestand te openen in een moderne webbrowser zoals Chrome, Firefox, of Edge. Er is geen internetverbinding nodig voor de basisfuncties, maar wel voor het laden van de meest recente stations- en afstandsdata van GitHub.
+2. Plak het Bericht: Kopieer een spot-bericht uit een WhatsApp-groep (bijvoorbeeld 14:51 Rtd ri Wd, LLT) en plak dit in het tekstveld "Plak je WhatsApp bericht hier:". De tool begint onmiddellijk met de analyse van de tekst.
+3.  Kies je Doelstation: In de dropdown-lijst "Bereken passage voor:" kun je het station selecteren waarvoor je een passage-tijd wilt weten. Standaard staat deze op "Baarn", maar elk station uit de geladen lijst is selecteerbaar. De berekening wordt automatisch bijgewerkt wanneer je een ander station kiest.
+4. Bekijk de Resultaten: De resultaten verschijnen direct en worden live bijgewerkt in drie overzichtelijke blokken:
+    - Verwerkt Bericht: De originele tekst, maar dan verrijkt met gemarkeerde, volledige stationsnamen en tooltips voor jargon. Dit maakt de spot in één oogopslag leesbaar.
+    - Passage Inschatting: Een duidelijke conclusie of de trein het gekozen station passeert, inclusief een berekende aankomsttijd met een marge. Hier staat ook op basis van welk traject de conclusie is getrokken.
+    - Geparsede Data: Een uitklapbaar blok met de technische data (in JSON-formaat) die de tool heeft geëxtraheerd. Dit is handig voor debugging, analyse, of om te begrijpen hoe de tool tot zijn conclusie is gekomen.
 
-    Dynamische Passage-berekening: De tool berekent een geschatte aankomsttijd voor elk willekeurig station in de keuzelijst. Dit gebeurt op basis van een uitgebreide afstandsmatrix en een instelbare gemiddelde snelheid voor goederentreinen (standaard 80 km/u). De tool houdt hierbij correct rekening met het eerstgenoemde station in de spot als het startpunt van de berekening, wat een realistische voorspelling oplevert.
-
-    Automatische Verwerking: Voor een soepele en snelle gebruikerservaring start de analyse direct bij het plakken of typen van een bericht in het invoerveld. Een ingebouwd 'debounce'-mechanisme zorgt ervoor dat de berekening pas wordt uitgevoerd als de gebruiker even stopt met typen. Dit voorkomt onnodige verwerking bij elke toetsaanslag en zorgt voor een responsieve interface.
-
-    Verrijking van Jargon: De tool functioneert als een "vertaler" voor spotters-jargon. Veelvoorkomende afkortingen zoals LLT (Losse loc trein), Badl (Beladen aan de loc), of V (Vertrek) worden automatisch herkend en in de uitvoer visueel gemarkeerd. Door met de muis over de afkorting te bewegen, verschijnt een duidelijke tooltip met de volledige betekenis.
-
-    Dynamisch Data Inladen: Om de tool onderhoudsvriendelijk en altijd actueel te houden, haalt het de stations- en afstandsdata direct van een centrale GitHub-locatie via CSV-bestanden. Wanneer een station wordt toegevoegd of een afstand wordt gecorrigeerd in de online bestanden, is deze wijziging direct en zonder code-aanpassingen beschikbaar voor alle gebruikers.
-
-    Slimme Afkorting-herkenning: Om foutieve herkenning van veelvoorkomende Nederlandse woorden (zoals 'en' of 'de') die overeenkomen met stationscodes te voorkomen, hanteert de tool een slimme logica. Afkortingen die kunnen conflicteren, worden alleen herkend als ze met een hoofdletter worden geschreven (bijv. EN voor Enschede), terwijl unieke afkortingen (zoals Amf) ongeacht hoofdlettergebruik worden herkend.
-
-    Moderne Interface: De vormgeving is geïnspireerd op de duidelijke en functionele stijl van rijdendetreinen.nl, met een focus op leesbaarheid en een intuïtieve gebruikerservaring. Kleuren, lettertypes en layout zijn gekozen om de informatie helder en rustig te presenteren.
-
-## 🚀 Hoe te Gebruiken
-
-    Open de Applicatie: Start de tool door het station_converter.html bestand te openen in een moderne webbrowser zoals Chrome, Firefox, of Edge. Er is geen internetverbinding nodig voor de basisfuncties, maar wel voor het laden van de meest recente stations- en afstandsdata van GitHub.
-
-    Plak het Bericht: Kopieer een spot-bericht uit een WhatsApp-groep (bijvoorbeeld 14:51 Rtd ri Wd, LLT) en plak dit in het tekstveld "Plak je WhatsApp bericht hier:". De tool begint onmiddellijk met de analyse van de tekst.
-
-    Kies je Doelstation: In de dropdown-lijst "Bereken passage voor:" kun je het station selecteren waarvoor je een passage-tijd wilt weten. Standaard staat deze op "Baarn", maar elk station uit de geladen lijst is selecteerbaar. De berekening wordt automatisch bijgewerkt wanneer je een ander station kiest.
-
-    Bekijk de Resultaten: De resultaten verschijnen direct en worden live bijgewerkt in drie overzichtelijke blokken:
-
-        Verwerkt Bericht: De originele tekst, maar dan verrijkt met gemarkeerde, volledige stationsnamen en tooltips voor jargon. Dit maakt de spot in één oogopslag leesbaar.
-
-        Passage Inschatting: Een duidelijke conclusie of de trein het gekozen station passeert, inclusief een berekende aankomsttijd met een marge. Hier staat ook op basis van welk traject de conclusie is getrokken.
-
-        Geparsede Data: Een uitklapbaar blok met de technische data (in JSON-formaat) die de tool heeft geëxtraheerd. Dit is handig voor debugging, analyse, of om te begrijpen hoe de tool tot zijn conclusie is gekomen.
-
-## 🔧 Configuratie & Data
+## 🔧 Configuratie & Data ##
 
 De tool is ontworpen om flexibel en onderhoudsvriendelijk te zijn door data extern in te laden. Dit betekent dat de kernlogica gescheiden is van de data, wat aanpassingen eenvoudig maakt.
 
