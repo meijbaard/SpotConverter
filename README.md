@@ -5,17 +5,12 @@ SpotConverter Pro is een geavanceerde webapplicatie, specifiek ontworpen voor en
 De applicatie is ontworpen met gebruiksgemak en toegankelijkheid als kernprincipes. Het werkt volledig lokaal in de browser en vereist geen enkele installatie of configuratie van software. Alle benodigde data, zoals stations- en afstandslijsten, wordt dynamisch ingeladen vanaf een centrale, openbare locatie (GitHub), wat het onderhoud eenvoudig en efficiënt maakt. Dit garandeert dat elke gebruiker altijd met de meest actuele informatie werkt.
 Inhoudsopgave
 
-    ✨ Geavanceerde Features
-
-    🚀 Hoe te Gebruiken
-
-    🔧 Configuratie & Data
-
-    💾 Bronvermeldingen
-
-    🤝 Bijdragen
-
-    📄 Licentie
+### [✨ Geavanceerde Features] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-geavanceerde-features
+### [🚀 Hoe te Gebruiken] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-hoe-te-gebruiken
+### [🔧 Configuratie & Data] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-configuratie--data
+### [💾 Bronvermeldingen] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bronvermeldingen
+### [🤝 Bijdragen] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bijdragen
+### [📄 Licentie] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-licentie
 
 ## ✨ Geavanceerde Features ##
 
