@@ -5,7 +5,7 @@ De applicatie is ontworpen met gebruiksgemak en toegankelijkheid als kernprincip
 
 ## [🗂️ Inhoudsopgave]
 
-** [✨ Geavanceerde Features](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-geavanceerde-features-1) **
+** [✨ Geavanceerde Features](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-geavanceerde-features-1)
 ** [🚀 Hoe te Gebruiken](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-hoe-te-gebruiken-1) **
 ** [🔧 Configuratie & Data](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-configuratie--data-1) **
 ** [💾 Bronvermeldingen](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bronvermeldingen-1) **
