@@ -43,3 +43,5 @@ Voor de data heb ik gebruik gemaakt van de datasets van @rijdendetreinen https:/
 Gebruikte datasets:
 1. Treinstations
 2. Afstanden tussen stations
+
+De stationsdata is aangevuld met afkortingen van https://www.nicospilt.com/verkortingen_tabel.htm
