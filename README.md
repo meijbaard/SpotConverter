@@ -3,14 +3,14 @@ SpotConverter Pro is een geavanceerde webapplicatie, specifiek ontworpen voor en
 
 De applicatie is ontworpen met gebruiksgemak en toegankelijkheid als kernprincipes. Het werkt volledig lokaal in de browser en vereist geen enkele installatie of configuratie van software. Alle benodigde data, zoals stations- en afstandslijsten, wordt dynamisch ingeladen vanaf een centrale, openbare locatie (GitHub), wat het onderhoud eenvoudig en efficiënt maakt. Dit garandeert dat elke gebruiker altijd met de meest actuele informatie werkt.
 
-## [🗂️ Inhoudsopgave](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-inhoudsopgave)
+## [🗂️ Inhoudsopgave]
 
-### [✨ Geavanceerde Features](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-geavanceerde-features)
-### [🚀 Hoe te Gebruiken](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-hoe-te-gebruiken)
-### [🔧 Configuratie & Data](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-configuratie--data)
-### [💾 Bronvermeldingen](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bronvermeldingen)
-### [🤝 Bijdragen](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bijdragen)
-### [📄 Licentie](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-licentie)
+** [✨ Geavanceerde Features](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-geavanceerde-features-1) **
+** [🚀 Hoe te Gebruiken](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-hoe-te-gebruiken-1) **
+** [🔧 Configuratie & Data](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-configuratie--data-1) **
+** [💾 Bronvermeldingen](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bronvermeldingen-1) **
+** [🤝 Bijdragen](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bijdragen-1) **
+** [📄 Licentie](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-licentie-1) **
 
 ## ✨ Geavanceerde Features ##
 
@@ -39,20 +39,15 @@ De tool is ontworpen om flexibel en onderhoudsvriendelijk te zijn door data exte
 _stations.csv_
 
 Dit bestand is de ruggengraat van de stationsherkenning. Het bevat alle relevante stations en hun afkortingen. Voor een correcte werking moet het minimaal de volgende kolommen bevatten, gescheiden door komma's:
-
-    code: De unieke afkorting van het station die in spotberichten wordt gebruikt (bijv. AMF).
-
-    name_long: De volledige, officiële naam van het station die in de uitvoer wordt getoond (bijv. Amersfoort Centraal).
+- code: De unieke afkorting van het station die in spotberichten wordt gebruikt (bijv. AMF).
+- name_long: De volledige, officiële naam van het station die in de uitvoer wordt getoond (bijv. Amersfoort Centraal).
 
 _afstanden.csv_
 
 Dit bestand functioneert als een afstandsmatrix voor het berekenen van reistijden. De structuur is cruciaal voor de correcte werking:
-
-    De eerste kolom (de "rij-header") bevat de stationsafkortingen van de beginpunten.
-
-    De eerste rij (de "kolom-header") bevat de stationsafkortingen van de eindpunten.
-
-    De cellen op het snijpunt van een rij en kolom bevatten de exacte afstand in kilometers tussen die twee stations. De tool zoekt de waarde op door de rij van het startstation en de kolom van het doelstation te kruisen.
+- De eerste kolom (de "rij-header") bevat de stationsafkortingen van de beginpunten.
+- De eerste rij (de "kolom-header") bevat de stationsafkortingen van de eindpunten.
+- De cellen op het snijpunt van een rij en kolom bevatten de exacte afstand in kilometers tussen die twee stations. De tool zoekt de waarde op door de rij van het startstation en de kolom van het doelstation te kruisen.
 
 ### Ingebouwde Trajecten
 
@@ -63,14 +58,11 @@ De belangrijkste en meest voorspelbare spoorroutes zijn voor de betrouwbaarheid 
 Voor de data die deze tool aandrijft, is dankbaar gebruik gemaakt van de open datasets van Rijdende Treinen (@rijdendetreinen) en de uitgebreide kennis van Nico Spilt.
 
     Open Data van Rijdende Treinen:
-
-        De basislijst met Treinstations en hun officiële namen is afkomstig van rijdendetreinen.nl/open-data.
-
-        De Afstanden tussen stations, die de basis vormen voor de reistijd-inschattingen, zijn eveneens via dit platform verkregen.
+    - De basislijst met Treinstations en hun officiële namen is afkomstig van rijdendetreinen.nl/open-data.
+    - De afstanden tussen stations, die de basis vormen voor de reistijd-inschattingen, zijn eveneens via dit platform verkregen.
 
     Aanvullende Afkortingen:
-
-        De stationsdata is verrijkt met een zeer complete lijst van spotters-afkortingen, verzameld en onderhouden door Nico Spilt op zijn website: nicospilt.com/verkortingen_tabel.htm.
+    - De stationsdata is verrijkt met een zeer complete lijst van spotters-afkortingen, verzameld en onderhouden door Nico Spilt op zijn website: nicospilt.com/verkortingen_tabel.htm.
 
 De combinatie van deze bronnen maakt de herkenning en analyse van de tool robuust en betrouwbaar.
 
