@@ -3,14 +3,14 @@ SpotConverter Pro is een geavanceerde webapplicatie, specifiek ontworpen voor en
 
 De applicatie is ontworpen met gebruiksgemak en toegankelijkheid als kernprincipes. Het werkt volledig lokaal in de browser en vereist geen enkele installatie of configuratie van software. Alle benodigde data, zoals stations- en afstandslijsten, wordt dynamisch ingeladen vanaf een centrale, openbare locatie (GitHub), wat het onderhoud eenvoudig en efficiënt maakt. Dit garandeert dat elke gebruiker altijd met de meest actuele informatie werkt.
 
-## [🗂️ Inhoudsopgave] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-inhoudsopgave
+## [🗂️ Inhoudsopgave](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-inhoudsopgave)
 
-### [✨ Geavanceerde Features] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-geavanceerde-features
-### [🚀 Hoe te Gebruiken] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-hoe-te-gebruiken
-### [🔧 Configuratie & Data] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-configuratie--data
-### [💾 Bronvermeldingen] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bronvermeldingen
-### [🤝 Bijdragen] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bijdragen
-### [📄 Licentie] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-licentie
+### [✨ Geavanceerde Features](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-geavanceerde-features)
+### [🚀 Hoe te Gebruiken](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-hoe-te-gebruiken)
+### [🔧 Configuratie & Data](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-configuratie--data)
+### [💾 Bronvermeldingen](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bronvermeldingen)
+### [🤝 Bijdragen](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-bijdragen)
+### [📄 Licentie](https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-licentie)
 
 ## ✨ Geavanceerde Features ##
 
@@ -22,7 +22,6 @@ De applicatie is ontworpen met gebruiksgemak en toegankelijkheid als kernprincip
 - Dynamisch Data Inladen: Om de tool onderhoudsvriendelijk en altijd actueel te houden, haalt het de stations- en afstandsdata direct van een centrale GitHub-locatie via CSV-bestanden. Wanneer een station wordt toegevoegd of een afstand wordt gecorrigeerd in de online bestanden, is deze wijziging direct en zonder code-aanpassingen beschikbaar voor alle gebruikers.
 - Slimme Afkorting-herkenning: Om foutieve herkenning van veelvoorkomende Nederlandse woorden (zoals 'en' of 'de') die overeenkomen met stationscodes te voorkomen, hanteert de tool een slimme logica. Afkortingen die kunnen conflicteren, worden alleen herkend als ze met een hoofdletter worden geschreven (bijv. EN voor Enschede), terwijl unieke afkortingen (zoals Amf) ongeacht hoofdlettergebruik worden herkend.
 - Moderne Interface: De vormgeving is geïnspireerd op de duidelijke en functionele stijl van rijdendetreinen.nl, met een focus op leesbaarheid en een intuïtieve gebruikerservaring. Kleuren, lettertypes en layout zijn gekozen om de informatie helder en rustig te presenteren.
-## [🗂️ Inhoudsopgave] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-inhoudsopgave
 
 ## 🚀 Hoe te Gebruiken ##
 1. Open de Applicatie: Start de tool door het station_converter.html bestand te openen in een moderne webbrowser zoals Chrome, Firefox, of Edge. Er is geen internetverbinding nodig voor de basisfuncties, maar wel voor het laden van de meest recente stations- en afstandsdata van GitHub.
@@ -32,7 +31,6 @@ De applicatie is ontworpen met gebruiksgemak en toegankelijkheid als kernprincip
     - Verwerkt Bericht: De originele tekst, maar dan verrijkt met gemarkeerde, volledige stationsnamen en tooltips voor jargon. Dit maakt de spot in één oogopslag leesbaar.
     - Passage Inschatting: Een duidelijke conclusie of de trein het gekozen station passeert, inclusief een berekende aankomsttijd met een marge. Hier staat ook op basis van welk traject de conclusie is getrokken.
     - Geparsede Data: Een uitklapbaar blok met de technische data (in JSON-formaat) die de tool heeft geëxtraheerd. Dit is handig voor debugging, analyse, of om te begrijpen hoe de tool tot zijn conclusie is gekomen.
-## [🗂️ Inhoudsopgave] https://github.com/meijbaard/SpotConverter?tab=readme-ov-file#-inhoudsopgave
 
 ## 🔧 Configuratie & Data ##
 
