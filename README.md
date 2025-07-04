@@ -57,12 +57,12 @@ De belangrijkste en meest voorspelbare spoorroutes zijn voor de betrouwbaarheid 
 
 Voor de data die deze tool aandrijft, is dankbaar gebruik gemaakt van de open datasets van Rijdende Treinen (@rijdendetreinen) en de uitgebreide kennis van Nico Spilt.
 
-    Open Data van Rijdende Treinen:
-    - De basislijst met Treinstations en hun officiële namen is afkomstig van rijdendetreinen.nl/open-data.
-    - De afstanden tussen stations, die de basis vormen voor de reistijd-inschattingen, zijn eveneens via dit platform verkregen.
+** Open Data van Rijdende Treinen: **
+- De basislijst met Treinstations en hun officiële namen is afkomstig van [OpenData.](https://www.rijdendetreinen.nl/open-data)
+- De afstanden tussen stations, die de basis vormen voor de reistijd-inschattingen, zijn eveneens via dit platform verkregen.
 
-    Aanvullende Afkortingen:
-    - De stationsdata is verrijkt met een zeer complete lijst van spotters-afkortingen, verzameld en onderhouden door Nico Spilt op zijn website: nicospilt.com/verkortingen_tabel.htm.
+** Aanvullende Afkortingen: **
+- De stationsdata is verrijkt met een zeer complete lijst van spotters-afkortingen, verzameld en onderhouden door Nico Spilt op zijn [website.](https://www.nicospilt.com/verkortingen_tabel.htm)
 
 De combinatie van deze bronnen maakt de herkenning en analyse van de tool robuust en betrouwbaar.
 
