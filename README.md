@@ -24,7 +24,7 @@ De applicatie is ontworpen met gebruiksgemak en toegankelijkheid als kernprincip
 - Moderne Interface: De vormgeving is geïnspireerd op de duidelijke en functionele stijl van rijdendetreinen.nl, met een focus op leesbaarheid en een intuïtieve gebruikerservaring. Kleuren, lettertypes en layout zijn gekozen om de informatie helder en rustig te presenteren.
 
 ## 🚀 Hoe te Gebruiken ##
-1. Download de tool door op station_converter.html te klikken in GitHub en in de header boven de code te klikken op "Download raw file". Dit heeft een icoontje met een pijl naar beneden.
+1. Download de tool door op station_converter.html te klikken in GitHub en in de header boven de code te klikken op "Download raw file". Dit heeft een icoontje met een pijl naar beneden. Of via het releases kopje in het scherm rechts. Hiermee download je alle bestanden.
 2. Open de Applicatie: Start de tool door het station_converter.html bestand te openen in een moderne webbrowser zoals Chrome, Firefox, of Edge. Er is geen internetverbinding nodig voor de basisfuncties, maar wel voor het laden van de meest recente stations- en afstandsdata van GitHub.
 3. Plak het Bericht: Kopieer een spot-bericht uit een WhatsApp-groep (bijvoorbeeld 14:51 Rtd ri Wd, LLT) en plak dit in het tekstveld "Plak je WhatsApp bericht hier:". De tool begint onmiddellijk met de analyse van de tekst.
 4.  Kies je Doelstation: In de dropdown-lijst "Bereken passage voor:" kun je het station selecteren waarvoor je een passage-tijd wilt weten. Standaard staat deze op "Baarn", maar elk station uit de geladen lijst is selecteerbaar. De berekening wordt automatisch bijgewerkt wanneer je een ander station kiest.
