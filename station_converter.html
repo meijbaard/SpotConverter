@@ -3,166 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpotConverter Pro (RijdendeTreinen Stijl)</title>
+    <title>SpotConverter Pro</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts (Open Sans) -->
+    <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* RijdendeTreinen.nl Kleurenpalet en Font */
-        :root {
-            --rt-blue: #0d2a4c;
-            --rt-orange: #f37736;
-            --rt-light-blue: #e6f3f9;
-            --rt-gray: #f0f0f0;
-            --rt-text: #333;
-        }
+        /* Aangepaste stijlen voor een moderne look */
         body { 
-            font-family: 'Open Sans', sans-serif; 
-            background-color: var(--rt-gray);
-            color: var(--rt-text);
+            font-family: 'Inter', sans-serif; 
+            background-color: #f8fafc; /* bg-slate-50 */
+            color: #334155; /* text-slate-700 */
         }
-        .rt-header {
-            background-color: var(--rt-blue);
-            color: white;
-            border-bottom: 5px solid var(--rt-orange);
+        
+        /* Accentkleur voor focus en highlights */
+        :root {
+            --accent-color: #06b6d4; /* cyan-500 */
         }
-        .rt-button {
-            background-color: var(--rt-orange);
-            color: white;
-            font-weight: 700;
-            transition: background-color 0.2s;
+
+        /* Stijlen voor input velden */
+        .form-input {
+            border-color: #cbd5e1; /* border-slate-300 */
+            transition: all 0.2s ease-in-out;
         }
-        .rt-button:hover {
-            background-color: #d96323;
+        .form-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
+            outline: none;
         }
-        h2 {
-            color: var(--rt-blue);
-            font-weight: 700;
+
+        /* Highlight stijlen */
+        .highlight-station { 
+            background-color: #cffafe; /* cyan-100 */
+            color: #0e7490; /* cyan-800 */
+            padding: 0.1rem 0.4rem; 
+            border-radius: 0.25rem; 
+            font-weight: 600; 
         }
-        .info-box {
-            background-color: var(--rt-light-blue);
-            border-left: 4px solid var(--rt-orange);
-            padding: 1rem 1.5rem;
-        }
-        .highlight-station { background-color: #d1eaff; padding: 0.1rem 0.3rem; border-radius: 0.2rem; font-weight: bold; }
         .highlight-abbr { 
-            background-color: #e2e8f0; 
-            color: #475569;
-            padding: 0.1rem 0.3rem; 
-            border-radius: 0.2rem; 
-            font-weight: 600;
+            background-color: #f1f5f9; /* slate-100 */
+            color: #475569; /* slate-600 */
+            padding: 0.1rem 0.4rem; 
+            border-radius: 0.25rem; 
+            font-weight: 500;
             cursor: help;
-            border-bottom: 2px dotted #94a3b8;
+            border-bottom: 2px dotted #94a3b8; /* slate-400 */
         }
-        .highlight-estimation { background-color: var(--rt-orange); padding: 0.1rem 0.3rem; border-radius: 0.2rem; font-weight: bold; color: white; }
-        .toggle-btn {
-            background: none;
-            border: none;
-            color: #64748b;
-            font-weight: 600;
-            cursor: pointer;
+        .highlight-estimation { 
+            background-color: var(--accent-color);
+            color: white;
+            padding: 0.2rem 0.5rem; 
+            border-radius: 0.375rem; 
+            font-weight: 700; 
         }
-        .toggle-btn:hover {
-            color: var(--rt-blue);
+
+        /* Laad-animatie */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(248, 250, 252, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 1rem;
+            backdrop-filter: blur(4px);
+        }
+        .spinner {
+            border: 5px solid #e2e8f0; /* slate-200 */
+            border-top: 5px solid var(--accent-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body class="py-8">
-    <div class="max-w-4xl mx-auto px-4 space-y-8">
+<body class="py-8 md:py-12">
+
+    <!-- Laad-overlay -->
+    <div id="loader-overlay">
+        <div class="spinner"></div>
+        <p class="text-lg font-semibold text-slate-600">Data laden vanaf GitHub...</p>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-4 space-y-8 md:space-y-10">
         
-        <!-- Header en Toelichting -->
-        <header class="rt-header p-6 rounded-lg shadow-lg text-center">
-            <!-- ** NIEUW: Logo ** -->
+        <!-- Header met Logo -->
+        <header class="bg-white p-6 md:p-8 rounded-xl shadow-lg text-center">
             <div class="flex justify-center items-center mb-4">
-                <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20,75 H80" stroke="white" stroke-width="4" stroke-linecap="round"/>
-                    <path d="M25,80 H75" stroke="white" stroke-width="2" stroke-dasharray="5,5"/>
-                    <rect x="30" y="40" width="40" height="25" rx="5" fill="var(--rt-orange)"/>
-                    <circle cx="40" cy="65" r="7" fill="white"/>
-                    <circle cx="60" cy="65" r="7" fill="white"/>
-                    <path d="M15,50 A 35 35 0 1 1 85,50" stroke="var(--rt-yellow)" stroke-width="6" fill="none" stroke-linecap="round"/>
-                    <path d="M85,50 L90,45 M85,50 L90,55" stroke="var(--rt-yellow)" stroke-width="6" stroke-linecap="round"/>
+                <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="var(--accent-color)">
+                    <path d="M 20 80 C 10 80 10 70 20 70 L 80 70 C 90 70 90 80 80 80 Z" fill="#475569"/>
+                    <rect x="25" y="30" width="50" height="40" rx="5" fill="var(--accent-color)"/>
+                    <rect x="35" y="20" width="30" height="10" rx="3" fill="#64748b"/>
+                    <circle cx="37" cy="70" r="10" fill="white" stroke="#475569" stroke-width="4"/>
+                    <circle cx="63" cy="70" r="10" fill="white" stroke="#475569" stroke-width="4"/>
+                    <rect x="60" y="40" width="10" height="15" fill="white" rx="2"/>
                 </svg>
             </div>
-            <h1 class="text-4xl font-bold">SpotConverter Pro</h1>
-            <p class="mt-2 text-lg text-gray-200">
-                Deze tool helpt je om WhatsApp-berichten van treinspotters snel te analyseren. Plak een bericht en zie direct de volledige stationsnamen, de betekenis van spotters-jargon en een inschatting van de passage-tijd voor een gekozen station.
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-800">SpotConverter Pro</h1>
+            <p class="mt-3 text-base md:text-lg text-slate-600 max-w-2xl mx-auto">
+                Analyseer WhatsApp-berichten van treinspotters. Plak een bericht en zie direct de volledige stationsnamen, jargon en een geschatte passage-tijd.
             </p>
         </header>
 
         <!-- Converter Tool -->
-        <main class="bg-white p-6 rounded-lg shadow-md">
-            <div class="grid md:grid-cols-2 gap-6">
+        <main class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+            <div class="grid md:grid-cols-2 gap-8">
                 <!-- Input -->
                 <div>
-                    <label for="whatsappMessage" class="block text-lg font-bold text-gray-700 mb-2">Plak je WhatsApp bericht hier:</label>
-                    <textarea id="whatsappMessage" class="w-full h-32 border-gray-300 rounded-md shadow-sm" placeholder="Bijv. 14:00 Hgl ri Amf" oninput="debounceProcessMessage()"></textarea>
+                    <label for="whatsappMessage" class="block text-base font-semibold text-slate-700 mb-2">Plak je WhatsApp bericht hier:</label>
+                    <textarea id="whatsappMessage" class="form-input w-full h-36 border rounded-lg p-3 shadow-sm" placeholder="Bijv. 14:00 Hgl ri Amf" oninput="debounceProcessMessage()"></textarea>
                 </div>
                 <!-- Instellingen -->
                 <div>
-                    <label for="targetStationSelect" class="block text-lg font-bold text-gray-700 mb-2">Bereken passage voor:</label>
-                    <select id="targetStationSelect" class="w-full border-gray-300 rounded-md shadow-sm" onchange="processMessage()"></select>
+                    <label for="targetStationSelect" class="block text-base font-semibold text-slate-700 mb-2">Bereken passage voor:</label>
+                    <select id="targetStationSelect" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white" onchange="processMessage()"></select>
                 </div>
             </div>
             
             <!-- Output secties -->
-            <div class="mt-6 space-y-4">
+            <div class="mt-8 space-y-6">
                 <div>
-                    <h2 class="text-2xl mb-2">Verwerkt Bericht:</h2>
-                    <div id="output" class="p-4 bg-gray-50 rounded-md min-h-[50px]"></div>
+                    <h2 class="text-xl font-bold text-slate-800 mb-2">Verwerkt Bericht:</h2>
+                    <div id="output" class="p-4 bg-slate-50 rounded-lg min-h-[60px] border border-slate-200 leading-relaxed"></div>
                 </div>
                 <div>
-                    <h2 class="text-2xl mb-2">Analyse:</h2>
-                    <div id="estimation-output" class="p-4 bg-gray-50 rounded-md min-h-[50px] info-box space-y-2"></div>
+                    <h2 class="text-xl font-bold text-slate-800 mb-2">Analyse:</h2>
+                    <div id="estimation-output" class="p-4 bg-cyan-50 border-l-4 border-cyan-400 rounded-r-lg min-h-[60px] space-y-2"></div>
                 </div>
                 <div>
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class="text-2xl">Geparsede Data (voor analyse)</h2>
-                        <button id="toggle-data-btn" onclick="toggleParsedData()" class="toggle-btn">(Toon)</button>
+                        <h2 class="text-xl font-bold text-slate-800">Geparsede Data (voor analyse)</h2>
+                        <button id="toggle-data-btn" onclick="toggleParsedData()" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition">(Toon)</button>
                     </div>
-                    <pre id="parsed-data-output" class="p-4 bg-gray-800 text-white text-xs rounded-md overflow-x-auto" style="display: none;"></pre>
+                    <pre id="parsed-data-output" class="p-4 bg-slate-800 text-white text-xs rounded-lg overflow-x-auto" style="display: none;"></pre>
                 </div>
             </div>
         </main>
         
         <!-- Informatie sectie -->
-        <footer class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-2xl mb-4">Terugkerende Treinpatronen</h2>
-            <div class="space-y-4 text-gray-800">
-                 <div>
-                    <h4 class="font-bold text-xl">1. De "Katy Shuttle" (RFO)</h4>
-                    <p class="pl-4">Deze shuttle is een van de meest frequente treinen op de Bentheimroute en verbindt Knooppunt Kijfhoek met Polen.</p>
-                    <ul class="list-disc pl-10 mt-2">
-                        <li><strong>Richting West (Nederland in):</strong> Volgt het traject `Duitsland-Amersfoort` en vervolgens `Amersfoort-Rotterdam`. Wordt vaak in de <strong>ochtend en vroege middag</strong> gespot.</li>
-                        <li><strong>Richting Oost (Nederland uit):</strong> Volgt de omgekeerde route. Meestal gespot in de <strong>late middag en avond</strong> (16:00-18:00) rond Amersfoort.</li>
-                    </ul>
+        <footer class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-bold text-slate-800 mb-4">Terugkerende Treinpatronen</h2>
+            <div class="space-y-6 text-slate-600">
+                <div class="p-4 border border-slate-200 rounded-lg">
+                    <h4 class="font-semibold text-lg text-slate-800">1. De "Katy Shuttle" (RFO)</h4>
+                    <p class="mt-1">Deze shuttle verbindt Knooppunt Kijfhoek met Polen en is een frequente verschijning op de Bentheimroute.</p>
                 </div>
-                <div>
-                    <h4 class="font-bold text-xl">2. De "PCC Shuttle" (RTB Cargo)</h4>
-                    <p class="pl-4">Deze shuttle verbindt de Rotterdamse haven met Polen en is een vaste verschijning.</p>
-                     <ul class="list-disc pl-10 mt-2">
-                        <li><strong>Richting West (Nederland in):</strong> Volgt het traject `Duitsland-Amersfoort` en `Amersfoort-Rotterdam`. Meestal gespot in de <strong>ochtenduren</strong>.</li>
-                        <li><strong>Richting Oost (Nederland uit):</strong> Volgt de omgekeerde route. Vaak gespot in de <strong>middag</strong> (14:00-17:00).</li>
-                    </ul>
+                <div class="p-4 border border-slate-200 rounded-lg">
+                    <h4 class="font-semibold text-lg text-slate-800">2. De "PCC Shuttle" (RTB Cargo)</h4>
+                    <p class="mt-1">Deze shuttle verbindt de Rotterdamse haven met Polen en is een vaste gast op het spoor.</p>
                 </div>
-                <div>
-                    <h4 class="font-bold text-xl">3. De "Volvo Trein" (Lineas)</h4>
-                    <p class="pl-4">Een vaste shuttle tussen Gent (België) en Zweden. Deze trein volgt een zuidelijkere route en passeert de kern van de Bentheimroute vaak via Deventer en Zutphen.</p>
-                     <ul class="list-disc pl-10 mt-2">
-                        <li><strong>Richting West (Nederland in):</strong> Komt binnen via het traject `Duitsland-Amersfoort` tot aan Deventer/Zutphen. Vaak gespot in de <strong>vroege ochtend</strong> (07:00-09:00).</li>
-                        <li><strong>Richting Oost (Nederland uit):</strong> Verlaat Nederland via het traject `Duitsland-Amersfoort`. Meestal gespot in de <strong>late middag/vroege avond</strong> (18:00-19:00).</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold text-xl">4. De "UC Onnen" & "UC Buna Werke" (DB Cargo)</h4>
-                     <p class="pl-4">Dit zijn keteltreinen van DB Cargo met een zeer variabel, maar frequent patroon.</p>
-                     <ul class="list-disc pl-10 mt-2">
-                        <li><strong>Route:</strong> Rijden voornamelijk op het traject `Duitsland-Amersfoort` en buigen vaak af richting het noorden (Onnen) of blijven op de hoofdroute.</li>
-                        <li><strong>Tijden:</strong> Deze treinen hebben geen vast tijdspatroon en kunnen op <strong>elk moment van de dag</strong> worden gespot in beide richtingen.</li>
-                    </ul>
+                <div class="p-4 border border-slate-200 rounded-lg">
+                    <h4 class="font-semibold text-lg text-slate-800">3. De "Volvo Trein" (Lineas)</h4>
+                    <p class="mt-1">Een vaste shuttle tussen Gent (België) en Zweden, die vaak via Deventer en Zutphen rijdt.</p>
                 </div>
             </div>
         </footer>
@@ -172,40 +176,50 @@
     <script>
         // --- Globale variabelen en Constanten ---
         let stationData = [], distanceData = {}, trajectories = {}, debounceTimer;
+        
         const spotterAbbr = {
             'A': 'Aankomst', 'V': 'Vertrek', 'D': 'Doorrijden',
             'LSP': 'Linkerspoor', 'LLSP': 'Linker-linkerspoor', 'MSP': 'Middenspoor',
             'RSP': 'Rechterspoor', 'RRSP': 'Rechter-rechterspoor',
             'NVR': 'Niet voor reizigers', 'LM': 'Leeg materieel', 'LLT': 'Losse loc trein',
-            'SMS': 'Samenstelling', 'GE': 'Goederenemplacement', 'Badl': 'Beladen aan de loc'
+            'SMS': 'Samenstelling', 'GE': 'Goederenemplacement', 
+            'Badl': 'Beladen aan de loc',
+            'Ladl': 'Leeg aan de loc'
         };
         const conflictingAbbrs = ['EN', 'DE', 'D', 'A', 'V', 'OP', 'ALS'];
-        const germanStationCodes = ["RHEINE", "SALZBERGEN", "BH"];
 
         // --- Data Laden ---
         async function loadExternalData() {
+            const loader = document.getElementById('loader-overlay');
+            loader.style.display = 'flex';
+
             try {
-                // Stations
-                const stationsUrl = 'https://raw.githubusercontent.com/meijbaard/SpotConverter/main/stations.csv';
-                const stationResponse = await fetch(stationsUrl);
+                const [stationResponse, distanceResponse] = await Promise.all([
+                    fetch('https://raw.githubusercontent.com/meijbaard/SpotConverter/main/stations.csv'),
+                    fetch('https://raw.githubusercontent.com/meijbaard/SpotConverter/main/afstanden.csv')
+                ]);
+
                 if (!stationResponse.ok) throw new Error(`Fout bij laden stations.csv: ${stationResponse.statusText}`);
+                if (!distanceResponse.ok) throw new Error(`Fout bij laden afstanden.csv: ${distanceResponse.statusText}`);
+
                 const stationCsvText = await stationResponse.text();
+                const distanceCsvText = await distanceResponse.text();
+                
+                // Parse stations
                 const stationLines = stationCsvText.trim().split('\n');
                 const stationHeaders = stationLines.shift().split(',').map(h => h.trim());
                 const codeIndex = stationHeaders.indexOf('code');
                 const nameLongIndex = stationHeaders.indexOf('name_long');
                 if (codeIndex === -1 || nameLongIndex === -1) throw new Error("Kolommen 'code' en 'name_long' niet gevonden in stations.csv");
+                
                 stationData = stationLines.map(line => {
                     const values = line.split(',');
                     return { afkorting: values[codeIndex].trim().toUpperCase(), naam: values[nameLongIndex].trim().replace(/"/g, '') };
                 });
+                stationData.sort((a, b) => b.afkorting.length - a.afkorting.length);
                 populateStationDropdown();
 
-                // Afstanden
-                const distancesUrl = 'https://raw.githubusercontent.com/meijbaard/SpotConverter/main/afstanden.csv';
-                const distanceResponse = await fetch(distancesUrl);
-                if (!distanceResponse.ok) throw new Error(`Fout bij laden afstanden.csv: ${distanceResponse.statusText}`);
-                const distanceCsvText = await distanceResponse.text();
+                // Parse afstanden
                 const distanceLines = distanceCsvText.trim().split('\n');
                 const distanceHeaders = distanceLines.shift().split(',').map(h => h.trim().toUpperCase());
                 distanceData = {};
@@ -221,16 +235,18 @@
                     });
                 });
                 
-                // Trajecten
+                // Definieer trajecten
                 trajectories = {
                     "Duitsland-Amersfoort": ["RHEINE", "SALZBERGEN", "BH", "ODZ", "HGLO", "HGL", "BN", "AMRI", "AML", "WDN", "RSN", "HON", "DVC", "DV", "TWL", "APDO", "APD", "STO", "BNVA", "BNV", "AMF"],
                     "Amersfoort-Amsterdam": ["AMF", "BRN", "HVS", "HVSM", "BSMZ", "NDB", "WP", "DMN", "ASSP", "ASDM", "ASD", "AWH"],
-                    "Amersfoort-Rotterdam": ["AMF", "BRN", "HVS", "HVSM", "BSMZ", "NDB", "WP", "DMNZ", "ASB", "BKL", "WD", "GD", "RTN", "RTD"]
+                    "Amersfoort-Rotterdam": ["AMF", "BRN", "HVS", "HVSM", "BSMZ", "NDB", "WP", "DMNZ", "DVA", "ASB", "BKL", "WD", "GD", "RTN", "RTD"]
                 };
 
             } catch (error) {
                 console.error("Kon externe data niet laden:", error);
-                document.getElementById('output').innerHTML = `<p class="warning">Kon de data van GitHub niet laden: ${error.message}</p>`;
+                document.getElementById('output').innerHTML = `<p class="text-red-600 font-bold">Kon de data van GitHub niet laden: ${error.message}. Probeer de pagina te vernieuwen.</p>`;
+            } finally {
+                loader.style.display = 'none';
             }
         }
         
@@ -238,7 +254,7 @@
         function populateStationDropdown() {
             const select = document.getElementById('targetStationSelect');
             select.innerHTML = '';
-            stationData.sort((a,b) => a.naam.localeCompare(b.naam)).forEach(station => {
+            [...stationData].sort((a,b) => a.naam.localeCompare(b.naam)).forEach(station => {
                 const option = document.createElement('option');
                 option.value = station.naam;
                 option.textContent = station.naam;
@@ -255,9 +271,168 @@
             toggleBtn.textContent = isHidden ? '(Verberg)' : '(Toon)';
         }
 
-        // --- Logica ---
+        function clearOutputFields() {
+            document.getElementById('output').innerHTML = '';
+            document.getElementById('estimation-output').innerHTML = '';
+            document.getElementById('parsed-data-output').textContent = '';
+        }
+
+        // --- Hoofdfunctie ---
+        function processMessage() {
+            const messageInput = document.getElementById('whatsappMessage').value;
+            const targetStationName = document.getElementById('targetStationSelect').value;
+
+            if (!messageInput.trim()) {
+                clearOutputFields();
+                return;
+            }
+
+            const parsedData = parseMessage(messageInput);
+            const analysis = analyzeTrajectory(parsedData, targetStationName);
+            const outputHtml = createHighlightedMessage(parsedData.originalMessage, parsedData.foundMatches);
+            displayResults(outputHtml, analysis, parsedData);
+        }
+
+        // --- Opgesplitste Functies ---
+
+        function parseMessage(message) {
+            const parsed = {
+                originalMessage: message,
+                timestamp: null,
+                route: [],
+                routeCodes: [],
+                foundMatches: [],
+                spotLocation: null,
+                destination: null
+            };
+
+            const timeMatch = message.match(/(\d{1,2}[:.]\d{2})/g);
+            if (timeMatch) parsed.timestamp = timeMatch[0].replace('.', ':');
+            
+            stationData.forEach(station => {
+                if (spotterAbbr.hasOwnProperty(station.afkorting)) return;
+                
+                const isConflicting = conflictingAbbrs.includes(station.afkorting.toUpperCase());
+                const regexFlags = isConflicting ? 'g' : 'gi';
+                const regex = new RegExp(`\\b(${station.afkorting})\\b(?!-)`, regexFlags);
+                
+                let match;
+                while ((match = regex.exec(message)) !== null) {
+                    if (!parsed.foundMatches.some(m => m.index === match.index)) {
+                        parsed.foundMatches.push({ station: station, index: match.index, text: match[1] });
+                    }
+                }
+            });
+            parsed.foundMatches.sort((a, b) => a.index - b.index);
+
+            if (parsed.foundMatches.length === 0) return parsed;
+
+            parsed.spotLocation = parsed.foundMatches[0].station.afkorting;
+
+            const directionMatch = message.match(/\sri\s+([a-zA-Z]+)/i);
+            if (directionMatch) {
+                const destAbbr = directionMatch[1].toUpperCase();
+                const destinationStation = stationData.find(s => s.afkorting === destAbbr);
+                if (destinationStation) {
+                    parsed.destination = destinationStation.afkorting;
+                }
+            }
+
+            if (parsed.spotLocation && parsed.destination) {
+                parsed.routeCodes = [parsed.spotLocation, parsed.destination];
+                const spotStation = stationData.find(s => s.afkorting === parsed.spotLocation);
+                const destStation = stationData.find(s => s.afkorting === parsed.destination);
+                if (spotStation && destStation) {
+                    parsed.route = [spotStation.naam, destStation.naam];
+                }
+            } else {
+                parsed.route = parsed.foundMatches.map(m => m.station.naam);
+                parsed.routeCodes = parsed.foundMatches.map(m => m.station.afkorting);
+            }
+
+            return parsed;
+        }
+
+        function createHighlightedMessage(originalMessage, foundMatches) {
+            let processedMessage = originalMessage;
+
+            foundMatches.forEach(match => {
+                processedMessage = processedMessage.replace(new RegExp(`\\b${match.text}\\b(?![-<])`, 'g'), `<span class="highlight-station">${match.station.naam}</span>`);
+            });
+
+            for (const abbr in spotterAbbr) {
+                const regex = new RegExp(`\\b${abbr}\\b(?![-<])`, 'gi');
+                processedMessage = processedMessage.replace(regex, (foundText) => {
+                    return `<span class="highlight-abbr" title="${spotterAbbr[abbr]}">${foundText}</span>`;
+                });
+            }
+            return processedMessage;
+        }
+
+        function analyzeTrajectory(parsedData, targetStationName) {
+            const targetStationCode = stationData.find(s => s.naam === targetStationName)?.afkorting;
+            let passageHtml = "Geen route herkend in het bericht.";
+            let timeHtml = "Geen station of tijdstip gevonden om een berekening te maken.";
+
+            const trajectoryAnalysis = findTrajectoryForRoute(parsedData.routeCodes);
+            parsedData.trajectoryAnalysis = trajectoryAnalysis;
+            
+            if (trajectoryAnalysis) {
+                const { name: matchedTraject, direction } = trajectoryAnalysis;
+                const passesTarget = doesTrajectoryPassStation(matchedTraject, targetStationCode);
+                let generalDirection = "Onbekend";
+                if (direction === 'forward') {
+                     // Forward op Duitsland-Amf betekent westwaarts, op andere oostwaarts
+                    if (matchedTraject.includes('Duitsland-Amersfoort')) generalDirection = 'Nederland in';
+                    else generalDirection = 'Westwaarts';
+                } else { // backward
+                    if (matchedTraject.includes('Duitsland-Amersfoort')) generalDirection = 'Nederland uit';
+                    else generalDirection = 'Oostwaarts';
+                }
+                passageHtml = `Rijrichting: 🚂 <strong>${generalDirection}</strong> | Passage ${targetStationName}: <strong>${passesTarget ? '✅ Ja' : '❌ Nee'}</strong>`;
+            } else if (parsedData.route.length > 1) {
+                passageHtml = "Kan geen bekend traject matchen met de gespotte route.";
+            }
+
+            if (parsedData.spotLocation && parsedData.timestamp && targetStationCode) {
+                const firstSpottedStationCode = parsedData.spotLocation;
+                const firstSpottedStationName = stationData.find(s => s.afkorting === firstSpottedStationCode)?.naam || firstSpottedStationCode;
+                
+                const distance = distanceData[firstSpottedStationCode]?.[targetStationCode];
+                if (distance !== undefined) {
+                    const averageSpeedKmH = 80;
+                    const travelMinutes = Math.round((distance / averageSpeedKmH) * 60);
+                    const [hours, minutes] = parsedData.timestamp.split(':').map(Number);
+                    const spotDate = new Date();
+                    spotDate.setHours(hours, minutes, 0, 0);
+                    spotDate.setMinutes(spotDate.getMinutes() + travelMinutes);
+                    const arrivalTime = spotDate.toTimeString().substring(0, 5);
+                    timeHtml = `⏰ Geschatte doorkomsttijd in <span class="font-bold">${targetStationName}</span>: <strong class="highlight-estimation">${arrivalTime}</strong> <br> <span class="text-sm text-slate-500">(vanaf ${firstSpottedStationName})</span>`;
+                } else {
+                    timeHtml = `<p>Geen afstandsdata gevonden tussen <span class="font-bold">${firstSpottedStationName}</span> en <span class="font-bold">${targetStationName}</span>.</p>`;
+                }
+            }
+            
+            return { passageHtml, timeHtml };
+        }
+
+        function displayResults(outputHtml, analysis, parsedData) {
+            document.getElementById('output').innerHTML = outputHtml;
+            document.getElementById('estimation-output').innerHTML = `<div>${analysis.passageHtml}</div><div>${analysis.timeHtml}</div>`;
+            document.getElementById('parsed-data-output').textContent = JSON.stringify(parsedData, null, 2);
+        }
+
+        // --- Hulpfuncties ---
+
+        /**
+         * NIEUWE VERSIE: Vindt een route, zelfs als deze over meerdere trajecten via een hub loopt.
+         * @param {string[]} routeCodes - Een array met de [startCode, endCode].
+         * @returns {object|null} Een object met de naam van het traject en de richting, of null.
+         */
         function findTrajectoryForRoute(routeCodes) {
             if (routeCodes.length < 2) return null;
+            const startCode = routeCodes[0];
+            const endCode = routeCodes[1];
 
             const isSubsequence = (sub, main) => {
                 let i = 0, j = 0;
@@ -268,42 +443,45 @@
                 return j === sub.length;
             };
 
+            // 1. Check voor simpele, enkele trajectroutes
             for (const name in trajectories) {
                 const traject = trajectories[name];
-                if (isSubsequence(routeCodes, traject)) {
-                    return { name: name, direction: 'forward' };
-                }
-                if (isSubsequence(routeCodes, [...traject].reverse())) {
-                    return { name: name, direction: 'backward' };
-                }
+                if (isSubsequence(routeCodes, traject)) return { name: name, direction: 'forward' };
+                if (isSubsequence(routeCodes, [...traject].reverse())) return { name: name, direction: 'backward' };
             }
 
-            const startCode = routeCodes[0];
-            const endCode = routeCodes[routeCodes.length - 1];
+            // 2. Als geen simpele route, zoek naar gecombineerde routes via de hub (Amersfoort)
             const hub = "AMF";
+            let startTrajectName = null;
+            let endTrajectName = null;
 
-            const startTrajectNames = Object.keys(trajectories).filter(name => trajectories[name].includes(startCode));
-            const endTrajectNames = Object.keys(trajectories).filter(name => trajectories[name].includes(endCode));
+            for (const name in trajectories) {
+                if (trajectories[name].includes(startCode)) startTrajectName = name;
+                if (trajectories[name].includes(endCode)) endTrajectName = name;
+            }
 
-            for (const startName of startTrajectNames) {
-                for (const endName of endTrajectNames) {
-                    if (startName === endName) continue;
+            if (startTrajectName && endTrajectName && startTrajectName !== endTrajectName) {
+                const startTraj = trajectories[startTrajectName];
+                const endTraj = trajectories[endTrajectName];
 
-                    const startTraj = trajectories[startName];
-                    const endTraj = trajectories[endName];
+                if (startTraj.includes(hub) && endTraj.includes(hub)) {
+                    // Controleer of er een logisch pad is van start -> hub op het starttraject
+                    // en van hub -> end op het eindtraject.
+                    const validStartToHub = isSubsequence([startCode, hub], startTraj) || isSubsequence([startCode, hub], [...startTraj].reverse());
+                    const validHubToEnd = isSubsequence([hub, endCode], endTraj) || isSubsequence([hub, endCode], [...endTraj].reverse());
 
-                    if (startTraj.includes(hub) && endTraj.includes(hub)) {
-                        if (isSubsequence([startCode, hub], startTraj) && isSubsequence([hub, endCode], endTraj)) {
-                            return { name: `${startName} -> ${endName}`, direction: 'forward' };
-                        }
-                         if (isSubsequence([startCode, hub], endTraj) && isSubsequence([hub, endCode], startTraj)) {
-                            return { name: `${endName} -> ${startName}`, direction: 'backward' };
-                        }
+                    if (validStartToHub && validHubToEnd) {
+                        // De algehele richting wordt bepaald door de laatste etappe
+                        const finalLegDirection = isSubsequence([hub, endCode], endTraj) ? 'forward' : 'backward';
+                        return {
+                            name: `${startTrajectName} -> ${endTrajectName}`,
+                            direction: finalLegDirection
+                        };
                     }
                 }
             }
 
-            return null;
+            return null; // Geen directe of gecombineerde route gevonden
         }
 
         function doesTrajectoryPassStation(fullTrajectName, stationCode) {
@@ -312,130 +490,12 @@
             return trajectNames.some(name => trajectories[name] && trajectories[name].includes(stationCode));
         }
 
-        // --- Hoofdfunctie voor Verwerking ---
-        function processMessage() {
-            const messageInput = document.getElementById('whatsappMessage').value;
-            if (!messageInput.trim()) return;
-            
-            let processedMessage = messageInput;
-            const targetStationName = document.getElementById('targetStationSelect').value;
-            const targetStationCode = stationData.find(s => s.naam === targetStationName)?.afkorting;
-
-            // 1. Parsen
-            let parsedData = { originalMessage: messageInput, timestamp: null, route: [], routeCodes: [] };
-            const timeMatch = messageInput.match(/(\d{1,2}[:.]\d{2})/g);
-            if (timeMatch) parsedData.timestamp = timeMatch[0].replace('.', ':');
-            
-            stationData.sort((a, b) => b.afkorting.length - a.afkorting.length);
-            let foundMatches = [];
-            stationData.forEach(station => {
-                const isConflicting = conflictingAbbrs.includes(station.afkorting.toUpperCase());
-                const regex = new RegExp(`\\b(${station.afkorting})\\b(?!-)`, isConflicting ? 'g' : 'gi');
-                
-                let match;
-                while ((match = regex.exec(messageInput)) !== null) {
-                    if (!foundMatches.some(m => m.index === match.index)) {
-                        foundMatches.push({ station: station, index: match.index, text: match[1] });
-                    }
-                }
-            });
-            foundMatches.sort((a, b) => a.index - b.index);
-            parsedData.route = foundMatches.map(m => m.station.naam);
-            parsedData.routeCodes = foundMatches.map(m => m.station.afkorting);
-
-            // 2. Visuele vervanging
-            let tempMessage = processedMessage;
-            foundMatches.forEach(match => {
-                tempMessage = tempMessage.replace(new RegExp(`\\b${match.text}\\b(?!-)`, 'g'), `<span class="highlight-station">${match.station.naam}</span>`);
-            });
-            processedMessage = tempMessage;
-
-            for (const abbr in spotterAbbr) {
-                const regex = new RegExp(`\\b${abbr}\\b(?!-)`, 'gi');
-                processedMessage = processedMessage.replace(regex, (foundText) => {
-                    return `<span class="highlight-abbr" title="${spotterAbbr[abbr]}">${foundText}</span>`;
-                });
-            }
-
-            // 3. Traject-analyse en berekening
-            let passageHtml = '';
-            let timeHtml = '';
-            const trajectoryAnalysis = findTrajectoryForRoute(parsedData.routeCodes);
-            parsedData.trajectoryAnalysis = trajectoryAnalysis;
-            
-            if (trajectoryAnalysis) {
-                const { name: matchedTraject, direction } = trajectoryAnalysis;
-                const passesTarget = doesTrajectoryPassStation(matchedTraject, targetStationCode);
-                let generalDirection = "Onbekend";
-                if (direction === 'forward') {
-                    if (matchedTraject.startsWith('Duitsland')) generalDirection = 'Nederland in';
-                    else generalDirection = 'Westwaarts';
-                } else {
-                    if (matchedTraject.includes('Duitsland')) generalDirection = 'Nederland uit';
-                    else generalDirection = 'Oostwaarts';
-                }
-                
-                passageHtml = `Rijrichting: 🚂 <strong>${generalDirection}</strong> | Passage ${targetStationName}: <strong>${passesTarget ? '✅ Ja' : '❌ Nee'}</strong>`;
-            } else if (parsedData.route.length > 1) {
-                passageHtml = "Kan geen bekend traject matchen met de gespotte route.";
-            } else {
-                passageHtml = "Geen route herkend in het bericht.";
-            }
-
-            if (parsedData.route.length > 0 && parsedData.timestamp) {
-                const firstSpottedStationName = parsedData.route[0];
-                const firstSpottedStationCode = parsedData.routeCodes[0];
-                
-                let hasPassed = false;
-                if (trajectoryAnalysis) {
-                    const { name: matchedTraject, direction } = trajectoryAnalysis;
-                    const allTrajectStations = matchedTraject.split(' -> ').reduce((acc, name) => acc.concat(trajectories[name]), []);
-                    
-                    const spotIndex = allTrajectStations.indexOf(firstSpottedStationCode);
-                    const targetIndex = allTrajectStations.indexOf(targetStationCode);
-
-                    if (spotIndex !== -1 && targetIndex !== -1) {
-                        if (direction === 'forward' && spotIndex > targetIndex) {
-                            hasPassed = true;
-                        } else if (direction === 'backward' && spotIndex < targetIndex) {
-                            hasPassed = true;
-                        }
-                    }
-                }
-
-                if (hasPassed) {
-                    timeHtml = `<p>Geschatte doorkomsttijd niet van toepassing (trein is station al gepasseerd).</p>`;
-                } else {
-                    const distance = distanceData[firstSpottedStationCode]?.[targetStationCode];
-                    if (distance !== undefined) {
-                        const averageSpeedKmH = 80;
-                        const travelMinutes = Math.round((distance / averageSpeedKmH) * 60);
-                        const [hours, minutes] = parsedData.timestamp.split(':').map(Number);
-                        const spotDate = new Date();
-                        spotDate.setHours(hours, minutes, 0, 0);
-                        spotDate.setMinutes(spotDate.getMinutes() + travelMinutes);
-                        const arrivalTime = spotDate.toTimeString().substring(0, 5);
-                        timeHtml = `⏰ Geschatte doorkomsttijd in <span class="font-bold">${targetStationName}</span>: <strong class="highlight-estimation">${arrivalTime}</strong> <br> <span class="text-sm text-gray-600">(vanaf ${firstSpottedStationName})</span>`;
-                    } else {
-                        timeHtml = `<p>Geen afstandsdata gevonden tussen <span class="font-bold">${firstSpottedStationName}</span> en <span class="font-bold">${targetStationName}</span>.</p>`;
-                    }
-                }
-            } else {
-                timeHtml = `<p>Geen station of tijdstip gevonden om een berekening te maken.</p>`;
-            }
-
-            // 4. Resultaten tonen
-            document.getElementById('output').innerHTML = processedMessage;
-            document.getElementById('estimation-output').innerHTML = `<div>${passageHtml}</div><div>${timeHtml}</div>`;
-            document.getElementById('parsed-data-output').innerHTML = `<pre>${JSON.stringify(parsedData, null, 2)}</pre>`;
-        }
-
-        // --- Hulpfuncties ---
         function debounceProcessMessage() {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(processMessage, 300);
         }
 
+        // --- Initialisatie ---
         window.onload = loadExternalData;
     </script>
 </body>
