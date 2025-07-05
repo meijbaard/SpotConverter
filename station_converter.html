@@ -378,39 +378,45 @@
             parsedData.trajectoryAnalysis = trajectoryAnalysis;
             
             if (trajectoryAnalysis) {
-                const { name: matchedTraject, direction } = trajectoryAnalysis;
-                const passesTarget = doesTrajectoryPassStation(matchedTraject, targetStationCode);
+                const passesTarget = doesTrajectoryPassStation(trajectoryAnalysis, parsedData.routeCodes[0], parsedData.routeCodes[1], targetStationCode);
+                
                 let generalDirection = "Onbekend";
-                if (direction === 'forward') {
-                     // Forward op Duitsland-Amf betekent westwaarts, op andere oostwaarts
-                    if (matchedTraject.includes('Duitsland-Amersfoort')) generalDirection = 'Nederland in';
+                if (trajectoryAnalysis.direction === 'forward') {
+                    if (trajectoryAnalysis.name.includes('Duitsland-Amersfoort')) generalDirection = 'Nederland in';
                     else generalDirection = 'Westwaarts';
-                } else { // backward
-                    if (matchedTraject.includes('Duitsland-Amersfoort')) generalDirection = 'Nederland uit';
+                } else {
+                    if (trajectoryAnalysis.name.includes('Duitsland-Amersfoort')) generalDirection = 'Nederland uit';
                     else generalDirection = 'Oostwaarts';
                 }
                 passageHtml = `Rijrichting: 🚂 <strong>${generalDirection}</strong> | Passage ${targetStationName}: <strong>${passesTarget ? '✅ Ja' : '❌ Nee'}</strong>`;
+                
+                // --- AANGEPASTE LOGICA ---
+                // Bereken de tijd alleen als de trein daadwerkelijk het doelstation passeert.
+                if (passesTarget) {
+                    if (parsedData.spotLocation && parsedData.timestamp && targetStationCode) {
+                        const firstSpottedStationCode = parsedData.spotLocation;
+                        const firstSpottedStationName = stationData.find(s => s.afkorting === firstSpottedStationCode)?.naam || firstSpottedStationCode;
+                        
+                        const distance = distanceData[firstSpottedStationCode]?.[targetStationCode];
+                        if (distance !== undefined) {
+                            const averageSpeedKmH = 80;
+                            const travelMinutes = Math.round((distance / averageSpeedKmH) * 60);
+                            const [hours, minutes] = parsedData.timestamp.split(':').map(Number);
+                            const spotDate = new Date();
+                            spotDate.setHours(hours, minutes, 0, 0);
+                            spotDate.setMinutes(spotDate.getMinutes() + travelMinutes);
+                            const arrivalTime = spotDate.toTimeString().substring(0, 5);
+                            timeHtml = `⏰ Geschatte doorkomsttijd in <span class="font-bold">${targetStationName}</span>: <strong class="highlight-estimation">${arrivalTime}</strong> <br> <span class="text-sm text-slate-500">(vanaf ${firstSpottedStationName})</span>`;
+                        } else {
+                            timeHtml = `<p>Geen afstandsdata gevonden tussen <span class="font-bold">${firstSpottedStationName}</span> en <span class="font-bold">${targetStationName}</span>.</p>`;
+                        }
+                    }
+                } else {
+                    // Als de trein niet passeert, is de tijd niet van toepassing.
+                    timeHtml = `<p>Tijdsberekening niet van toepassing.</p>`;
+                }
             } else if (parsedData.route.length > 1) {
                 passageHtml = "Kan geen bekend traject matchen met de gespotte route.";
-            }
-
-            if (parsedData.spotLocation && parsedData.timestamp && targetStationCode) {
-                const firstSpottedStationCode = parsedData.spotLocation;
-                const firstSpottedStationName = stationData.find(s => s.afkorting === firstSpottedStationCode)?.naam || firstSpottedStationCode;
-                
-                const distance = distanceData[firstSpottedStationCode]?.[targetStationCode];
-                if (distance !== undefined) {
-                    const averageSpeedKmH = 80;
-                    const travelMinutes = Math.round((distance / averageSpeedKmH) * 60);
-                    const [hours, minutes] = parsedData.timestamp.split(':').map(Number);
-                    const spotDate = new Date();
-                    spotDate.setHours(hours, minutes, 0, 0);
-                    spotDate.setMinutes(spotDate.getMinutes() + travelMinutes);
-                    const arrivalTime = spotDate.toTimeString().substring(0, 5);
-                    timeHtml = `⏰ Geschatte doorkomsttijd in <span class="font-bold">${targetStationName}</span>: <strong class="highlight-estimation">${arrivalTime}</strong> <br> <span class="text-sm text-slate-500">(vanaf ${firstSpottedStationName})</span>`;
-                } else {
-                    timeHtml = `<p>Geen afstandsdata gevonden tussen <span class="font-bold">${firstSpottedStationName}</span> en <span class="font-bold">${targetStationName}</span>.</p>`;
-                }
             }
             
             return { passageHtml, timeHtml };
@@ -424,11 +430,6 @@
 
         // --- Hulpfuncties ---
 
-        /**
-         * NIEUWE VERSIE: Vindt een route, zelfs als deze over meerdere trajecten via een hub loopt.
-         * @param {string[]} routeCodes - Een array met de [startCode, endCode].
-         * @returns {object|null} Een object met de naam van het traject en de richting, of null.
-         */
         function findTrajectoryForRoute(routeCodes) {
             if (routeCodes.length < 2) return null;
             const startCode = routeCodes[0];
@@ -443,14 +444,12 @@
                 return j === sub.length;
             };
 
-            // 1. Check voor simpele, enkele trajectroutes
             for (const name in trajectories) {
                 const traject = trajectories[name];
                 if (isSubsequence(routeCodes, traject)) return { name: name, direction: 'forward' };
                 if (isSubsequence(routeCodes, [...traject].reverse())) return { name: name, direction: 'backward' };
             }
 
-            // 2. Als geen simpele route, zoek naar gecombineerde routes via de hub (Amersfoort)
             const hub = "AMF";
             let startTrajectName = null;
             let endTrajectName = null;
@@ -465,13 +464,10 @@
                 const endTraj = trajectories[endTrajectName];
 
                 if (startTraj.includes(hub) && endTraj.includes(hub)) {
-                    // Controleer of er een logisch pad is van start -> hub op het starttraject
-                    // en van hub -> end op het eindtraject.
                     const validStartToHub = isSubsequence([startCode, hub], startTraj) || isSubsequence([startCode, hub], [...startTraj].reverse());
                     const validHubToEnd = isSubsequence([hub, endCode], endTraj) || isSubsequence([hub, endCode], [...endTraj].reverse());
 
                     if (validStartToHub && validHubToEnd) {
-                        // De algehele richting wordt bepaald door de laatste etappe
                         const finalLegDirection = isSubsequence([hub, endCode], endTraj) ? 'forward' : 'backward';
                         return {
                             name: `${startTrajectName} -> ${endTrajectName}`,
@@ -481,14 +477,43 @@
                 }
             }
 
-            return null; // Geen directe of gecombineerde route gevonden
+            return null;
         }
 
-        function doesTrajectoryPassStation(fullTrajectName, stationCode) {
-            if (!fullTrajectName || !stationCode) return false;
-            const trajectNames = fullTrajectName.split(' -> ');
-            return trajectNames.some(name => trajectories[name] && trajectories[name].includes(stationCode));
+        function doesTrajectoryPassStation(trajectoryAnalysis, startCode, endCode, targetStationCode) {
+            if (!trajectoryAnalysis || !targetStationCode) return false;
+
+            const hub = "AMF";
+            const trajectNames = trajectoryAnalysis.name.split(' -> ');
+
+            const isBetween = (line, p1, p2, target) => {
+                const idx1 = line.indexOf(p1);
+                const idx2 = line.indexOf(p2);
+                const idxTarget = line.indexOf(target);
+                if (idx1 === -1 || idx2 === -1 || idxTarget === -1) return false;
+                return (idxTarget >= Math.min(idx1, idx2) && idxTarget <= Math.max(idx1, idx2));
+            };
+
+            if (trajectNames.length === 1) {
+                const line = trajectories[trajectNames[0]];
+                return isBetween(line, startCode, endCode, targetStationCode);
+            }
+
+            if (trajectNames.length === 2) {
+                const firstLegLine = trajectories[trajectNames[0]];
+                if (isBetween(firstLegLine, startCode, hub, targetStationCode)) {
+                    return true;
+                }
+                
+                const secondLegLine = trajectories[trajectNames[1]];
+                if (isBetween(secondLegLine, hub, endCode, targetStationCode)) {
+                    return true;
+                }
+            }
+
+            return false;
         }
+
 
         function debounceProcessMessage() {
             clearTimeout(debounceTimer);
