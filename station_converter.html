@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+---
+permalink: /spotconverter/
+layout: spotconverter
+title: SpotConverter
+author_profile: false
+---
+
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
@@ -188,6 +194,16 @@
         };
         const conflictingAbbrs = ['EN', 'DE', 'D', 'A', 'V', 'OP', 'ALS'];
 
+        /**
+         * Escapes characters in a string that have a special meaning in regular expressions.
+         * @param {string} string The string to escape.
+         * @returns {string} The escaped string.
+         */
+        function escapeRegExp(string) {
+            // $& means the whole matched string
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
         // --- Data Laden ---
         async function loadExternalData() {
             const loader = document.getElementById('loader-overlay');
@@ -314,7 +330,7 @@
                 
                 const isConflicting = conflictingAbbrs.includes(station.afkorting.toUpperCase());
                 const regexFlags = isConflicting ? 'g' : 'gi';
-                const regex = new RegExp(`\\b(${station.afkorting})\\b(?!-)`, regexFlags);
+                const regex = new RegExp(`\\b(${escapeRegExp(station.afkorting)})\\b(?!-)`, regexFlags);
                 
                 let match;
                 while ((match = regex.exec(message)) !== null) {
@@ -357,11 +373,11 @@
             let processedMessage = originalMessage;
 
             foundMatches.forEach(match => {
-                processedMessage = processedMessage.replace(new RegExp(`\\b${match.text}\\b(?![-<])`, 'g'), `<span class="highlight-station">${match.station.naam}</span>`);
+                processedMessage = processedMessage.replace(new RegExp(`\\b${escapeRegExp(match.text)}\\b(?![-<])`, 'g'), `<span class="highlight-station">${match.station.naam}</span>`);
             });
 
             for (const abbr in spotterAbbr) {
-                const regex = new RegExp(`\\b${abbr}\\b(?![-<])`, 'gi');
+                const regex = new RegExp(`\\b${escapeRegExp(abbr)}\\b(?![-<])`, 'gi');
                 processedMessage = processedMessage.replace(regex, (foundText) => {
                     return `<span class="highlight-abbr" title="${spotterAbbr[abbr]}">${foundText}</span>`;
                 });
@@ -390,29 +406,101 @@
                 }
                 passageHtml = `Rijrichting: 🚂 <strong>${generalDirection}</strong> | Passage ${targetStationName}: <strong>${passesTarget ? '✅ Ja' : '❌ Nee'}</strong>`;
                 
-                // --- AANGEPASTE LOGICA ---
                 // Bereken de tijd alleen als de trein daadwerkelijk het doelstation passeert.
                 if (passesTarget) {
                     if (parsedData.spotLocation && parsedData.timestamp && targetStationCode) {
-                        const firstSpottedStationCode = parsedData.spotLocation;
-                        const firstSpottedStationName = stationData.find(s => s.afkorting === firstSpottedStationCode)?.naam || firstSpottedStationCode;
-                        
-                        const distance = distanceData[firstSpottedStationCode]?.[targetStationCode];
+                        const firstSpottedStationName = stationData.find(s => s.afkorting === parsedData.spotLocation)?.naam || parsedData.spotLocation;
+                        let arrivalTime;
+                        let isSpecialCalc = false;
+
+                        // Stap 1: Bereken een ruwe aankomsttijd op basis van afstand en snelheid
+                        const distance = distanceData[parsedData.spotLocation]?.[targetStationCode];
+                        let roughArrivalDate;
                         if (distance !== undefined) {
                             const averageSpeedKmH = 80;
                             const travelMinutes = Math.round((distance / averageSpeedKmH) * 60);
                             const [hours, minutes] = parsedData.timestamp.split(':').map(Number);
-                            const spotDate = new Date();
-                            spotDate.setHours(hours, minutes, 0, 0);
-                            spotDate.setMinutes(spotDate.getMinutes() + travelMinutes);
-                            const arrivalTime = spotDate.toTimeString().substring(0, 5);
-                            timeHtml = `⏰ Geschatte doorkomsttijd in <span class="font-bold">${targetStationName}</span>: <strong class="highlight-estimation">${arrivalTime}</strong> <br> <span class="text-sm text-slate-500">(vanaf ${firstSpottedStationName})</span>`;
-                        } else {
-                            timeHtml = `<p>Geen afstandsdata gevonden tussen <span class="font-bold">${firstSpottedStationName}</span> en <span class="font-bold">${targetStationName}</span>.</p>`;
+                            roughArrivalDate = new Date();
+                            roughArrivalDate.setHours(hours, minutes, 0, 0);
+                            roughArrivalDate.setMinutes(roughArrivalDate.getMinutes() + travelMinutes);
                         }
+
+                        if (!roughArrivalDate) {
+                             timeHtml = `<p>Geen afstandsdata gevonden tussen <span class="font-bold">${firstSpottedStationName}</span> en <span class="font-bold">${targetStationName}</span>.</p>`;
+                        } else {
+                            // Stap 2: Pas speciale Baarn-logica toe indien van toepassing
+                            let directionForBaarn = null;
+                            if (targetStationName === 'Baarn' && parsedData.spotLocation) {
+                                const spotLocation = parsedData.spotLocation;
+
+                                // Check of de spotlocatie op een aanvoerend traject ligt (richting Amsterdam)
+                                const isFromEastOrSouth = 
+                                    trajectories["Duitsland-Amersfoort"].includes(spotLocation) ||
+                                    trajectories["Amersfoort-Rotterdam"].includes(spotLocation);
+
+                                if (isFromEastOrSouth) {
+                                    directionForBaarn = 'ASD';
+                                } else {
+                                    // Check het Amersfoort-Amsterdam traject voor de specifieke positie
+                                    const amfToAsdTrajectory = trajectories["Amersfoort-Amsterdam"];
+                                    const spotIndex = amfToAsdTrajectory.indexOf(spotLocation);
+                                    const baarnIndex = amfToAsdTrajectory.indexOf(targetStationCode); // targetStationCode is 'BRN'
+
+                                    if (spotIndex !== -1 && baarnIndex !== -1) {
+                                        if (spotIndex < baarnIndex) {
+                                            // Gespot voor Baarn (vanaf Amersfoort), dus rijdt richting Amsterdam
+                                            directionForBaarn = 'ASD'; 
+                                        } else if (spotIndex > baarnIndex) {
+                                            // Gespot na Baarn (vanaf Amsterdam), dus rijdt richting Amersfoort
+                                            directionForBaarn = 'AMF'; 
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (directionForBaarn) { // Als een richting voor de speciale Baarn-logica is gevonden
+                                isSpecialCalc = true;
+                                let arrivalDate = new Date(roughArrivalDate.getTime());
+                                let targetMinutes;
+                                
+                                if (directionForBaarn === 'AMF') { // Richting Amersfoort (:08 / :38)
+                                    if (arrivalDate.getMinutes() <= 8) {
+                                        targetMinutes = 8;
+                                    } else if (arrivalDate.getMinutes() <= 38) {
+                                        targetMinutes = 38;
+                                    } else {
+                                        targetMinutes = 8;
+                                        arrivalDate.setHours(arrivalDate.getHours() + 1);
+                                    }
+                                    arrivalDate.setMinutes(targetMinutes, 0, 0);
+                                    arrivalTime = arrivalDate.toTimeString().substring(0, 5);
+                                } else if (directionForBaarn === 'ASD') { // Richting Amsterdam (:21 / :51)
+                                    if (arrivalDate.getMinutes() <= 21) {
+                                        targetMinutes = 21;
+                                    } else if (arrivalDate.getMinutes() <= 51) {
+                                        targetMinutes = 51;
+                                    } else {
+                                        targetMinutes = 21;
+                                        arrivalDate.setHours(arrivalDate.getHours() + 1);
+                                    }
+                                    arrivalDate.setMinutes(targetMinutes, 0, 0);
+                                    arrivalTime = arrivalDate.toTimeString().substring(0, 5);
+                                }
+                            }
+                            
+                            // Stap 3: Gebruik de ruwe berekening als de speciale logica niet van toepassing was
+                            if (!isSpecialCalc) {
+                                arrivalTime = roughArrivalDate.toTimeString().substring(0, 5);
+                            }
+
+                            // Stap 4: Genereer de HTML output
+                            const timeBlurb = isSpecialCalc ? " (goederenpad)" : "";
+                            timeHtml = `⏰ Geschatte doorkomsttijd in <span class="font-bold">${targetStationName}</span>${timeBlurb}: <strong class="highlight-estimation">${arrivalTime}</strong> <br> <span class="text-sm text-slate-500">(vanaf ${firstSpottedStationName})</span>`;
+                        }
+                    } else {
+                        timeHtml = "Geen station of tijdstip gevonden om een berekening te maken.";
                     }
                 } else {
-                    // Als de trein niet passeert, is de tijd niet van toepassing.
                     timeHtml = `<p>Tijdsberekening niet van toepassing.</p>`;
                 }
             } else if (parsedData.route.length > 1) {
