@@ -129,27 +129,12 @@ author_profile: false
                 <!-- Input -->
                 <div>
                     <label for="whatsappMessage" class="block text-base font-semibold text-slate-700 mb-2">Plak je WhatsApp bericht hier:</label>
-                    <textarea id="whatsappMessage" class="form-input w-full h-48 md:h-full border rounded-lg p-3 shadow-sm" placeholder="Bijv. 14:00 Hgl ri Amf" oninput="debounceProcessMessage()"></textarea>
+                    <textarea id="whatsappMessage" class="form-input w-full h-36 border rounded-lg p-3 shadow-sm" placeholder="Bijv. 14:00 Hgl ri Amf" oninput="debounceProcessMessage()"></textarea>
                 </div>
                 <!-- Instellingen -->
-                <div class="space-y-6">
-                    <div>
-                        <label for="targetStationSelect" class="block text-base font-semibold text-slate-700 mb-2">Bereken passage voor:</label>
-                        <select id="targetStationSelect" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white" onchange="processMessage()"></select>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-semibold text-slate-700 mb-2">Handmatige Goederenpaden</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label for="westboundPathSelect" class="block text-sm font-medium text-slate-600 mb-1">Pad Westwaarts / NL in</label>
-                                <select id="westboundPathSelect" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white text-sm" onchange="processMessage()"></select>
-                            </div>
-                            <div>
-                                <label for="eastboundPathSelect" class="block text-sm font-medium text-slate-600 mb-1">Pad Oostwaarts / NL uit</label>
-                                <select id="eastboundPathSelect" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white text-sm" onchange="processMessage()"></select>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <label for="targetStationSelect" class="block text-base font-semibold text-slate-700 mb-2">Bereken passage voor:</label>
+                    <select id="targetStationSelect" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white" onchange="processMessage()"></select>
                 </div>
             </div>
             
@@ -196,7 +181,7 @@ author_profile: false
 
     <script>
         // --- Globale variabelen en Constanten ---
-        let stationData = [], distanceData = {}, trajectories = {}, debounceTimer;
+        let stationData = [], distanceData = {}, trajectories = {}, pathData = {}, debounceTimer;
         
         const spotterAbbr = {
             'A': 'Aankomst', 'V': 'Vertrek', 'D': 'Doorrijden',
@@ -225,16 +210,19 @@ author_profile: false
             loader.style.display = 'flex';
 
             try {
-                const [stationResponse, distanceResponse] = await Promise.all([
+                const [stationResponse, distanceResponse, pathResponse] = await Promise.all([
                     fetch('https://raw.githubusercontent.com/meijbaard/SpotConverter/main/stations.csv'),
-                    fetch('https://raw.githubusercontent.com/meijbaard/SpotConverter/main/afstanden.csv')
+                    fetch('https://raw.githubusercontent.com/meijbaard/SpotConverter/main/afstanden.csv'),
+                    fetch('https://raw.githubusercontent.com/meijbaard/SpotConverter/main/goederenpaden.csv')
                 ]);
 
                 if (!stationResponse.ok) throw new Error(`Fout bij laden stations.csv: ${stationResponse.statusText}`);
                 if (!distanceResponse.ok) throw new Error(`Fout bij laden afstanden.csv: ${distanceResponse.statusText}`);
+                if (!pathResponse.ok) throw new Error(`Fout bij laden goederenpaden.csv: ${pathResponse.statusText}`);
 
                 const stationCsvText = await stationResponse.text();
                 const distanceCsvText = await distanceResponse.text();
+                const pathCsvText = await pathResponse.text();
                 
                 // Parse stations
                 const stationLines = stationCsvText.trim().split('\n');
@@ -249,7 +237,6 @@ author_profile: false
                 });
                 stationData.sort((a, b) => b.afkorting.length - a.afkorting.length);
                 populateStationDropdown();
-                populatePathDropdowns(); // <-- Nieuwe functie aanroepen
 
                 // Parse afstanden
                 const distanceLines = distanceCsvText.trim().split('\n');
@@ -267,6 +254,25 @@ author_profile: false
                     });
                 });
                 
+                // Parse goederenpaden
+                const pathLines = pathCsvText.trim().split('\n');
+                const pathHeaders = pathLines.shift().split(',').map(h => h.replace(/"/g, '').trim());
+                const stationCodeIndex = pathHeaders.indexOf('stationscode');
+                const directionIndex = pathHeaders.indexOf('rijrichting');
+                const pathMinutesIndex = pathHeaders.indexOf('pad_minuten');
+                pathData = {};
+                pathLines.forEach(line => {
+                    const values = line.split(',').map(v => v.replace(/"/g, '').trim());
+                    const stationCode = values[stationCodeIndex];
+                    const direction = values[directionIndex];
+                    const pathMinutes = values[pathMinutesIndex].split(';').map(Number);
+                    
+                    if (!pathData[stationCode]) {
+                        pathData[stationCode] = {};
+                    }
+                    pathData[stationCode][direction] = pathMinutes;
+                });
+
                 // Definieer trajecten
                 trajectories = {
                     "Duitsland-Amersfoort": ["RHEINE", "SALZBERGEN", "BH", "ODZ", "HGLO", "HGL", "BN", "AMRI", "AML", "WDN", "RSN", "HON", "DVC", "DV", "TWL", "APDO", "APD", "STO", "BNVA", "BNV", "AMF"],
@@ -295,29 +301,6 @@ author_profile: false
             });
         }
 
-        // Nieuwe functie om de goederenpad dropdowns te vullen
-        function populatePathDropdowns() {
-            const westSelect = document.getElementById('westboundPathSelect');
-            const eastSelect = document.getElementById('eastboundPathSelect');
-            
-            [westSelect, eastSelect].forEach(select => {
-                select.innerHTML = ''; // Leegmaken
-                const autoOption = document.createElement('option');
-                autoOption.value = 'auto';
-                autoOption.textContent = 'Automatisch';
-                select.appendChild(autoOption);
-
-                for (let i = 0; i <= 29; i++) {
-                    const option = document.createElement('option');
-                    const minute1 = String(i).padStart(2, '0');
-                    const minute2 = String(i + 30).padStart(2, '0');
-                    option.value = i;
-                    option.textContent = `${minute1} / ${minute2}`;
-                    select.appendChild(option);
-                }
-            });
-        }
-
         function toggleParsedData() {
             const dataOutput = document.getElementById('parsed-data-output');
             const toggleBtn = document.getElementById('toggle-data-btn');
@@ -336,8 +319,6 @@ author_profile: false
         function processMessage() {
             const messageInput = document.getElementById('whatsappMessage').value;
             const targetStationName = document.getElementById('targetStationSelect').value;
-            const westPath = document.getElementById('westboundPathSelect').value;
-            const eastPath = document.getElementById('eastboundPathSelect').value;
 
             if (!messageInput.trim()) {
                 clearOutputFields();
@@ -345,7 +326,7 @@ author_profile: false
             }
 
             const parsedData = parseMessage(messageInput);
-            const analysis = analyzeTrajectory(parsedData, targetStationName, westPath, eastPath);
+            const analysis = analyzeTrajectory(parsedData, targetStationName);
             const outputHtml = createHighlightedMessage(parsedData.originalMessage, parsedData.foundMatches);
             displayResults(outputHtml, analysis, parsedData);
         }
@@ -426,7 +407,7 @@ author_profile: false
             return processedMessage;
         }
 
-        function analyzeTrajectory(parsedData, targetStationName, westPath, eastPath) {
+        function analyzeTrajectory(parsedData, targetStationName) {
             const targetStationCode = stationData.find(s => s.naam === targetStationName)?.afkorting;
             let passageHtml = "Geen route herkend in het bericht.";
             let timeHtml = "Geen station of tijdstip gevonden om een berekening te maken.";
@@ -438,12 +419,23 @@ author_profile: false
                 const passesTarget = doesTrajectoryPassStation(trajectoryAnalysis, parsedData.routeCodes[0], parsedData.routeCodes[1], targetStationCode);
                 
                 let generalDirection = "Onbekend";
+                let directionKey = "";
                 if (trajectoryAnalysis.direction === 'forward') {
-                    if (trajectoryAnalysis.name.includes('Duitsland-Amersfoort')) generalDirection = 'Nederland in';
-                    else generalDirection = 'Westwaarts';
+                    if (trajectoryAnalysis.name.includes('Duitsland-Amersfoort')) {
+                        generalDirection = 'Nederland in';
+                        directionKey = 'WEST';
+                    } else {
+                        generalDirection = 'Westwaarts';
+                        directionKey = 'WEST';
+                    }
                 } else {
-                    if (trajectoryAnalysis.name.includes('Duitsland-Amersfoort')) generalDirection = 'Nederland uit';
-                    else generalDirection = 'Oostwaarts';
+                    if (trajectoryAnalysis.name.includes('Duitsland-Amersfoort')) {
+                        generalDirection = 'Nederland uit';
+                        directionKey = 'OOST';
+                    } else {
+                        generalDirection = 'Oostwaarts';
+                        directionKey = 'OOST';
+                    }
                 }
                 passageHtml = `Rijrichting: 🚂 <strong>${generalDirection}</strong> | Passage ${targetStationName}: <strong>${passesTarget ? '✅ Ja' : '❌ Nee'}</strong>`;
                 
@@ -467,18 +459,12 @@ author_profile: false
                         if (!roughArrivalDate) {
                              timeHtml = `<p>Geen afstandsdata gevonden tussen <span class="font-bold">${firstSpottedStationName}</span> en <span class="font-bold">${targetStationName}</span>.</p>`;
                         } else {
-                            let selectedPathMinute = 'auto';
-                            if (generalDirection === 'Westwaarts' || generalDirection === 'Nederland in') {
-                                selectedPathMinute = westPath;
-                            } else if (generalDirection === 'Oostwaarts' || generalDirection === 'Nederland uit') {
-                                selectedPathMinute = eastPath;
-                            }
+                            const pathInfo = pathData[targetStationCode]?.[directionKey];
 
-                            if (selectedPathMinute !== 'auto') {
-                                timeBlurb = " (handmatig goederenpad)";
+                            if (pathInfo && pathInfo.length === 2) {
+                                timeBlurb = " (volgens goederenpad)";
                                 let arrivalDate = new Date(roughArrivalDate.getTime());
-                                const minute1 = parseInt(selectedPathMinute, 10);
-                                const minute2 = minute1 + 30;
+                                const [minute1, minute2] = pathInfo.sort((a,b) => a-b);
                                 const currentMinutes = arrivalDate.getMinutes();
 
                                 if (currentMinutes <= minute1) {
@@ -491,27 +477,8 @@ author_profile: false
                                 }
                                 arrivalDate.setSeconds(0, 0);
                                 arrivalTime = arrivalDate.toTimeString().substring(0, 5);
-                            } else if (targetStationName === 'Baarn') {
-                                timeBlurb = " (goederenpad Baarn)";
-                                // Existing Baarn logic
-                                let arrivalDate = new Date(roughArrivalDate.getTime());
-                                let targetMinutes;
-                                const spotIndex = trajectories["Amersfoort-Amsterdam"].indexOf(parsedData.spotLocation);
-                                const baarnIndex = trajectories["Amersfoort-Amsterdam"].indexOf('BRN');
-                                let directionForBaarn = (spotIndex !== -1 && baarnIndex !== -1 && spotIndex > baarnIndex) ? 'AMF' : 'ASD';
-
-                                if (directionForBaarn === 'AMF') { // :08 / :38
-                                    targetMinutes = (arrivalDate.getMinutes() <= 8 || arrivalDate.getMinutes() > 38) ? 8 : 38;
-                                    if(arrivalDate.getMinutes() > 38) arrivalDate.setHours(arrivalDate.getHours() + 1);
-                                } else { // :21 / :51
-                                    targetMinutes = (arrivalDate.getMinutes() <= 21 || arrivalDate.getMinutes() > 51) ? 21 : 51;
-                                     if(arrivalDate.getMinutes() > 51) arrivalDate.setHours(arrivalDate.getHours() + 1);
-                                }
-                                arrivalDate.setMinutes(targetMinutes, 0, 0);
-                                arrivalTime = arrivalDate.toTimeString().substring(0, 5);
-                            }
-
-                            if (!arrivalTime) {
+                            } else {
+                                timeBlurb = " (ruwe schatting)";
                                 arrivalTime = roughArrivalDate.toTimeString().substring(0, 5);
                             }
                             
