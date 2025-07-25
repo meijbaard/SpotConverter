@@ -175,6 +175,10 @@ author_profile: false
                     <p class="mt-1">Een vaste shuttle tussen Gent (België) en Zweden, die vaak via Deventer en Zutphen rijdt.</p>
                 </div>
             </div>
+            <!-- Versienummer toegevoegd -->
+            <div class="text-right text-xs text-slate-400 mt-6">
+                Versie 1.9
+            </div>
         </footer>
 
     </div>
