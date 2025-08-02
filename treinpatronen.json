@@ -1,70 +1,55 @@
 {
-  "_uitleg": {
-    "doel": "Dit bestand functioneert als de 'kennisbank' voor de SpotConverter tool. Het bevat data over terugkerende treinpatronen.",
-    "structuur": "Elke sleutel (bv. 'RFO_KATY SHUTTLE') is een unieke combinatie van een vervoerder en een treintype. De SpotConverter gebruikt deze sleutel om een patroon te herkennen.",
-    "velden": {
-      "name": "De volledige naam van de trein/shuttle.",
-      "description": "Een korte beschrijving van de trein voor context.",
-      "commonRoute": "De meest waarschijnlijke route als een array van stationsafkortingen, in een logische volgorde.",
-      "avgWaitTimes": "Een object met stationsafkortingen waar deze trein gemiddeld een bekende wachttijd heeft. De waarde is de gemiddelde wachttijd in minuten."
-    },
-    "beheer": "Om een nieuw patroon toe te voegen of een bestaand patroon aan te passen, kan dit bestand direct worden bewerkt. De tool zal de wijzigingen automatisch inladen."
-  },
-  "RFO_KATY SHUTTLE": {
+  "RFO_KATY_SHUTTLE": {
     "name": "Katy Shuttle",
-    "description": "Een containertrein van RFO die rijdt tussen Kijfhoek en Kąty Wrocławskie in Polen.",
-    "commonRoute": ["ZLW", "UT", "AMF", "STO", "APD", "DV", "HGL", "BH"],
+    "description": "Containertrein van RFO tussen Nederland en Polen, vaste doorkomst Bentheimroute.",
+    "commonRoute": [
+      "SALZBERGEN", "BH", "ODZ", "HGL", "BN", "AMRI", "AML", "WDN", "RSN", "DV", "APD", "STO", "BNVA", "AMF"
+    ],
+    "avgPassTimes": {
+      "HGL": "16:11",
+      "BN": "17:02",
+      "AMF": "19:30"
+    },
     "avgWaitTimes": {
-      "STO": 65,
-      "AMF": 15
-    }
+      "STO": 32,
+      "AMF": 18
+    },
+    "frequentDays": ["vrijdag", "zaterdag", "zondag"],
+    "frequency": 11,
+    "notes": "Route en tijden kloppen met het vaste patroon. Opvallend is extra wachttijd te Stroe en Amersfoort. Soms meldingen van 'vertrek niet afgewacht'."
   },
   "LNS_VOLVO": {
     "name": "Volvo Trein",
-    "description": "De bekende Volvo-trein van Lineas die auto-onderdelen vervoert tussen Zweden en Gent.",
-    "commonRoute": ["RSN", "AML", "DV", "ZP", "AH", "BOT"],
-    "avgWaitTimes": {}
+    "description": "Lineas Volvo-shuttle tussen Gent en Zweden, via Amersfoort, Deventer en Hengelo.",
+    "commonRoute": [
+      "AMF", "BNVA", "STO", "APD", "DV", "HGL"
+    ],
+    "avgPassTimes": {
+      "AMF": "08:32",
+      "DV": "09:09",
+      "HGL": "09:41"
+    },
+    "avgWaitTimes": {},
+    "frequentDays": ["maandag", "woensdag", "vrijdag"],
+    "frequency": 7,
+    "notes": "Regelmatig ontbreken tractiemeldingen, maar volgorde is logisch. Geen opvallende route-afwijkingen."
   },
-  "HSL_RZEPIN": {
-    "name": "Rzepin Shuttle",
-    "description": "Een intermodale trein (trailers en containers) die tussen Tilburg Industrie en Rzepin (Polen) rijdt.",
-    "commonRoute": ["TBI", "UT", "AMF", "APD", "DV", "HGL", "BH"],
-    "avgWaitTimes": {
-      "STO": 20,
-      "AMF": 10
-    }
-  },
-  "DBC_UC ONNEN": {
-    "name": "UC Onnen",
-    "description": "Een keteltrein van DB Cargo die rijdt naar de Unit-Carbide fabriek in Onnen.",
-    "commonRoute": ["BH", "HGL", "AML", "DV", "ZL", "ON"],
-    "avgWaitTimes": {
-      "DV": 15
-    }
-  },
-  "CDC_LOVOSICE": {
-    "name": "Lovosice Shuttle",
-    "description": "Een intermodale trein van ČD Cargo die rijdt tussen Lovosice (Tsjechië) en de Rotterdamse haven.",
-    "commonRoute": ["BH", "HGL", "AML", "DV", "APD", "AMF", "UT"],
-    "avgWaitTimes": {
-      "AMF": 20
-    }
-  },
-  "RTBC_PCC SHUTTLE": {
+  "RTBC_PCC_SHUTTLE": {
     "name": "PCC Shuttle",
-    "description": "Een intermodale trein van RTB Cargo die rijdt tussen de Maasvlakte en Polen.",
-    "commonRoute": ["PS", "DVGE", "AML", "HGL", "BH"],
+    "description": "PCC-shuttle van RTB Cargo, tussen Rotterdam en Polen. Komt structureel langs Amersfoort.",
+    "commonRoute": [
+      "RSN", "WDN", "AML", "AMRI", "BN", "HGL", "BH"
+    ],
+    "avgPassTimes": {
+      "AMF": "15:17",
+      "HGL": "15:30",
+      "BH": "15:53"
+    },
     "avgWaitTimes": {
-      "DVGE": 25
-    }
-  },
-  "RFO_KETELTREIN": {
-    "name": "RFO Keteltrein",
-    "description": "Een generieke aanduiding voor de vele keteltreinen die RFO rijdt. Routes kunnen sterk variëren.",
-    "commonRoute": [],
-    "avgWaitTimes": {
-      "STO": 30,
-      "AMF": 20
-    }
+      "AMF": 12
+    },
+    "frequentDays": ["dinsdag", "woensdag", "donderdag"],
+    "frequency": 6,
+    "notes": "Soms afwijkende stops in Amersfoort met korte wachttijd. Overige route sluit aan op patroon, geen opvallende routefouten."
   }
 }
