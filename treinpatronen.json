@@ -1,55 +1,23 @@
 {
-  "RFO_KATY_SHUTTLE": {
-    "name": "Katy Shuttle",
-    "description": "Containertrein van RFO tussen Nederland en Polen, vaste doorkomst Bentheimroute.",
-    "commonRoute": [
-      "SALZBERGEN", "BH", "ODZ", "HGL", "BN", "AMRI", "AML", "WDN", "RSN", "DV", "APD", "STO", "BNVA", "AMF"
-    ],
-    "avgPassTimes": {
-      "HGL": "16:11",
-      "BN": "17:02",
-      "AMF": "19:30"
-    },
-    "avgWaitTimes": {
-      "STO": 32,
-      "AMF": 18
-    },
-    "frequentDays": ["vrijdag", "zaterdag", "zondag"],
-    "frequency": 11,
-    "notes": "Route en tijden kloppen met het vaste patroon. Opvallend is extra wachttijd te Stroe en Amersfoort. Soms meldingen van 'vertrek niet afgewacht'."
+  "duitsland_amersfoort": {
+    "name": "Duitsland - Amersfoort",
+    "description": "Reguliere goederentreinroute van Duitsland naar Amersfoort, o.a. via RHEINE, HGL, AMF.",
+    "commonRoute": ["RHEINE", "SALZBERGEN", "HGLO", "HGL", "AMF"],
+    "avgWaitTimes": {"HGL": 6, "AMF": 8},
+    "notes": "Zelden via Utrecht, doorgaans ochtend tot vroege middag."
   },
-  "LNS_VOLVO": {
-    "name": "Volvo Trein",
-    "description": "Lineas Volvo-shuttle tussen Gent en Zweden, via Amersfoort, Deventer en Hengelo.",
-    "commonRoute": [
-      "AMF", "BNVA", "STO", "APD", "DV", "HGL"
-    ],
-    "avgPassTimes": {
-      "AMF": "08:32",
-      "DV": "09:09",
-      "HGL": "09:41"
-    },
-    "avgWaitTimes": {},
-    "frequentDays": ["maandag", "woensdag", "vrijdag"],
-    "frequency": 7,
-    "notes": "Regelmatig ontbreken tractiemeldingen, maar volgorde is logisch. Geen opvallende route-afwijkingen."
+  "amersfoort_westhaven": {
+    "name": "Amersfoort - Amsterdam Westhavengbied",
+    "description": "Regelmatige goederenroute Amersfoort naar Westhavengbied (AWH) met passages via HVS, BSMZ, WP, ASD.",
+    "commonRoute": ["AMF", "HVS", "BSMZ", "WP", "ASD", "AWH"],
+    "avgWaitTimes": {"HVS": 4, "ASD": 7},
+    "notes": "In de praktijk soms gesplitst in deeltrajecten."
   },
-  "RTBC_PCC_SHUTTLE": {
-    "name": "PCC Shuttle",
-    "description": "PCC-shuttle van RTB Cargo, tussen Rotterdam en Polen. Komt structureel langs Amersfoort.",
-    "commonRoute": [
-      "RSN", "WDN", "AML", "AMRI", "BN", "HGL", "BH"
-    ],
-    "avgPassTimes": {
-      "AMF": "15:17",
-      "HGL": "15:30",
-      "BH": "15:53"
-    },
-    "avgWaitTimes": {
-      "AMF": 12
-    },
-    "frequentDays": ["dinsdag", "woensdag", "donderdag"],
-    "frequency": 6,
-    "notes": "Soms afwijkende stops in Amersfoort met korte wachttijd. Overige route sluit aan op patroon, geen opvallende routefouten."
+  "amersfoort_rotterdam": {
+    "name": "Amersfoort - Rotterdam",
+    "description": "Vast patroon met passages via BRN, GD en RTN. Voornamelijk overdag.",
+    "commonRoute": ["AMF", "BRN", "GD", "RTN"],
+    "avgWaitTimes": {"BRN": 5, "GD": 8, "RTN": 13},
+    "notes": ""
   }
 }
