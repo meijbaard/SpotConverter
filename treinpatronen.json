@@ -52,4 +52,47 @@
     "frequency": 6,
     "notes": "Soms afwijkende stops in Amersfoort met korte wachttijd. Overige route sluit aan op patroon, geen opvallende routefouten."
   }
+  "LINEAS_ZINC": {
+    "name": "Lineas Zinc Shuttle",
+    "description": "Goederentrein van Lineas met zink, gemeld op het traject DV–AMF.",
+    "commonRoute": ["DV", "AMF"],
+    "notes": "Incidenteel, enkele malen genoemd als 'zink trein' of 'zinctrein'."
+  },
+  "LTE_GRAIN": {
+    "name": "LTE Graantrein",
+    "description": "Graantrein van LTE, melding op HGL–RTN.",
+    "commonRoute": ["HGL", "RTN"],
+    "notes": "Bijzonder, slechts een keer gemeld in de chat."
+  },
+  "ELOC_TESRIT": {
+    "name": "ELOC Testrit",
+    "description": "Testtrein van ELOC, incidenteel traject AMF–BN.",
+    "commonRoute": ["AMF", "BN"],
+    "notes": "Melding 'ELOC testrit via BN', niet structureel."
+  },
+  "RTBC_AUTO_SHUTTLE": {
+    "name": "RTB Cargo Auto Shuttle",
+    "description": "Trein van RTB Cargo met auto's, incidentele melding via HGL–AMF.",
+    "commonRoute": ["HGL", "AMF"],
+    "notes": "Slechts een enkele keer genoemd als 'auto shuttle'."
+  },
+  "HSL_NIGHTRUN": {
+    "name": "HSL NightRun",
+    "description": "Nachtelijke speciale rit, route RTN–AMF.",
+    "commonRoute": ["RTN", "AMF"],
+    "notes": "Melding 'nacht-run', geen vaste dienst."
+  },
+  "DB_CARGO_GAS": {
+    "name": "DB Cargo Gas Shuttle",
+    "description": "Goederentrein met gaswagens, route DV–AMF.",
+    "commonRoute": ["DV", "AMF"],
+    "notes": "Wordt in chat incidenteel genoemd als 'gas trein'."
+  },
+  "RAILFEEDER_SPECIAL": {
+    "name": "RailFeeder Special",
+    "description": "Speciale trein van RailFeeder, incidenteel op AMF–WD.",
+    "commonRoute": ["AMF", "WD"],
+    "notes": "Niet structureel, gemeld bij werkzaamheden."
+  }
 }
+
