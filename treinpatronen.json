@@ -51,7 +51,7 @@
     "frequentDays": ["dinsdag", "woensdag", "donderdag"],
     "frequency": 6,
     "notes": "Soms afwijkende stops in Amersfoort met korte wachttijd. Overige route sluit aan op patroon, geen opvallende routefouten."
-  }
+  },
   "LINEAS_ZINC": {
     "name": "Lineas Zinc Shuttle",
     "description": "Goederentrein van Lineas met zink, gemeld op het traject DV–AMF.",
