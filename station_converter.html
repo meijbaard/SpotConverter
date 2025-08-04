@@ -263,9 +263,10 @@ author_profile: false
             
             // Define trajectories after data is loaded
             trajectories = {
-                "Duitsland-Amersfoort": ["RHEINE", "SALZBERGEN", "BH", "ODZ", "HGLO", "HGL", "BRN", "AMRI", "AML", "WDN", "RSN", "HON", "DVC", "DV", "TWL", "APDO", "APD", "STO", "BNVA", "BNV", "AMF"],
-                "Amersfoort-Amsterdam": ["AMF", "AMA", "BRNA", "BRN", "HVS", "HVSM", "BSMZ", "NDB", "WP", "DMN", "ASSP", "ASDM", "ASD", "AWH"],
-                "Amersfoort-Rotterdam": ["AMF", "AMA", "BRNA", "BRN", "HVS", "HVSM", "BSMZ", "NDB", "WP", "DMNZ", "DVA", "ASB", "BKL", "WD", "GD", "RTN", "RTD"]
+                "Bentheimroute": ["RHEINE", "BH", "ODZ", "HGLO", "HGL", "AMRI", "AML", "WDN", "RSN", "DV", "APG", "APDO", "APD", "STO", "BNVA", "BNV", "HDE", "AMF"],
+                "Gooilijn-Amsterdam": ["AMF", "BRN", "HVS", "HVSM", "BSMZ", "NDB", "WP", "DMN", "DMNZ", "ASSP", "ASW", "ASDM", "ASD", "AWH"],
+                "Gooilijn-Rotterdam": ["AMF", "BRN", "HVS", "BKL", "WD", "GV", "GVC", "NVK", "CP", "RTN", "RTD", "RTDZ", "RTDS", "BRT", "KFH"],
+                "Betuweroute-aanvoer": ["AMF", "BLT", "DLD", "UT", "UTG", "GDM", "KFH", "RTD"]
             };
 
             // Initial population of UI elements
@@ -564,14 +565,18 @@ author_profile: false
             if (isSubsequence(routeCodes, [...traject].reverse())) return { name: name, direction: 'backward' };
         }
 
-        // --- HERSTELDE LOGICA VOOR GECOMBINEERDE ROUTES ---
         const hub = "AMF";
         let startTrajectName = null;
         let endTrajectName = null;
 
+        // FIX: Find the FIRST matching trajectory, not the last, to give preference.
         for (const name in trajectories) {
-            if (trajectories[name].includes(startCode)) startTrajectName = name;
-            if (trajectories[name].includes(endCode)) endTrajectName = name;
+            if (!startTrajectName && trajectories[name].includes(startCode)) {
+                startTrajectName = name;
+            }
+            if (!endTrajectName && trajectories[name].includes(endCode)) {
+                endTrajectName = name;
+            }
         }
 
         if (startTrajectName && endTrajectName && startTrajectName !== endTrajectName) {
@@ -591,7 +596,6 @@ author_profile: false
                 }
             }
         }
-        // --- EINDE HERSTELDE LOGICA ---
 
         return null;
     }
@@ -607,7 +611,6 @@ author_profile: false
             const idx2 = line.indexOf(p2);
             const idxTarget = line.indexOf(target);
             if (idx1 === -1 || idx2 === -1 || idxTarget === -1) return false;
-            // Ensure points are in correct order for comparison
             return (idxTarget >= Math.min(idx1, idx2) && idxTarget <= Math.max(idx1, idx2));
         };
 
