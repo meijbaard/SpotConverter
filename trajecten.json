@@ -1,0 +1,17 @@
+{
+  "Bentheimroute": [
+    "RHEINE", "BH", "ODZ", "HGLO", "HGL", "AMRI", "AML", "WDN", 
+    "RSN", "DV", "APG", "APDO", "APD", "STO", "BNVA", "BNV", 
+    "HVL", "AMFA", "AMF"
+  ],
+  "Gooilijn-Amsterdam": [
+    "AMF","BRNA", "BRN", "HVS", "HVSM", "BSMZ", "NDB", "WP", "DMN", "ASSP", "ASW", "ASDM", "ASD", "AWH"
+  ],
+  "Gooilijn-Rotterdam": [
+    "AMF","BRNA", "BRN", "HVS","HVSM", "BSMZ", "NDB", "WP", "DMNZ", "BKL", "WD", "GV", "GVC", "NVK", "CP", 
+    "RTN", "RTD", "RTDZ", "RTDS", "BRT", "KFH"
+  ],
+  "Betuweroute-aanvoer": [
+    "AMF", "DLD", "BLT", "UT", "UTG", "GDM", "KFH", "RTD"
+  ]
+}
