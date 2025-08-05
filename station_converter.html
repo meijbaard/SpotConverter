@@ -206,7 +206,7 @@ author_profile: false
     </main>
 
     <footer class="text-center text-sm text-slate-500 mt-12">
-        <p>Versie 2.01</p>
+        <p>Versie 2.02</p>
         <p>Copyright &copy; 2025 Mark Eijbaard. Gelicenseerd onder de MIT-licentie.</p>
     </footer>
   </div>
@@ -258,17 +258,10 @@ author_profile: false
                 loadAfstanden(),
                 loadHeatmap(),
                 loadPatterns(),
-                loadGoederenpaden()
+                loadGoederenpaden(),
+                loadTrajectories() // Load the new trajectories JSON
             ]);
             
-            // Define trajectories after data is loaded
-            trajectories = {
-                "Bentheimroute": ["RHEINE", "BH", "ODZ", "HGLO", "HGL", "AMRI", "AML", "WDN", "RSN", "DV", "APG", "APDO", "APD", "STO", "BNVA", "BNV", "HDE", "AMF"],
-                "Gooilijn-Amsterdam": ["AMF", "BRN", "HVS", "HVSM", "BSMZ", "NDB", "WP", "DMN", "DMNZ", "ASSP", "ASW", "ASDM", "ASD", "AWH"],
-                "Gooilijn-Rotterdam": ["AMF", "BRN", "HVS", "BKL", "WD", "GV", "GVC", "NVK", "CP", "RTN", "RTD", "RTDZ", "RTDS", "BRT", "KFH"],
-                "Betuweroute-aanvoer": ["AMF", "BLT", "DLD", "UT", "UTG", "GDM", "KFH", "RTD"]
-            };
-
             // Initial population of UI elements
             populateStationDropdowns();
             document.getElementById('heatmap-output').innerHTML = renderHeatmap(document.getElementById('heatmapstation').value);
@@ -360,6 +353,12 @@ author_profile: false
       let res = await fetch('https://raw.githubusercontent.com/meijbaard/SpotConverter/main/treinpatronen.json');
       if (!res.ok) throw new Error(`Failed to load treinpatronen.json: ${res.statusText}`);
       trainPatterns = await res.json();
+    }
+
+    async function loadTrajectories() {
+      let res = await fetch('https://raw.githubusercontent.com/meijbaard/SpotConverter/main/trajecten.json');
+      if (!res.ok) throw new Error(`Failed to load trajecten.json: ${res.statusText}`);
+      trajectories = await res.json();
     }
 
     // --- UI Population Functions ---
@@ -569,7 +568,6 @@ author_profile: false
         let startTrajectName = null;
         let endTrajectName = null;
 
-        // FIX: Find the FIRST matching trajectory, not the last, to give preference.
         for (const name in trajectories) {
             if (!startTrajectName && trajectories[name].includes(startCode)) {
                 startTrajectName = name;
