@@ -18,12 +18,12 @@ De applicatie is ontworpen met gebruiksgemak als kernprincipe. Het werkt volledi
 ### ✨ Features
 
 * **Multi-Tab Interface:** De functionaliteit is nu opgesplitst in drie duidelijke tabs: "Spot Analyse", "Heatmap" en "Patronen", voor een helder en georganiseerd overzicht.
-* **Intelligente Route-Analyse:** De kern van de tool. Het herkent de gereden route niet door simpelweg stations te matchen, maar door de gespotte locaties te plotten op bekende, ingebouwde spoortrajecten.
+* **Verbeterde Route-Analyse:** De kern van de tool. Herkent niet alleen routes binnen één traject, maar kan nu ook complexe, doorgaande reizen over meerdere trajecten (bijv. Kijfhoek naar Duitsland via Amersfoort) correct combineren dankzij de verbeterde logica.
 * **Dynamische Passage-berekening:** Berekent een geschatte aankomsttijd voor elk willekeurig station in de keuzelijst, gebaseerd op een uitgebreide afstandsmatrix en de data uit de goederenpaden.
 * **Dynamische Heatmap:** De heatmap-tab laadt data van GitHub en kan per station worden bekeken voor een visueel overzicht van de drukste uren.
 * **Dynamische Patronen:** De patronen-tab laadt en toont nu alle bekende treinpatronen direct uit het `treinpatronen.json` bestand.
 * **Verrijking van Jargon:** Functioneert als een "vertaler" voor spotters-jargon. Veelvoorkomende afkortingen worden automatisch herkend en voorzien van een duidelijke tooltip met de volledige betekenis.
-* **Dynamisch Data Inladen:** Haalt alle benodigde data (stations, afstanden, heatmaps, patronen) direct van een centrale GitHub-locatie. Wijzigingen in de data zijn direct beschikbaar voor alle gebruikers.
+* **Volledig Dynamisch Data Inladen:** Haalt alle benodigde data (stations, afstanden, heatmaps, patronen, en nu ook de spoortrajecten) direct van een centrale GitHub-locatie.
 * **Moderne Interface:** Een duidelijke en functionele stijl met een focus op leesbaarheid en een intuïtieve gebruikerservaring.
 
 ### 🚀 Hoe te Gebruiken
@@ -49,8 +49,7 @@ De tool laadt alle data extern om de kernlogica gescheiden te houden van de info
 * **`goederenpaden.csv`**: Definieert de vaste passage-minuten voor goederentreinen op specifieke stations en rijrichtingen.
 * **`heatmap_treinpassages.json`**: Bevat de data voor de heatmap, met het aantal passages per uur per station.
 * **`treinpatronen.json`**: Een lijst met bekende, terugkerende treinroutes, inclusief beschrijvingen en gemiddelde wachttijden.
-
-De **spoortrajecten** die de basis vormen voor de route-analyse zijn voor de betrouwbaarheid direct in de JavaScript-code gedefinieerd.
+* **`trajecten.json`**: De ruggengraat van de routeherkenning. Dit bestand bevat de definities van de hoofd-spoortrajecten als lijsten van stationscodes. Door dit bestand aan te passen, kan de routeherkenning eenvoudig worden uitgebreid of gecorrigeerd.
 
 ### 💾 Bronvermeldingen
 
