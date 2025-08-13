@@ -20,7 +20,7 @@ De applicatie is ontworpen met gebruiksgemak als kernprincipe. Het werkt volledi
 * **Multi-Tab Interface:** De functionaliteit is nu opgesplitst in drie duidelijke tabs: "Spot Analyse", "Heatmap" en "Patronen", voor een helder en georganiseerd overzicht.
 * **Verbeterde Route-Analyse:** De kern van de tool. Herkent niet alleen routes binnen één traject, maar kan nu ook complexe, doorgaande reizen over meerdere trajecten (bijv. Kijfhoek naar Duitsland via Amersfoort) correct combineren dankzij de verbeterde logica.
 * **Dynamische Passage-berekening:** Berekent een geschatte aankomsttijd voor elk willekeurig station in de keuzelijst, gebaseerd op een uitgebreide afstandsmatrix en de data uit de goederenpaden.
-* **Dynamische Heatmap:** De heatmap-tab laadt data van GitHub en kan per station worden bekeken voor een visueel overzicht van de drukste uren.
+* **Dynamische Heatmap:** De heatmap-tab laadt data van GitHub en kan per station en per dag worden bekeken voor een visueel overzicht van de drukste uren.
 * **Dynamische Patronen:** De patronen-tab laadt en toont nu alle bekende treinpatronen direct uit het `treinpatronen.json` bestand.
 * **Verrijking van Jargon:** Functioneert als een "vertaler" voor spotters-jargon. Veelvoorkomende afkortingen worden automatisch herkend en voorzien van een duidelijke tooltip met de volledige betekenis.
 * **Volledig Dynamisch Data Inladen:** Haalt alle benodigde data (stations, afstanden, heatmaps, patronen, en nu ook de spoortrajecten) direct van een centrale GitHub-locatie.
@@ -57,6 +57,7 @@ Voor de data die deze tool aandrijft, is dankbaar gebruik gemaakt van de open da
 
 * **Open Data van Rijdende Treinen:** De basislijst met treinstations, hun officiële namen en de afstanden tussen stations zijn afkomstig van OpenData.
 * **Aanvullende Afkortingen:** De stationsdata is verrijkt met een zeer complete lijst van spotters-afkortingen, verzameld en onderhouden door Nico Spilt op zijn website.
+* **Treinposities.nl:** De functionaliteit om direct informatie over vervoerders en specifieke locomotieven op te zoeken wordt mogelijk gemaakt door de uitgebreide database van [treinposities.nl](https://treinposities.nl/).
 
 ### 🤝 Bijdragen
 
