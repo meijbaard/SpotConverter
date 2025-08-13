@@ -86,7 +86,7 @@ author_profile: false
       border: 1px solid #bae6fd; /* sky-200 */
       border-radius: 0.7rem;
       padding: 1rem 1.25rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
     .pattern-name {
       font-size: 1.1rem;
@@ -102,6 +102,14 @@ author_profile: false
       color: #475569; /* slate-600 */
       margin-top: 0.3rem;
       font-size: 0.97rem;
+    }
+    .wait-time-warning {
+      background-color: #fef9c3; /* yellow-100 */
+      color: #854d0e; /* yellow-800 */
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid #facc15; /* yellow-400 */
+      font-size: 0.95rem;
     }
     .heatmap-table {
       width: 100%;
@@ -173,7 +181,10 @@ author_profile: false
           <div id="output" class="p-4 bg-slate-50 rounded-lg min-h-[60px] border border-slate-200 leading-relaxed"></div>
         </div>
         <div>
-          <h2 class="text-xl font-bold text-slate-800 mb-2">Analyse:</h2>
+          <div class="flex justify-between items-center mb-2">
+            <h2 class="text-xl font-bold text-slate-800">Analyse:</h2>
+            <button id="copy-analysis-btn" onclick="copyAnalysisToClipboard()" class="px-3 py-1 text-sm font-semibold text-cyan-700 bg-cyan-100 rounded-md hover:bg-cyan-200 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>Kopieer Analyse</button>
+          </div>
           <div id="estimation-output" class="p-4 bg-cyan-50 border-l-4 border-cyan-400 rounded-r-lg min-h-[60px] space-y-2"></div>
         </div>
         <div>
@@ -214,8 +225,8 @@ author_profile: false
     </main>
 
     <footer class="text-center text-sm text-slate-500 mt-12">
-        <p>Versie 2.02</p>
-        <p>Copyright &copy; 2025 Mark Eijbaard. Gelicenseerd onder de MIT-licentie.</p>
+        <p>Versie 2.5</p>
+        <p>Copyright &copy; 2025 Mark Eijbaard. MIT licentie.</p>
     </footer>
   </div>
   <script>
@@ -239,6 +250,14 @@ author_profile: false
         'Ladl': 'Leeg aan de loc'
     };
     const conflictingAbbrs = ['EN', 'DE', 'D', 'A', 'V', 'OP', 'ALS'];
+    
+    const carrierUrlMap = {
+        'RFO': 'RFO', 'DBC': 'DB_Cargo', 'HSL': 'HSL_Logistik', 'RTB': 'RTB_Cargo',
+        'RTBC': 'RTB_Cargo', 'LNS': 'Lineas', 'SR': 'Strukton_Rail', 'VR': 'VolkerRail',
+        'TCS': 'Train_Charter_Services', 'PKP': 'PKP_Cargo', 'MTR': 'Metrans',
+        'FLP': 'Freightliner_PL', 'RRF': 'Rail_Rush', 'RXP': 'RailExperts',
+        'SBB': 'SBB_Cargo_International', 'CDC': 'CD_Cargo', 'LTE': 'LTE'
+    };
 
     // --- Helper function to get station data by code ---
     function getStationByCode(code) {
@@ -267,10 +286,9 @@ author_profile: false
                 loadHeatmap(),
                 loadPatterns(),
                 loadGoederenpaden(),
-                loadTrajectories() // Load the new trajectories JSON
+                loadTrajectories()
             ]);
             
-            // Initial population of UI elements
             populateStationDropdowns();
             populateHeatmapDayDropdown();
             updateHeatmap();
@@ -411,7 +429,6 @@ author_profile: false
             option.textContent = day.charAt(0).toUpperCase() + day.slice(1);
             daySelect.appendChild(option);
         });
-        // Set current day as default
         const currentDayIndex = (new Date().getDay() + 6) % 7; // Monday is 0
         daySelect.value = days[currentDayIndex];
     }
@@ -422,21 +439,24 @@ author_profile: false
         const targetSelect = document.getElementById('targetStationSelect');
         const targetStationCode = targetSelect.value;
         const targetStationName = targetSelect.options[targetSelect.selectedIndex].text;
+        const copyBtn = document.getElementById('copy-analysis-btn');
 
         if (!messageInput.trim()) {
             document.getElementById('output').innerHTML = '';
             document.getElementById('estimation-output').innerHTML = '';
             document.getElementById('pattern-output').innerHTML = '';
             document.getElementById('parsed-data-output').textContent = '';
+            copyBtn.disabled = true;
             return;
         }
 
-        const parsedData = parseMessage(messageInput);
-        const analysis = analyzeTrajectory(parsedData, targetStationName, targetStationCode);
-        const outputHtml = createHighlightedMessage(parsedData.originalMessage, parsedData.foundMatches);
+        parsedMessage = parseMessage(messageInput);
+        const analysis = analyzeTrajectory(parsedMessage, targetStationName, targetStationCode);
+        const outputHtml = createHighlightedMessage(parsedMessage.originalMessage, parsedMessage.foundMatches);
         
-        displayResults(outputHtml, analysis, parsedData);
-        document.getElementById('pattern-output').innerHTML = showPatternInSpotTab(parsedData);
+        displayResults(outputHtml, analysis, parsedMessage);
+        document.getElementById('pattern-output').innerHTML = showPatternInSpotTab(parsedMessage);
+        copyBtn.disabled = false;
     }
 
     function parseMessage(message) {
@@ -447,10 +467,44 @@ author_profile: false
             routeCodes: [],
             foundMatches: [],
             spotLocation: null,
+            carrier: null,
+            locomotive: null,
+            cargo: null
         };
 
         const timeMatch = message.match(/(\d{1,2}[:.]\d{2})/g);
         if (timeMatch) parsed.timestamp = timeMatch[0].replace('.', ':');
+        
+        const carriers = ['RFO', 'DBC', 'HSL', 'RTB', 'RTBC', 'LNS', 'SR', 'VR', 'TCS', 'PKP', 'MTR', 'FLP', 'RRF', 'RXP', 'SBB', 'CDC', 'LTE', 'DPB', 'MEDWAY', 'NSI', 'RADVE', 'EUR', 'Lotos', 'Captrain'];
+        const carrierRegex = new RegExp(`\\b(${carriers.join('|')})\\b`, 'gi');
+        const carrierMatch = message.match(carrierRegex);
+        if (carrierMatch) {
+            parsed.carrier = carrierMatch[0].toUpperCase();
+        }
+
+        const messageWithoutTime = message.replace(/(\d{1,2}[:.]\d{2})/g, '');
+        const locoRegex = /\b(\d{2,3}[\s-]?\d{3}|\b[1-9]\d{3}\b|\b[Gg]\d{4}|\b[Vv]\d{3,4}|\bPB\d{2})\b/g;
+        const locoMatch = messageWithoutTime.match(locoRegex);
+        if (locoMatch) {
+            parsed.locomotive = locoMatch[0];
+        }
+
+        const cargoMap = {
+            'ketel': 'Keteltrein', 'staal': 'Staaltrein', 'container': 'Containertrein',
+            'auto': 'Autotrein', 'pon': 'Pon Autotrein', 'blg': 'BLG Autotrein',
+            'graan': 'Graantrein', 'hout': 'Houttrein', 'rongen': 'Rongenwagens',
+            'kalk': 'Kalktrein', 'werk': 'Werktrein', 'katy': 'Katy Shuttle',
+            'praag': 'Praag Shuttle', 'rzepin': 'Rzepin Shuttle', 'nosta': 'Nosta Shuttle',
+            'lovosice': 'Lovosice Shuttle', 'brwinow': 'Brwinów Shuttle', 'busto': 'Busto Shuttle'
+        };
+
+        for (const key in cargoMap) {
+            const regex = new RegExp(`\\b${key}\\b`, 'i');
+            if (regex.test(message)) {
+                parsed.cargo = cargoMap[key];
+                break; 
+            }
+        }
         
         stations.forEach(station => {
             if (spotterAbbr.hasOwnProperty(station.code)) return;
@@ -472,9 +526,19 @@ author_profile: false
 
         parsed.spotLocation = getStationByCode(parsed.foundMatches[0].station.code);
         
-        // Use all found stations for the route
         parsed.route = parsed.foundMatches.map(m => m.station.name_long);
         parsed.routeCodes = parsed.foundMatches.map(m => m.station.code);
+        
+        const directionRegex = /\s(?:ri|richting|naar|>)\s+([a-zA-Z]{2,5})\b/i;
+        const directionMatch = message.match(directionRegex);
+        if (directionMatch) {
+            const destAbbr = directionMatch[1].toUpperCase();
+            const destinationStation = getStationByCode(destAbbr);
+            if (destinationStation && !parsed.routeCodes.includes(destinationStation.code)) {
+                parsed.route.push(destinationStation.name_long);
+                parsed.routeCodes.push(destinationStation.code);
+            }
+        }
 
         return parsed;
     }
@@ -482,6 +546,29 @@ author_profile: false
     function analyzeTrajectory(parsedData, targetStationName, targetStationCode) {
         let passageHtml = "Geen route herkend in het bericht.";
         let timeHtml = "Geen station of tijdstip gevonden om een berekening te maken.";
+        let trainInfoHtml = '';
+        let linksHtml = '';
+        let summaryText = '';
+
+        if (parsedData.carrier || parsedData.locomotive || parsedData.cargo) {
+            let infoParts = [];
+            if (parsedData.carrier) infoParts.push(`Vervoerder: <strong>${parsedData.carrier}</strong>`);
+            if (parsedData.locomotive) infoParts.push(`Tractie: <strong>${parsedData.locomotive}</strong>`);
+            if (parsedData.cargo) infoParts.push(`Lading: <strong>${parsedData.cargo}</strong>`);
+            trainInfoHtml = `<div>${infoParts.join(' | ')}</div>`;
+
+            let linkParts = [];
+            if (parsedData.carrier && carrierUrlMap[parsedData.carrier]) {
+                linkParts.push(`<a href="https://treinposities.nl/materieel/${carrierUrlMap[parsedData.carrier]}" target="_blank" class="text-cyan-700 font-semibold hover:underline">Info Vervoerder</a>`);
+            }
+            if (parsedData.locomotive) {
+                const cleanLoco = parsedData.locomotive.replace(/\s|-/g, '');
+                linkParts.push(`<a href="https://treinposities.nl/?q=${cleanLoco}" target="_blank" class="text-cyan-700 font-semibold hover:underline">Zoek Locnummer</a>`);
+            }
+            if(linkParts.length > 0) {
+                linksHtml = `<div class="mt-1 text-sm">${linkParts.join(' | ')}</div>`;
+            }
+        }
 
         const trajectoryAnalysis = findTrajectoryForRoute(parsedData.routeCodes);
         parsedData.trajectoryAnalysis = trajectoryAnalysis;
@@ -544,6 +631,15 @@ author_profile: false
                         }
                         
                         timeHtml = `⏰ Geschatte doorkomsttijd in <span class="font-bold">${targetStationName}</span>${timeBlurb}: <strong class="highlight-estimation">${arrivalTime}</strong> <br> <span class="text-sm text-slate-500">(vanaf ${firstSpottedStationName})</span>`;
+
+                        // Build summary for clipboard
+                        let summaryParts = [];
+                        if(parsedData.carrier) summaryParts.push(parsedData.carrier);
+                        if(parsedData.locomotive) summaryParts.push(parsedData.locomotive);
+                        if(parsedData.cargo) summaryParts.push(parsedData.cargo);
+                        summaryParts.push(`| Gespot: ${firstSpottedStationName} (${parsedData.timestamp})`);
+                        summaryParts.push(`| Verwacht in ${targetStationName}: ~${arrivalTime}`);
+                        summaryText = summaryParts.join(' ');
                     }
                 }
             } else {
@@ -553,7 +649,7 @@ author_profile: false
             passageHtml = "Kan geen bekend traject matchen met de gespotte route.";
         }
         
-        return { passageHtml, timeHtml };
+        return { passageHtml, timeHtml, trainInfoHtml, linksHtml, summaryText };
     }
 
     function findTrajectoryForRoute(routeCodes) {
@@ -687,7 +783,12 @@ author_profile: false
 
     function displayResults(outputHtml, analysis, parsedData) {
         document.getElementById('output').innerHTML = outputHtml;
-        document.getElementById('estimation-output').innerHTML = `<div>${analysis.passageHtml}</div><div>${analysis.timeHtml}</div>`;
+        document.getElementById('estimation-output').innerHTML = `
+            ${analysis.trainInfoHtml || ''}
+            ${analysis.linksHtml || ''}
+            <div>${analysis.passageHtml}</div>
+            <div>${analysis.timeHtml}</div>
+        `;
         document.getElementById('parsed-data-output').textContent = JSON.stringify(parsedData, null, 2);
     }
     
@@ -697,6 +798,51 @@ author_profile: false
       const isHidden = pre.style.display === 'none';
       pre.style.display = isHidden ? 'block' : 'none';
       btn.textContent = isHidden ? '(Verberg)' : '(Toon)';
+    }
+
+    function copyAnalysisToClipboard() {
+        const targetStationSelect = document.getElementById('targetStationSelect');
+        const targetStationName = targetStationSelect.options[targetStationSelect.selectedIndex].text;
+        const targetStationCode = targetStationSelect.value;
+
+        if (!parsedMessage) return;
+
+        const analysis = analyzeTrajectory(parsedMessage, targetStationName, targetStationCode);
+        
+        if (!analysis.summaryText) return;
+
+        const tempTextArea = document.createElement('textarea');
+        tempTextArea.style.position = 'fixed';
+        tempTextArea.style.top = '-9999px';
+        tempTextArea.style.left = '-9999px';
+        
+        tempTextArea.value = analysis.summaryText;
+        document.body.appendChild(tempTextArea);
+        
+        tempTextArea.focus();
+        tempTextArea.select();
+
+        try {
+            const successful = document.execCommand('copy');
+            const copyBtn = document.getElementById('copy-analysis-btn');
+            if (successful) {
+                copyBtn.textContent = 'Gekopieerd!';
+            } else {
+                copyBtn.textContent = 'Kopiëren mislukt';
+            }
+            setTimeout(() => {
+                copyBtn.textContent = 'Kopieer Analyse';
+            }, 1500);
+        } catch (err) {
+            console.error('Fallback: Kopiëren is mislukt', err);
+            const copyBtn = document.getElementById('copy-analysis-btn');
+            copyBtn.textContent = 'Fout!';
+             setTimeout(() => {
+                copyBtn.textContent = 'Kopieer Analyse';
+            }, 1500);
+        }
+        
+        document.body.removeChild(tempTextArea);
     }
 
     function updateHeatmap() {
@@ -742,7 +888,48 @@ author_profile: false
     }
 
     function showPatternInSpotTab(parsed) {
-        return '<strong>Patroonherkenning is tijdelijk niet actief.</strong>';
+        if (!trainPatterns || !parsed || (!parsed.routeCodes.length && !parsed.cargo)) {
+            return `<strong>Geen vast patroon herkend.</strong><br>Dit lijkt een losse of onbekende spot.`;
+        }
+
+        let bestMatch = null;
+        let maxOverlap = 0;
+
+        for (const patternKey in trainPatterns) {
+            const pattern = trainPatterns[patternKey];
+            const cargoMatch = parsed.cargo && pattern.name.toLowerCase().includes(parsed.cargo.toLowerCase().split(' ')[0]);
+            const routeOverlap = pattern.commonRouteCodes.filter(code => parsed.routeCodes.includes(code)).length;
+            
+            let currentScore = 0;
+            if (cargoMatch) currentScore += 5; // Strong weight for cargo match
+            currentScore += routeOverlap;
+
+            if (currentScore > maxOverlap) {
+                maxOverlap = currentScore;
+                bestMatch = pattern;
+            }
+        }
+
+        if (bestMatch && maxOverlap > 1) { // Require a reasonable score to show a match
+            let waitTimeHtml = '';
+            if (bestMatch.avgWaitTimes && Object.keys(bestMatch.avgWaitTimes).length > 0) {
+                const waitTimeInfo = Object.entries(bestMatch.avgWaitTimes)
+                    .map(([stationCode, minutes]) => `${getStationByCode(stationCode)?.name_long || stationCode} (${minutes} min)`)
+                    .join(', ');
+                waitTimeHtml = `<div class="wait-time-warning mt-3">⚠️ Let op: Dit patroon heeft bekende wachttijden bij: ${waitTimeInfo}.</div>`;
+            }
+
+            return `<strong>Herkenning patroon:</strong>
+            <div class="pattern-block mt-2">
+              <div class="pattern-name">${bestMatch.name}</div>
+              <div class="mt-1">${bestMatch.description}</div>
+              <div class="pattern-route">Route: ${bestMatch.commonRouteCodes.map(code => getStationByCode(code)?.name_long || code).join(' → ')}</div>
+              ${bestMatch.notes ? `<div class="pattern-notes mt-2">${bestMatch.notes}</div>` : ''}
+            </div>
+            ${waitTimeHtml}`;
+        } else {
+            return `<strong>Geen vast patroon herkend.</strong><br>Dit lijkt een losse of onbekende spot.`;
+        }
     }
 
     // --- Event Listeners and Initialization ---
@@ -765,4 +952,5 @@ author_profile: false
   </script>
 </body>
 </html>
+
 
