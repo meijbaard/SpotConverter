@@ -448,23 +448,10 @@ author_profile: false
         if (parsed.foundMatches.length === 0) return parsed;
 
         parsed.spotLocation = getStationByCode(parsed.foundMatches[0].station.code);
-
-        const directionMatch = message.match(/\sri\s+([a-zA-Z]+)/i);
-        if (directionMatch) {
-            const destAbbr = directionMatch[1].toUpperCase();
-            const destinationStation = getStationByCode(destAbbr);
-            if (destinationStation) {
-                parsed.destination = destinationStation;
-            }
-        }
-
-        if (parsed.spotLocation && parsed.destination) {
-            parsed.routeCodes = [parsed.spotLocation.code, parsed.destination.code];
-            parsed.route = [parsed.spotLocation.name_long, parsed.destination.name_long];
-        } else {
-            parsed.route = parsed.foundMatches.map(m => m.station.name_long);
-            parsed.routeCodes = parsed.foundMatches.map(m => m.station.code);
-        }
+        
+        // Use all found stations for the route
+        parsed.route = parsed.foundMatches.map(m => m.station.name_long);
+        parsed.routeCodes = parsed.foundMatches.map(m => m.station.code);
 
         return parsed;
     }
@@ -476,16 +463,18 @@ author_profile: false
         const trajectoryAnalysis = findTrajectoryForRoute(parsedData.routeCodes);
         parsedData.trajectoryAnalysis = trajectoryAnalysis;
         
-        if (trajectoryAnalysis && parsedData.routeCodes.length >= 2) {
-            const passesTarget = doesTrajectoryPassStation(trajectoryAnalysis, parsedData.routeCodes[0], parsedData.routeCodes[1], targetStationCode);
+        if (trajectoryAnalysis && parsedData.routeCodes.length > 0) {
+            const firstStation = parsedData.routeCodes[0];
+            const lastStation = parsedData.routeCodes[parsedData.routeCodes.length - 1];
+            const passesTarget = doesTrajectoryPassStation(trajectoryAnalysis, firstStation, lastStation, targetStationCode);
             
             let generalDirection = "Onbekend";
             let directionKey = "";
             if (trajectoryAnalysis.direction === 'forward' || (trajectoryAnalysis.name.includes('->') && trajectoryAnalysis.finalLegDirection === 'forward')) {
-                generalDirection = trajectoryAnalysis.name.includes('Duitsland') ? 'Nederland in' : 'Westwaarts';
+                generalDirection = trajectoryAnalysis.name.includes('Bentheimroute') ? 'Oostwaarts' : 'Westwaarts';
                 directionKey = 'WEST';
             } else {
-                generalDirection = trajectoryAnalysis.name.includes('Duitsland') ? 'Nederland uit' : 'Oostwaarts';
+                generalDirection = trajectoryAnalysis.name.includes('Bentheimroute') ? 'Westwaarts' : 'Oostwaarts';
                 directionKey = 'OOST';
             }
             passageHtml = `Rijrichting: 🚂 <strong>${generalDirection}</strong> | Passage ${targetStationName}: <strong>${passesTarget ? '✅ Ja' : '❌ Nee'}</strong>`;
@@ -545,52 +534,77 @@ author_profile: false
     }
 
     function findTrajectoryForRoute(routeCodes) {
-        if (routeCodes.length < 2) return null;
-        const startCode = routeCodes[0];
-        const endCode = routeCodes[1];
+        if (routeCodes.length < 1) return null;
 
-        const isSubsequence = (sub, main) => {
+        // Function to find the longest common subsequence (LCS) length
+        const findLCSLength = (arr, sub) => {
             let i = 0, j = 0;
-            while (i < main.length && j < sub.length) {
-                if (main[i] === sub[j]) j++;
+            while (i < arr.length && j < sub.length) {
+                if (arr[i] === sub[j]) j++;
                 i++;
             }
-            return j === sub.length;
+            return j;
         };
+
+        let bestMatch = { name: null, direction: null, score: 0 };
 
         for (const name in trajectories) {
             const traject = trajectories[name];
-            if (isSubsequence(routeCodes, traject)) return { name: name, direction: 'forward' };
-            if (isSubsequence(routeCodes, [...traject].reverse())) return { name: name, direction: 'backward' };
-        }
+            const reversedTraject = [...traject].reverse();
 
-        const hub = "AMF";
-        let startTrajectName = null;
-        let endTrajectName = null;
-
-        for (const name in trajectories) {
-            if (!startTrajectName && trajectories[name].includes(startCode)) {
-                startTrajectName = name;
+            let forwardScore = findLCSLength(traject, routeCodes);
+            if (forwardScore > bestMatch.score) {
+                bestMatch = { name, direction: 'forward', score: forwardScore };
             }
-            if (!endTrajectName && trajectories[name].includes(endCode)) {
-                endTrajectName = name;
+
+            let backwardScore = findLCSLength(reversedTraject, routeCodes);
+            if (backwardScore > bestMatch.score) {
+                bestMatch = { name, direction: 'backward', score: backwardScore };
             }
         }
 
-        if (startTrajectName && endTrajectName && startTrajectName !== endTrajectName) {
-            const startTraj = trajectories[startTrajectName];
-            const endTraj = trajectories[endTrajectName];
+        // Only return a match if it's reasonably confident (at least one station matched)
+        if (bestMatch.score > 0) {
+            // For multi-station spots, check if the score matches the number of stations
+            // to ensure they all fit on the same line.
+            if (routeCodes.length > 1 && bestMatch.score === routeCodes.length) {
+                 return { name: bestMatch.name, direction: bestMatch.direction };
+            } else if (routeCodes.length === 1) {
+                 return { name: bestMatch.name, direction: bestMatch.direction };
+            }
+        }
 
-            if (startTraj.includes(hub) && endTraj.includes(hub)) {
-                const validStartToHub = isSubsequence([startCode, hub], startTraj) || isSubsequence([startCode, hub], [...startTraj].reverse());
-                const validHubToEnd = isSubsequence([hub, endCode], endTraj) || isSubsequence([hub, endCode], [...endTraj].reverse());
+        // Fallback to hub logic if no single trajectory is a good fit and there are multiple stations
+        if (routeCodes.length >= 2) {
+            const startCode = routeCodes[0];
+            const endCode = routeCodes[routeCodes.length - 1];
+            const hub = "AMF";
+            let startTrajectName = null;
+            let endTrajectName = null;
 
-                if (validStartToHub && validHubToEnd) {
-                    const finalLegDirection = isSubsequence([hub, endCode], endTraj) ? 'forward' : 'backward';
-                    return {
-                        name: `${startTrajectName} -> ${endTrajectName}`,
-                        finalLegDirection: finalLegDirection
-                    };
+            for (const name in trajectories) {
+                if (!startTrajectName && trajectories[name].includes(startCode)) {
+                    startTrajectName = name;
+                }
+                if (!endTrajectName && trajectories[name].includes(endCode)) {
+                    endTrajectName = name;
+                }
+            }
+
+            if (startTrajectName && endTrajectName && startTrajectName !== endTrajectName) {
+                const startTraj = trajectories[startTrajectName];
+                const endTraj = trajectories[endTrajectName];
+                if (startTraj.includes(hub) && endTraj.includes(hub)) {
+                    const validStartToHub = findLCSLength(startTraj, [startCode, hub]) === 2 || findLCSLength([...startTraj].reverse(), [startCode, hub]) === 2;
+                    const validHubToEnd = findLCSLength(endTraj, [hub, endCode]) === 2 || findLCSLength([...endTraj].reverse(), [hub, endCode]) === 2;
+
+                    if (validStartToHub && validHubToEnd) {
+                        const finalLegDirection = findLCSLength(endTraj, [hub, endCode]) === 2 ? 'forward' : 'backward';
+                        return {
+                            name: `${startTrajectName} -> ${endTrajectName}`,
+                            finalLegDirection: finalLegDirection
+                        };
+                    }
                 }
             }
         }
