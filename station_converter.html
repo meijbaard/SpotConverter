@@ -193,8 +193,16 @@ author_profile: false
     <!-- Tab Content: Heatmap -->
     <main class="bg-white p-6 md:p-8 rounded-xl rounded-tl-none shadow-lg hidden" id="tab-heatmap">
       <div class="max-w-lg mx-auto">
-        <label for="heatmapstation" class="block text-base font-semibold text-slate-700 mb-2">Selecteer station:</label>
-        <select id="heatmapstation" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white mb-6"></select>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div>
+                <label for="heatmapstation" class="block text-base font-semibold text-slate-700 mb-2">Selecteer station:</label>
+                <select id="heatmapstation" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white"></select>
+            </div>
+            <div>
+                <label for="heatmapday" class="block text-base font-semibold text-slate-700 mb-2">Selecteer dag:</label>
+                <select id="heatmapday" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white"></select>
+            </div>
+        </div>
         <div id="heatmap-output"></div>
       </div>
     </main>
@@ -206,8 +214,8 @@ author_profile: false
     </main>
 
     <footer class="text-center text-sm text-slate-500 mt-12">
-        <p>Versie 2.02a</p>
-        <p>Copyright &copy; 2025 Mark Eijbaard. MIT-licentie.</p>
+        <p>Versie 2.02</p>
+        <p>Copyright &copy; 2025 Mark Eijbaard. Gelicenseerd onder de MIT-licentie.</p>
     </footer>
   </div>
   <script>
@@ -264,7 +272,8 @@ author_profile: false
             
             // Initial population of UI elements
             populateStationDropdowns();
-            document.getElementById('heatmap-output').innerHTML = renderHeatmap(document.getElementById('heatmapstation').value);
+            populateHeatmapDayDropdown();
+            updateHeatmap();
             document.getElementById('patronen-output').innerHTML = renderPatronen();
             processMessage();
         } catch (error) {
@@ -392,6 +401,21 @@ author_profile: false
       if (Object.keys(heatmapData).includes('BRN')) heatmapSelect.value = 'BRN';
     }
 
+    function populateHeatmapDayDropdown() {
+        const daySelect = document.getElementById('heatmapday');
+        const days = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
+        daySelect.innerHTML = '';
+        days.forEach(day => {
+            const option = document.createElement('option');
+            option.value = day;
+            option.textContent = day.charAt(0).toUpperCase() + day.slice(1);
+            daySelect.appendChild(option);
+        });
+        // Set current day as default
+        const currentDayIndex = (new Date().getDay() + 6) % 7; // Monday is 0
+        daySelect.value = days[currentDayIndex];
+    }
+
     // --- Main Processing Logic ---
     function processMessage() {
         const messageInput = document.getElementById('whatsappMessage').value;
@@ -423,7 +447,6 @@ author_profile: false
             routeCodes: [],
             foundMatches: [],
             spotLocation: null,
-            destination: null
         };
 
         const timeMatch = message.match(/(\d{1,2}[:.]\d{2})/g);
@@ -536,7 +559,6 @@ author_profile: false
     function findTrajectoryForRoute(routeCodes) {
         if (routeCodes.length < 1) return null;
 
-        // Function to find the longest common subsequence (LCS) length
         const findLCSLength = (arr, sub) => {
             let i = 0, j = 0;
             while (i < arr.length && j < sub.length) {
@@ -563,18 +585,10 @@ author_profile: false
             }
         }
 
-        // Only return a match if it's reasonably confident (at least one station matched)
-        if (bestMatch.score > 0) {
-            // For multi-station spots, check if the score matches the number of stations
-            // to ensure they all fit on the same line.
-            if (routeCodes.length > 1 && bestMatch.score === routeCodes.length) {
-                 return { name: bestMatch.name, direction: bestMatch.direction };
-            } else if (routeCodes.length === 1) {
-                 return { name: bestMatch.name, direction: bestMatch.direction };
-            }
+        if (bestMatch.score === routeCodes.length) {
+            return { name: bestMatch.name, direction: bestMatch.direction };
         }
 
-        // Fallback to hub logic if no single trajectory is a good fit and there are multiple stations
         if (routeCodes.length >= 2) {
             const startCode = routeCodes[0];
             const endCode = routeCodes[routeCodes.length - 1];
@@ -607,6 +621,10 @@ author_profile: false
                     }
                 }
             }
+        }
+        
+        if (bestMatch.score > 0) {
+            return { name: bestMatch.name, direction: bestMatch.direction };
         }
 
         return null;
@@ -681,21 +699,31 @@ author_profile: false
       btn.textContent = isHidden ? '(Verberg)' : '(Toon)';
     }
 
-    function renderHeatmap(stationCode) {
-      const data = heatmapData[stationCode];
-      if (!data) return '<em>Geen data voor dit station.</em>';
-      let max = Math.max(...Object.values(data));
-      let rows = Object.entries(data)
-        .sort(([a], [b]) => Number(a) - Number(b))
-        .map(([uur, count]) => {
-          let level = 0;
-          if (count >= Math.max(1, max * 0.7)) level = 3;
-          else if (count >= Math.max(1, max * 0.4)) level = 2;
-          else if (count > 0) level = 1;
-          return `<tr><th>${uur}:00</th><td class="heatmap-cell" data-level="${level}">${count}</td></tr>`;
-        })
-        .join('');
-      return `<table class="heatmap-table"><tr><th>Uur</th><th>Passages</th></tr>${rows}</table>`;
+    function updateHeatmap() {
+        const stationCode = document.getElementById('heatmapstation').value;
+        const day = document.getElementById('heatmapday').value;
+        document.getElementById('heatmap-output').innerHTML = renderHeatmap(stationCode, day);
+    }
+
+    function renderHeatmap(stationCode, day) {
+        const stationDayData = heatmapData[stationCode]?.[day];
+        if (!stationDayData) return '<em>Geen data voor dit station op deze dag.</em>';
+        
+        const allValues = Object.values(heatmapData[stationCode]).flatMap(dayData => Object.values(dayData));
+        let max = Math.max(...allValues);
+        if (max === 0) max = 1;
+
+        let rows = Object.entries(stationDayData)
+            .sort(([a], [b]) => Number(a) - Number(b))
+            .map(([uur, count]) => {
+            let level = 0;
+            if (count >= Math.max(1, max * 0.7)) level = 3;
+            else if (count >= Math.max(1, max * 0.4)) level = 2;
+            else if (count > 0) level = 1;
+            return `<tr><th>${uur}:00</th><td class="heatmap-cell" data-level="${level}">${count}</td></tr>`;
+            })
+            .join('');
+        return `<table class="heatmap-table"><tr><th>Uur</th><th>Passages</th></tr>${rows}</table>`;
     }
 
     function renderPatronen() {
@@ -704,8 +732,9 @@ author_profile: false
           pattern => `<div class="pattern-block">
           <div class="pattern-name">${pattern.name}</div>
           <div class="mt-1">${pattern.description}</div>
-          <div class="pattern-route">Route: ${pattern.commonRoute.map(code => getStationByCode(code)?.name_long || code).join(' → ')}</div>
-          ${pattern.avgWaitTimes && Object.keys(pattern.avgWaitTimes).length ? `<div class="mt-1">Gem. wachttijd: ${Object.entries(pattern.avgWaitTimes).map(([k, v]) => `${getStationByCode(k)?.name_long || k}: ${v} min`).join(', ')}</div>` : ''}
+          <div class="pattern-route">Route: ${pattern.commonRouteCodes.map(code => getStationByCode(code)?.name_long || code).join(' → ')}</div>
+          ${pattern.avgPassTimes && Object.keys(pattern.avgPassTimes).length ? `<div class="mt-1">Gem. passages: ${Object.entries(pattern.avgPassTimes).map(([k, v]) => `${getStationByCode(k)?.name_long || k}: ${v}`).join(', ')}</div>` : ''}
+          ${pattern.frequentDays && pattern.frequentDays.length ? `<div class="mt-1">Dagen: ${pattern.frequentDays.join(', ')} (Frequentie: ${pattern.frequency})</div>` : ''}
           <div class="pattern-notes mt-2">${pattern.notes || ''}</div>
         </div>`
         )
@@ -729,11 +758,11 @@ author_profile: false
               });
           }
       });
-      document.getElementById('heatmapstation').addEventListener('change', e => {
-        document.getElementById('heatmap-output').innerHTML = renderHeatmap(e.target.value);
-      });
+      document.getElementById('heatmapstation').addEventListener('change', updateHeatmap);
+      document.getElementById('heatmapday').addEventListener('change', updateHeatmap);
       loadData();
     });
   </script>
 </body>
 </html>
+
