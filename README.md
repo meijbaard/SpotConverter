@@ -6,6 +6,8 @@ Waar een simpel spotbericht vaak alleen direct nuttig is voor de ontvanger, ontg
 
 De applicatie is ontworpen met gebruiksgemak als kernprincipe. Het werkt volledig in de browser en vereist geen installatie. Alle benodigde data, zoals stationslijsten, afstanden, en treinpatronen, wordt dynamisch ingeladen vanaf een centrale, openbare locatie (GitHub). Dit garandeert dat elke gebruiker altijd met de meest actuele informatie werkt.
 
+[Bekijk hier de live versie](https://www.markeijbaard.nl/spotconverter/)
+
 ### 🗂️ Inhoudsopgave
 
 * [✨ Features](#-features)
