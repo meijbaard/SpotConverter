@@ -1,17 +1,15 @@
 {
   "Bentheimroute": [
-    "RHEINE", "BH", "ODZ", "HGLO", "HGL", "AMRI", "AML", "WDN", 
-    "RSN", "HON", "DV", "TWL", "APG", "APDO", "APD", "STO", "BNVA", "BNV", 
-    "HVL", "AMFA", "AMF"
+    "RHEINE", "BH", "ODZ", "HGLO", "HGL", "AMRI", "AML", "WDN", "RSN", "HON", "DV", "TWL", "APG", "APDO", "APD", "STO", "BNVA", "BNV", "HVL", "AMFA", "AMF"
   ],
   "Gooilijn-Amsterdam": [
-    "AMF","BRNA", "BRN", "HVS", "HVSM", "BSMZ", "NDB", "WP", "DMN", "ASSP", "ASW", "ASDM", "ASD", "AWH", "AWHVG"
+    "AMF","AMFGA", "BRNA", "BRN", "HVS", "HVSM", "CRAO", "CRAW", "BSMZ", "NDB", "KV", "VTBR", "WP", "GPDA", "WGMO", "DMN", "ASSP", "ASW", "WGMW", "ASDM", "DGRW", "ODS", "ASD", "AWH", "AWHVG"
   ],
-  "Gooilijn-Becerwijk": [
-    "AMF","BRNA", "BRN", "HVS", "HVSM", "BSMZ", "NDB", "WP", "DMN", "ASSP", "ASW", "ASDM", "ASD", "BVHC"
+  "Gooilijn-Beverwijk": [
+    "AMF","AMFGA", "BRNA", "BRN", "HVS", "HVSM", "CRAO", "CRAW", "BSMZ", "NDB", "KV", "VTBR", "WP", "GPDA", "WGMO", "DMN", "ASSP", "ASW", "WGMW", "ASDM", "DGRW", "ODS", "ASD", "BVHC"
   ],
   "Gooilijn-Rotterdam": [
-    "AMF","BRNA", "BRN", "HVS","HVSM", "BSMZ", "NDB", "WP", "DMNZ", "BKL", "WD", "GV", "GVC", "NVK", "CP", 
+    "AMF","AMFGA", "BRNA", "BRN", "HVS", "HVSM", "CRAO", "CRAW", "BSMZ", "NDB", "KV", "VTBR", "WP", "GPDA", "DDM", "MDSA", "DMNZ", "VSPA", "ASB" "BKL", "WD", "GV", "GVC", "NVK", "CP", 
     "RTN", "RTD", "RTDZ", "RTDS", "BRT", "KFH"
   ],
   "Betuweroute-aanvoer": [
