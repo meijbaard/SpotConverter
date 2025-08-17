@@ -96,7 +96,7 @@
 		"BV",
 		"BVHC"
 	],
-	"Gooilijn-Pernis": [
+	"Gooilijn-Rotterdam Haven (Havens in passeervolgorde)": [
 		"AMF",
 		"AMFGA",
 		"BRNA",
@@ -142,7 +142,11 @@
 		"RTST",
 		"RLB",
 		"BRDVA",
-		"PS"
+		"RWHV",
+		"PS",
+		"BOT",
+		"ERP",
+		"MVT"
 	],
 		"Gooilijn-Kijfhoek (noord)": [
 		"AMF",
