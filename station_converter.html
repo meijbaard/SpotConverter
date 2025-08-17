@@ -160,6 +160,7 @@ title: SpotConverter
     <!-- Tabs -->
     <div id="tab-container" class="flex justify-center -mb-px">
       <button class="tab-btn px-6 py-3 rounded-t-lg font-semibold text-slate-600 bg-white border border-b-0 border-slate-200 active" data-tab="spot">Spot Analyse</button>
+      <button class="tab-btn px-6 py-3 rounded-t-lg font-semibold text-slate-600 bg-white border border-b-0 border-slate-200" data-tab="zoeker">Station Zoeker</button>
       <button class="tab-btn px-6 py-3 rounded-t-lg font-semibold text-slate-600 bg-white border border-b-0 border-slate-200" data-tab="heatmap">Heatmap</button>
       <button class="tab-btn px-6 py-3 rounded-t-lg font-semibold text-slate-600 bg-white border border-b-0 border-slate-200" data-tab="patronen">Patronen</button>
     </div>
@@ -202,6 +203,21 @@ title: SpotConverter
       </div>
     </main>
 
+    <!-- Tab Content: Station Zoeker -->
+    <main class="bg-white p-6 md:p-8 rounded-xl rounded-tl-none shadow-lg hidden" id="tab-zoeker">
+      <h2 class="text-2xl font-bold text-slate-800 mb-4">Zoek Station</h2>
+      <div class="mb-6">
+        <input type="text" id="stationSearchInput" class="form-input w-full max-w-lg mx-auto block border rounded-lg p-3 shadow-sm" placeholder="Zoek op afkorting of naam..." oninput="debounceSearch()">
+      </div>
+      <div id="noResultsMessage" class="hidden text-center py-10 text-slate-500">
+        <p class="text-lg font-semibold">Geen stations gevonden</p>
+        <p>Probeer een andere zoekterm.</p>
+      </div>
+      <div id="stationSearchResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Resultaten worden hier dynamisch ingevoegd -->
+      </div>
+    </main>
+
     <!-- Tab Content: Heatmap -->
     <main class="bg-white p-6 md:p-8 rounded-xl rounded-tl-none shadow-lg hidden" id="tab-heatmap">
       <div class="max-w-lg mx-auto">
@@ -239,6 +255,7 @@ title: SpotConverter
       pathData = {},
       parsedMessage = null,
       debounceTimeout = null,
+      searchDebounceTimeout = null,
       heatmapData = {},
       trainPatterns = {};
 
@@ -271,10 +288,15 @@ title: SpotConverter
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
-    // --- Debounce Function ---
+    // --- Debounce Functions ---
     function debounceProcessMessage() {
       clearTimeout(debounceTimeout);
       debounceTimeout = setTimeout(processMessage, 350);
+    }
+
+    function debounceSearch() {
+        clearTimeout(searchDebounceTimeout);
+        searchDebounceTimeout = setTimeout(searchStations, 300);
     }
 
     // --- Data Loading Functions ---
@@ -296,6 +318,7 @@ title: SpotConverter
             updateHeatmap();
             document.getElementById('patronen-output').innerHTML = renderPatronen();
             processMessage();
+            searchStations(); // Initial search to show all stations
         } catch (error) {
             console.error("Error loading initial data:", error);
             document.getElementById('output').innerHTML = `<p class="text-red-600 font-bold">Kon de data van GitHub niet laden: ${error.message}. Probeer de pagina te vernieuwen.</p>`;
@@ -310,26 +333,19 @@ title: SpotConverter
       let text = await res.text();
       let [header, ...rows] = text.trim().split('\n');
       
-      let cols = header.split(',').map(h => h.trim());
-      const codeIndex = cols.indexOf('code');
-      const nameLongIndex = cols.indexOf('name_long');
+      let cols = header.split(',').map(h => h.trim().replace(/"/g, ''));
       
-      if (codeIndex === -1 || nameLongIndex === -1) {
-          throw new Error("Required columns 'code' or 'name_long' not found in stations.csv header.");
-      }
-
-      stations = [];
-      rows.forEach(row => {
-        let values = row.split(',');
-        if (values.length > Math.max(codeIndex, nameLongIndex)) {
-            let obj = {
-                code: values[codeIndex].trim().toUpperCase(),
-                name_long: values[nameLongIndex].trim().replace(/"/g, '')
-            };
-            stations.push(obj);
-        }
+      stations = rows.map(row => {
+          const values = row.split(',');
+          let obj = {};
+          cols.forEach((col, index) => {
+              obj[col] = (values[index] || '').trim().replace(/"/g, '');
+          });
+          return obj;
       });
-      stations.sort((a, b) => b.code.length - a.code.length);
+
+      // Sorteer stations met langere codes eerst voor nauwkeuriger parsen
+      stations.sort((a, b) => (b.code?.length || 0) - (a.code?.length || 0));
     }
 
     async function loadAfstanden() {
@@ -435,6 +451,52 @@ title: SpotConverter
         daySelect.value = days[currentDayIndex];
     }
 
+    // --- Station Zoeker Logic ---
+    function searchStations() {
+        const searchTerm = document.getElementById('stationSearchInput').value.toLowerCase().trim();
+        
+        if (!stations.length) return;
+
+        const results = stations.filter(s => {
+            const code = s.code || '';
+            const name = s.name_long || '';
+            return code.toLowerCase().includes(searchTerm) || name.toLowerCase().includes(searchTerm);
+        });
+
+        renderSearchResults(results);
+    }
+
+    function renderSearchResults(results) {
+        const resultsContainer = document.getElementById('stationSearchResults');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+
+        if (results.length === 0) {
+            resultsContainer.innerHTML = '';
+            noResultsMessage.classList.remove('hidden');
+            return;
+        }
+        
+        noResultsMessage.classList.add('hidden');
+        
+        const html = results.map(station => `
+            <div class="bg-white p-4 rounded-lg shadow-md border border-slate-200">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-lg font-bold text-cyan-800">${station.name_long || 'Onbekend'}</h3>
+                    <span class="text-sm font-semibold bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full">${station.code || 'N/A'}</span>
+                </div>
+                <div class="mt-3 text-sm space-y-1 text-slate-600">
+                    <p><strong>Korte naam:</strong> ${station.name_short || '-'}</p>
+                    <p><strong>UIC:</strong> ${station.uic || '-'}</p>
+                    <p><strong>Type:</strong> ${station.type || '-'}</p>
+                    <p><strong>Land:</strong> ${station.country || '-'}</p>
+                </div>
+            </div>
+        `).join('');
+
+        resultsContainer.innerHTML = html;
+    }
+
+
     // --- Main Processing Logic ---
     function processMessage() {
         const messageInput = document.getElementById('whatsappMessage').value;
@@ -458,7 +520,7 @@ title: SpotConverter
         
         displayResults(outputHtml, analysis, parsedMessage);
         document.getElementById('pattern-output').innerHTML = showPatternInSpotTab(parsedMessage);
-        copyBtn.disabled = false;
+        copyBtn.disabled = !analysis.summaryText;
     }
 
     function parseMessage(message) {
@@ -509,7 +571,7 @@ title: SpotConverter
         }
         
         stations.forEach(station => {
-            if (spotterAbbr.hasOwnProperty(station.code)) return;
+            if (!station.code || spotterAbbr.hasOwnProperty(station.code)) return;
             
             const isConflicting = conflictingAbbrs.includes(station.code.toUpperCase());
             const regexFlags = isConflicting ? 'g' : 'gi';
