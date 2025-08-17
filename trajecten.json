@@ -173,7 +173,7 @@
 		"KFHAN",
 		"KFH"
 	],
-	"Betuweroute-aanvoer": [
+	"Betuweroute-aanvoer Kijfhoek (zuid)": [
 		"AMF",
 		"AMFVA",
 		"SDN",
@@ -192,7 +192,7 @@
 		"MBTWAN",
 		"KFHAZ",
 		"KFH"
-	]
+	],
 	"Tilburg-route": [
 		"AMF",
 		"AMFVA",
@@ -216,7 +216,11 @@
 		"HDL",
 		"HTDA",
 		"HT",
+		"VGA",
+		"TBI",
 		"TB",
-		"TBGE"
+		"TBU",
+		"GZ",
+		"BD"
 	]
 }
