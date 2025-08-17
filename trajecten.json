@@ -16,6 +16,7 @@
 		"TWL",
 		"APG",
 		"APDO",
+		"APDA",
 		"APD",
 		"STO",
 		"BNVA",
@@ -77,7 +78,7 @@
 		"ASD",
 		"BVHC"
 	],
-	"Gooilijn-Rotterdam": [
+	"Gooilijn-Pernis": [
 		"AMF",
 		"AMFGA",
 		"BRNA",
