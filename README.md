@@ -46,8 +46,8 @@ De applicatie is ontworpen met gebruiksgemak als kernprincipe. Het werkt volledi
 
 De tool laadt alle data extern om de kernlogica gescheiden te houden van de informatie, wat aanpassingen eenvoudig maakt. De volgende bestanden worden gebruikt:
 
-* **`stations.csv`**: Bevat de stationscodes (`code`) en volledige namen (`name_long`).
-* **`afstanden.csv`**: Een matrix met de afstanden in kilometers tussen stations.
+* **`stations.csv`**: Bevat de stationscodes (`code`) en volledige namen (`name_long`), inclusief Nederlandse en Duitse afkortingen.
+* **`afstanden.csv`**: Een matrix met de afstanden in kilometers tussen stations. Deze wordt continu uitgebreid voor hogere nauwkeurigheid.
 * **`goederenpaden.csv`**: Definieert de vaste passage-minuten voor goederentreinen op specifieke stations en rijrichtingen.
 * **`heatmap_treinpassages.json`**: Bevat de data voor de heatmap, met het aantal passages per uur per station.
 * **`treinpatronen.json`**: Een lijst met bekende, terugkerende treinroutes, inclusief beschrijvingen en gemiddelde wachttijden.
@@ -55,11 +55,13 @@ De tool laadt alle data extern om de kernlogica gescheiden te houden van de info
 
 ### 💾 Bronvermeldingen
 
-Voor de data die deze tool aandrijft, is dankbaar gebruik gemaakt van de open datasets van Rijdende Treinen (@rijdendetreinen) en de uitgebreide kennis van Nico Spilt.
+Voor de data die deze tool aandrijft, is dankbaar gebruik gemaakt van diverse open en publieke bronnen:
 
 * **Open Data van Rijdende Treinen:** De basislijst met treinstations, hun officiële namen en de afstanden tussen stations zijn afkomstig van OpenData.
 * **Aanvullende Afkortingen:** De stationsdata is verrijkt met een zeer complete lijst van spotters-afkortingen, verzameld en onderhouden door Nico Spilt op zijn website.
 * **Treinposities.nl:** De functionaliteit om direct informatie over vervoerders en specifieke locomotieven op te zoeken wordt mogelijk gemaakt door de uitgebreide database van [treinposities.nl](https://treinposities.nl/).
+* **Spoorkaart Nederland:** De trajecten in `trajecten.json` zijn gebaseerd op de officiële [spoorkaart van ProRail](https://www.prorail.nl/siteassets/homepage/reizen/documenten/pr_spoorkaart_nl2024_web.pdf).
+* **Duitse Stationsafkortingen:** De afkortingen voor Duitse stations zijn mede mogelijk gemaakt door de uitgebreide lijst op [michaeldittrich.de](https://www.michaeldittrich.de/abkuerzungen/index.php).
 
 ### 🤝 Bijdragen
 
