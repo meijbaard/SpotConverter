@@ -6,16 +6,21 @@ Waar een simpel spotbericht vaak alleen direct nuttig is voor de ontvanger, ontg
 
 De applicatie is ontworpen met gebruiksgemak als kernprincipe. Het werkt volledig in de browser en vereist geen installatie. Alle benodigde data, zoals stationslijsten, afstanden, en treinpatronen, wordt dynamisch ingeladen vanaf een centrale, openbare locatie (GitHub). Dit garandeert dat elke gebruiker altijd met de meest actuele informatie werkt.
 
-[Bekijk hier de live versie](https://www.markeijbaard.nl/spotconverter/)
+[**Bekijk hier de live versie**](https://www.markeijbaard.nl/spotconverter/)
+
+---
 
 ### 🗂️ Inhoudsopgave
 
 * [✨ Features](#-features)
 * [🚀 Hoe te Gebruiken](#-hoe-te-gebruiken)
 * [🔧 Data & Configuratie](#-data--configuratie)
+* [🗺️ OSM-stationvalidatie](#️-osm-stationvalidatie)
 * [💾 Bronvermeldingen](#-bronvermeldingen)
 * [🤝 Bijdragen](#-bijdragen)
 * [📄 Licentie](#-licentie)
+
+---
 
 ### ✨ Features
 
@@ -28,19 +33,23 @@ De applicatie is ontworpen met gebruiksgemak als kernprincipe. Het werkt volledi
 * **Volledig Dynamisch Data Inladen:** Haalt alle benodigde data (stations, afstanden, heatmaps, patronen, en nu ook de spoortrajecten) direct van een centrale GitHub-locatie.
 * **Moderne Interface:** Een duidelijke en functionele stijl met een focus op leesbaarheid en een intuïtieve gebruikerservaring.
 
+---
+
 ### 🚀 Hoe te Gebruiken
 
-1.  **Open de Applicatie:** Start de tool door het `station_converter.html` bestand te openen in een moderne webbrowser zoals Chrome, Firefox, of Edge. Een internetverbinding is nodig om de meest recente data van GitHub te laden.
-2.  **Navigeer door de Tabs:** Gebruik de knoppen bovenaan om te wisselen tussen de drie hoofdsecties:
-    * **Spot Analyse:** De kernfunctionaliteit voor het analyseren van berichten.
-    * **Heatmap:** Bekijk de passagefrequentie per uur voor een geselecteerd station.
-    * **Patronen:** Krijg een overzicht van alle bekende, terugkerende treinroutes.
-3.  **Plak het Bericht:** Kopieer een spot-bericht en plak dit in het tekstveld "Plak je WhatsApp bericht hier:". De tool begint onmiddellijk met de analyse.
-4.  **Kies je Doelstation:** In de dropdown-lijst "Bereken passage voor:" kun je het station selecteren waarvoor je een passage-tijd wilt weten. Standaard staat deze op "Baarn".
-5.  **Bekijk de Resultaten:** De resultaten verschijnen direct en worden live bijgewerkt in de verschillende blokken:
-    * **Verwerkt Bericht:** De originele tekst, verrijkt met gemarkeerde, volledige stationsnamen en tooltips voor jargon.
-    * **Analyse:** Een duidelijke conclusie over de rijrichting en of de trein het gekozen station passeert, inclusief een berekende aankomsttijd.
-    * **Geparsede Data:** Een uitklapbaar blok met de technische data (in JSON-formaat) die de tool heeft geëxtraheerd.
+1. **Open de Applicatie:** Start de tool door het `station_converter.html` bestand te openen in een moderne webbrowser zoals Chrome, Firefox, of Edge. Een internetverbinding is nodig om de meest recente data van GitHub te laden.
+2. **Navigeer door de Tabs:** Gebruik de knoppen bovenaan om te wisselen tussen de drie hoofdsecties:
+   * **Spot Analyse:** De kernfunctionaliteit voor het analyseren van berichten.
+   * **Heatmap:** Bekijk de passagefrequentie per uur voor een geselecteerd station.
+   * **Patronen:** Krijg een overzicht van alle bekende, terugkerende treinroutes.
+3. **Plak het Bericht:** Kopieer een spot-bericht en plak dit in het tekstveld "Plak je WhatsApp bericht hier:". De tool begint onmiddellijk met de analyse.
+4. **Kies je Doelstation:** In de dropdown-lijst "Bereken passage voor:" kun je het station selecteren waarvoor je een passage-tijd wilt weten. Standaard staat deze op "Baarn".
+5. **Bekijk de Resultaten:** De resultaten verschijnen direct en worden live bijgewerkt in de verschillende blokken:
+   * **Verwerkt Bericht:** De originele tekst, verrijkt met gemarkeerde, volledige stationsnamen en tooltips voor jargon.
+   * **Analyse:** Een duidelijke conclusie over de rijrichting en of de trein het gekozen station passeert, inclusief een berekende aankomsttijd.
+   * **Geparsede Data:** Een uitklapbaar blok met de technische data (in JSON-formaat) die de tool heeft geëxtraheerd.
+
+---
 
 ### 🔧 Data & Configuratie
 
@@ -53,6 +62,39 @@ De tool laadt alle data extern om de kernlogica gescheiden te houden van de info
 * **`treinpatronen.json`**: Een lijst met bekende, terugkerende treinroutes, inclusief beschrijvingen en gemiddelde wachttijden.
 * **`trajecten.json`**: De ruggengraat van de routeherkenning. Dit bestand bevat de definities van de hoofd-spoortrajecten als lijsten van stationscodes. Door dit bestand aan te passen, kan de routeherkenning eenvoudig worden uitgebreid of gecorrigeerd.
 
+---
+
+### 🗺️ OSM-stationvalidatie
+
+Naast de webapplicatie bevat dit project een hulpscript `osm_station_check.py` dat alle stations uit `trajecten.json` controleert in **OpenStreetMap (Nominatim)**. Het script:
+
+- Zoekt per station naar de juiste coördinaten (lat/lon).
+- Schrijft tussentijds resultaten weg (**checkpointing**).
+- Kan een run hervatten met `--resume`.
+
+#### Installatie
+
+~~~bash
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install --upgrade pip
+pip install pandas requests tqdm
+~~~
+
+#### Gebruik (één regel)
+
+~~~bash
+curl -L -o stations.csv 'https://raw.githubusercontent.com/meijbaard/SpotConverter/refs/heads/main/stations.csv' && python3 osm_station_check.py --trajecten 'https://raw.githubusercontent.com/meijbaard/SpotConverter/refs/heads/main/trajecten.json' --stations stations.csv --out out_osm --sleep 0.8 --resume
+~~~
+
+- `--sleep 0.8` voldoet aan de Nominatim usage policy (pas aan als nodig, bijv. `1.0` of `1.2` bij rate limits).
+- De resultaten worden opgeslagen in `out_osm/`:
+  - `osm_stations_found.csv`
+  - `osm_stations_not_found.csv`
+  - `osm_stations_coords.json` (code → coördinaten)
+
+---
+
 ### 💾 Bronvermeldingen
 
 Voor de data die deze tool aandrijft, is dankbaar gebruik gemaakt van diverse open en publieke bronnen:
@@ -63,10 +105,15 @@ Voor de data die deze tool aandrijft, is dankbaar gebruik gemaakt van diverse op
 * **Spoorkaart Nederland:** De trajecten in `trajecten.json` zijn gebaseerd op de officiële [spoorkaart van ProRail](https://www.prorail.nl/siteassets/homepage/reizen/documenten/pr_spoorkaart_nl2024_web.pdf).
 * **Duitse Stationsafkortingen:** De afkortingen voor Duitse stations zijn mede mogelijk gemaakt door de uitgebreide lijst op [michaeldittrich.de](https://www.michaeldittrich.de/abkuerzungen/index.php).
 
+---
+
 ### 🤝 Bijdragen
 
 Bijdragen die de tool verbeteren zijn altijd welkom. Heb je een idee voor een nieuwe feature, een correctie op een traject, of een uitbreiding van de data? Voel je vrij om een issue aan te maken op de GitHub-repository of dien direct een pull request in.
 
+---
+
 ### 📄 Licentie
 
-Dit project wordt beschikbaar gesteld onder de MIT Licentie. Copyright © 2025 Mark Eijbaard.
+Dit project wordt beschikbaar gesteld onder de MIT Licentie.  
+Copyright © 2025 Mark Eijbaard.
