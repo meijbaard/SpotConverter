@@ -1,0 +1,114 @@
+code,name_query,country_hint,lat,lon,osm_id,osm_type,display_name,class,type,status
+AC,Abcoude,Netherlands,52.2785602,4.9773816,4144568336,node,"Abcoude, Geinplein, Abcoude, De Ronde Venen, Utrecht, Nederland, 1391 JN, Nederland",railway,station,FOUND
+AMA,Amersfoort aansluiting,Netherlands,52.1484349,5.3475563,5156039200,node,"Amersfoort Vlasakkers aansluiting, Monnikenboschpad, Bosgebied, Amersfoort, Utrecht, Nederland, 3818 LN, Nederland",railway,junction,FOUND
+AMF,Amersfoort Centraal,Netherlands,52.153898,5.3740976,45489203,node,"Amersfoort Centraal, Stationshal, Bergkwartier, De Berg-Noord, Amersfoort, Utrecht, Nederland, 3818 LE, Nederland",railway,station,FOUND
+AMFVA,Amersfoort Vlasakkers aansluiting,Netherlands,52.1484349,5.3475563,5156039200,node,"Amersfoort Vlasakkers aansluiting, Monnikenboschpad, Bosgebied, Amersfoort, Utrecht, Nederland, 3818 LN, Nederland",railway,junction,FOUND
+AML,Almelo,Netherlands,52.3577052,6.6544143,4530820010,node,"Almelo, Parallelweg, Wierdensehoek, Almelo, Overijssel, Nederland, 7604 TW, Nederland",railway,station,FOUND
+AMRI,Almelo de Riet,Netherlands,52.3420988,6.6666467,7606761912,node,"Almelo de Riet, Rietstraat, De Riet, Almelo, Overijssel, Nederland, 7601 CW, Nederland",railway,station,FOUND
+APD,Apeldoorn,Netherlands,52.2092784,5.9689735,4530820009,node,"Apeldoorn, 12, Stationsplein, Apeldoorn, Gelderland, Nederland, 7311 NZ, Nederland",railway,station,FOUND
+APDA,Apeldoorn aansluiting,Netherlands,52.2089714,5.9805385,5370103789,node,"Apeldoorn aansluiting, Ovenbouwershoek, Matenhoek, Apeldoorn, Gelderland, Nederland, 7328 JH, Nederland",railway,junction,FOUND
+APDO,Apeldoorn Osseveld,Netherlands,52.2157325,6.0061053,7606517379,node,"Apeldoorn Osseveld, Linie, Apeldoorn, Gelderland, Nederland, 7325 DZ, Nederland",railway,station,FOUND
+APG,Appingedam,Netherlands,53.3257678,6.862006,48387592,node,"Appingedam, N360, Solwerd, Appingedam, Eemsdelta, Groningen, Nederland, 9901 CS, Nederland",railway,station,FOUND
+ASB,Amsterdam Bijlmer ArenA,Netherlands,52.3122449,4.9470883,4005961975,node,"Amsterdam Bijlmer ArenA, Hoekenrode, H-Buurt, Zuidoost, Amsterdam, Noord-Holland, Nederland, 1102 BR, Nederland",railway,station,FOUND
+ASD,Amsterdam Centraal,Netherlands,52.378901,4.9005805,4290854847,node,"Amsterdam Centraal, Middentunnel, Centrum, Amsterdam, Noord-Holland, Nederland, 1012 AB, Nederland",railway,station,FOUND
+ASDM,Amsterdam Muiderpoort,Netherlands,52.3608208,4.9312094,18731562,relation,"Amsterdam Muiderpoort, Oosterspoorplein, Dapperbuurt, Oost, Amsterdam, Noord-Holland, Nederland, 1093 JW, Nederland",railway,station,FOUND
+ASHD,Amsterdam Holendrecht,Netherlands,52.2979886,4.9601712,250233810,node,"Amsterdam Holendrecht, Holendrechtdreef, Holendrecht, Zuidoost, Amsterdam, Noord-Holland, Nederland, 1106 TE, Nederland",railway,station,FOUND
+ASS,Amsterdam Sloterdijk,Netherlands,52.3890317,4.8381062,3938547498,node,"Amsterdam Sloterdijk, A, Teleport, Nieuw-West, Amsterdam, Noord-Holland, Nederland, 1043 DT, Nederland",railway,station,FOUND
+ASSP,Amsterdam Science Park,Netherlands,52.352926,4.948315,7606648992,node,"Amsterdam Science Park, Kruislaan, Watergraafsmeer, Oost, Amsterdam, Noord-Holland, Nederland, 1098 SJ, Nederland",railway,station,FOUND
+BD,Breda,Netherlands,51.5951433,4.7800231,43174364,node,"Breda, 16, Stationsplein, Station, Centrum, Breda, Noord-Brabant, Nederland, 4811 BB, Nederland",railway,station,FOUND
+BH,Bad Bentheim,Germany,52.3097332,7.1582889,4530820008,node,"Bad Bentheim, 1, Am Bahnhof, Bad Bentheim, Landkreis Grafschaft Bentheim, Niedersachsen, 48455, Deutschland",railway,station,FOUND
+BHV,Bilthoven,Netherlands,52.1301876,5.2046838,7606645164,node,"Bilthoven, Soestdijkseweg Noord, Bilthoven, De Bilt, Utrecht, Nederland, 3722 AD, Nederland",railway,station,FOUND
+BKL,Breukelen,Netherlands,52.1708294,4.9906222,4144571678,node,"Breukelen, Stationsweg, Breukelen, Stichtse Vecht, Utrecht, Nederland, 3621 ZC, Nederland",railway,station,FOUND
+BKLA,Breukelen aansluiting,Netherlands,52.1676519,4.9908401,5370103587,node,"Breukelen aansluiting, Fly-over Breukelen, Kortrijk, Breukelen, Stichtse Vecht, Utrecht, Nederland, 3621 MX, Nederland",railway,junction,FOUND
+BLL,Bloemendaal,Netherlands,52.4043478,4.6276629,7606581800,node,"Bloemendaal, Jan Pieterszoon Coenpad, Haarlem, Noord-Holland, Nederland, 2024 AN, Nederland",railway,station,FOUND
+BN,Borne,Netherlands,52.2986128,6.7484512,7606761911,node,"Borne, Parallelweg, Borne, Overijssel, Nederland, 7622 NB, Nederland",railway,station,FOUND
+BNVA,Barneveld aansluiting,Netherlands,52.1620125,5.5947548,1283185090,way,"Barneveld Aansluiting, Barneveld, Gelderland, Nederland",landuse,railway,FOUND
+BOT,Botlek,Netherlands,51.8865721,4.2957915,328993640,way,"Botlek, Rotterdam, Zuid-Holland, Nederland",waterway,canal,FOUND
+BRD,Barendrecht,Netherlands,51.8552885,4.5526538,3827257157,node,"Barendrecht, Vlindergang, Barendrecht, Zuid-Holland, Nederland, 2991 RR, Nederland",railway,station,FOUND
+BRDA,Barendrecht aansluiting,Netherlands,51.8687539,4.5400976,673447720,way,"Barendrecht Vork aansluiting, IJsselmonde, Barendrecht, Rotterdam, Zuid-Holland, Nederland",landuse,railway,FOUND
+BRDVA,Barendrecht Vork aansluiting,Netherlands,51.8687539,4.5400976,673447720,way,"Barendrecht Vork aansluiting, IJsselmonde, Barendrecht, Rotterdam, Zuid-Holland, Nederland",landuse,railway,FOUND
+BRN,Baarn,Netherlands,52.2080875,5.2817232,7606656814,node,"Baarn, Prinses Marielaan, Baarn, Utrecht, Nederland, 3743 JE, Nederland",railway,station,FOUND
+BRPPD,Betuweroute Papendrecht,Netherlands,51.8363006,4.7278497,165278335,way,"Onderdoorgang Betuweroute oost, Papendrecht, Zuid-Holland, Nederland",landuse,industrial,FOUND
+BSMZ,Bussum Zuid,Netherlands,52.2658951,5.1628737,7606656809,node,"Bussum Zuid, Struikheiweg, Bussum, Gooise Meren, Noord-Holland, Nederland, 1402 KG, Nederland",railway,station,FOUND
+BV,Beverwijk,Netherlands,52.4785365,4.6566186,7606596765,node,"Beverwijk, Wijckermolen, Centrum, Beverwijk, Noord-Holland, Nederland, 1941 JJ, Nederland",railway,station,FOUND
+BVHC,Beverwijk Hoogovens Centraal,Netherlands,52.4808058,4.6352451,5370103534,node,"Beverwijk Hoogovens Centraal, Platenhalweg, Tata Steel, Velsen-Noord, Velsen, Noord-Holland, Nederland, 1951 HK, Nederland",railway,yard,FOUND
+CL,Culemborg,Netherlands,51.9470421,5.2267808,4041584745,node,"Culemborg, Stationsweg, Achter 't Zand, Culemborg, Gelderland, Nederland, 4101 NX, Nederland",railway,station,FOUND
+CPS,Capelle Schollevaar,Netherlands,51.9541176,4.5840957,7606556447,node,"Capelle Schollevaar, Stationsplein, Schollevaar, Capelle aan den IJssel, Zuid-Holland, Nederland, 2907 MJ, Nederland",railway,station,FOUND
+DDM,De Diem (overloopwissels),Netherlands,52.3367081,4.9873957,1117192155,way,"De Diem overloopwissels, Diemen, Noord-Holland, Nederland",landuse,railway,FOUND
+DGRW,Amsterdam Dijksgracht Westzijde,Netherlands,52.3766795,4.9156676,5370103559,node,"Dijksgracht Westzijde (Amsterdam), Dijksgracht, Marineterrein, Oostelijke Eilanden, Centrum, Amsterdam, Noord-Holland, Nederland, 1019 BT, Nederland",railway,junction,FOUND
+DLD,Den Dolder,Netherlands,52.1402279,5.2420971,7606645165,node,"Den Dolder, Fornheselaan, Den Dolder, Zeist, Utrecht, Nederland, 3734 BL, Nederland",railway,station,FOUND
+DMN,Diemen,Netherlands,52.3452067,4.967465,7606698742,node,"Diemen, Ouddiemerlaan, Diemen-Centrum, Diemen, Noord-Holland, Nederland, 1111 NG, Nederland",railway,station,FOUND
+DMNZ,Diemen Zuid,Netherlands,52.3302613,4.9560598,46199966,node,"Diemen Zuid, Dalsteindreef, Diemen-Zuid, Diemen, Noord-Holland, Nederland, 1112 XC, Nederland",railway,station,FOUND
+DRH,Driehuis,Netherlands,52.4427409,4.6387141,7606581797,node,"Driehuis, Kerkpad, Santpoort-Noord, Velsen, Noord-Holland, Nederland, 2071 CX, Nederland",railway,station,FOUND
+DV,Deventer,Netherlands,52.2573637,6.15957,581927087,way,"Deventer, Station, Stationsstraat, Singels, Binnenstad, Deventer, Overijssel, Nederland, 7411 HW, Nederland",highway,platform,FOUND
+DVC,Deventer Colmschate,Netherlands,52.25035,6.2156789,7606549519,node,"Deventer Colmschate, Oostriklaan, Roessink, Colmschate, Deventer, Overijssel, Nederland, 7423 EM, Nederland",railway,station,FOUND
+ERP,Europoort,Netherlands,51.9328725,4.1736499,1411106,relation,"Europoort, Gunvor Energy Rotterdam, Rotterdam, Zuid-Holland, Nederland, 3198 LS, Nederland",boundary,administrative,FOUND
+GD,Gouda,Netherlands,52.0174245,4.7061636,4487545500,node,"Gouda, Burgemeester Jamesplein, De Riddervelden, Bloemendaal, Gouda, Zuid-Holland, Nederland, 2803 ZE, Nederland",railway,station,FOUND
+GDG,Gouda Goverwelle,Netherlands,52.0150128,4.7420993,7606567286,node,"Gouda Goverwelle, Muziekpad, Goverwelle, Gouda, Zuid-Holland, Nederland, 2807 JW, Nederland",railway,station,FOUND
+GDM,Geldermalsen,Netherlands,51.8825577,5.2714789,4041579851,node,"Geldermalsen, Genteldijk, Stationswijk, Geldermalsen, West Betuwe, Gelderland, Nederland, 4191 LD, Nederland",railway,station,FOUND
+GPDA,Gaasperdammerweg aansluiting,Netherlands,52.3272745,5.0108038,1117419825,way,"Gaasperdammerweg aansluiting, Diemen, Noord-Holland, Nederland",landuse,railway,FOUND
+GZ,Gilze-Rijen,Netherlands,51.5840224,4.9242259,43124982,node,"Gilze-Rijen, Parallelweg, Zuid, Rijen, Gilze en Rijen, Noord-Brabant, Nederland, 5121 EA, Nederland",railway,station,FOUND
+HBTH,Bad Bentheim,Germany,52.3097332,7.1582889,4530820008,node,"Bad Bentheim, 1, Am Bahnhof, Bad Bentheim, Landkreis Grafschaft Bentheim, Niedersachsen, 48455, Deutschland",railway,station,FOUND
+HDL,Hedel,Netherlands,51.7448817,5.2597063,334323,relation,"Hedel, Maasdriel, Gelderland, Nederland",boundary,administrative,FOUND
+HGL,Hengelo,Netherlands,52.2617754,6.7949086,45931397,node,"Hengelo, Stationsplein, Hengelo, Overijssel, Nederland, 7551 CP, Nederland",railway,station,FOUND
+HGLO,Hengelo Oost,Netherlands,52.2690072,6.8197673,45960709,node,"Hengelo Oost, Josef Haydnlaan, Groot Driene, Hengelo, Overijssel, Nederland, 7557 EE, Nederland",railway,station,FOUND
+HLM,Haarlem,Netherlands,52.3872308,4.6378818,96825911,way,"Haarlem, Station, Stationsplein, Frans Halsbuurt, Haarlem, Noord-Holland, Nederland, 2011 LN, Nederland",amenity,bus_station,FOUND
+HLMS,Haarlem Spaarnwoude,Netherlands,52.3828478,4.6713542,7606551882,node,"Haarlem Spaarnwoude, Veerpad, Oostpoort, Haarlem, Noord-Holland, Nederland, 2033 AA, Nederland",railway,station,FOUND
+HON,Holten,Netherlands,52.2840788,6.4211684,7606549518,node,"Holten, Stationsstraat, Holten, Rijssen-Holten, Overijssel, Nederland, 7451 BH, Nederland",railway,station,FOUND
+HR,Heerenveen,Netherlands,52.9607031,5.9153474,7606802766,node,"Heerenveen, Trambaan, Heerenveen, Fryslân, Nederland, 8441 AX, Nederland",railway,station,FOUND
+HSAL,Salzbergen,Germany,52.3228782,7.3509592,288916670,node,"Salzbergen, Bahnhofstraße, Salzbergen, Landkreis Emsland, Niedersachsen, 48499, Deutschland",railway,station,FOUND
+HT,'s-Hertogenbosch,Netherlands,51.6905164,5.2937086,4085675596,node,"'s-Hertogenbosch, Stationspasserelle, Het Zand, 's-Hertogenbosch, Noord-Brabant, Nederland, 5211 AZ, Nederland",railway,station,FOUND
+HTDA,'s-Hertogenbosch Diezebrug aansluiting,Netherlands,51.6997772,5.2982183,1285834668,way,"'s-Hertogenbosch Diezebrug aansluiting, West, 's-Hertogenbosch, Noord-Brabant, Nederland",landuse,railway,FOUND
+HTN,Houten,Netherlands,52.0340078,5.1681345,2983733524,node,"Houten, Onderdoor, Houten, Utrecht, Nederland, 3995 DW, Nederland",railway,station,FOUND
+HTNC,Houten Castellum,Netherlands,52.0168609,5.1794728,1268704948,node,"Houten Castellum, Castellumpad, Leebrug, Houten, Utrecht, Nederland, 3995 ZJ, Nederland",railway,station,FOUND
+HVL,Hoevelaken,Netherlands,52.1664319,5.4579565,7279230075,node,"Hoevelaken, Rijksweg A1, Buitengebied Oost, Terschuur, Amersfoort, Utrecht, Nederland, 3784 WN, Nederland",railway,station,FOUND
+HVS,Hilversum,Netherlands,52.2259018,5.1806228,1080744350,way,"Hilversum Station, Stationstunnel, Raadhuiskwartier, Hilversum, Noord-Holland, Nederland, 1211 EX, Nederland",highway,platform,FOUND
+HVSM,Hilversum Media Park,Netherlands,52.2378723,5.1740114,7606656810,node,"Hilversum Media Park, Mies Bouwmanboulevard, Raadhuiskwartier, Hilversum, Noord-Holland, Nederland, 1222 PJ, Nederland",railway,station,FOUND
+HWZB,Halfweg-Zwanenburg,Netherlands,52.3859763,4.7468736,1633149045,node,"Halfweg-Zwanenburg, Oude Haarlemmerstraatweg, Halfweg, Haarlemmermeer, Noord-Holland, Nederland, 1165 PC, Nederland",railway,station,FOUND
+KFH,Kijfhoek,Netherlands,51.8253468,4.5916387,43983831,node,"Kijfhoek, Zwijndrecht, Zuid-Holland, Nederland, 3335 LE, Nederland",place,hamlet,FOUND
+KFHAN,Kijfhoek aansluiting Noord,Netherlands,51.8457454,4.5676943,5370103786,node,"Kijfhoek aansluiting noord, Noldijk, Barendrecht, Zuid-Holland, Nederland, 2991 VH, Nederland",railway,junction,FOUND
+KFHAZ,Kijfhoek aansluiting Zuid,Netherlands,51.8457454,4.5676943,5370103786,node,"Kijfhoek aansluiting noord, Noldijk, Barendrecht, Zuid-Holland, Nederland, 2991 VH, Nederland",railway,junction,FOUND
+LEK,Lekbrug,Netherlands,51.966302,5.2079757,5370103574,node,"Lekbrug aansl., Lekdijk, Schalkwijk, Houten, Utrecht, Nederland, 3998 NH, Nederland",railway,junction,FOUND
+MDA,Moordrecht aansluiting,Netherlands,52.0135642,4.6695792,1133379872,way,"Moordrecht aansluiting, Westergouwe, Gouda, Zuidplas, Zuid-Holland, Nederland",landuse,railway,FOUND
+MDO,Moordrecht Overloopwissels,Netherlands,52.00463,4.6577594,943023642,way,"Moordrecht overloopwissels, Moordrecht, Zuidplas, Zuid-Holland, Nederland",landuse,railway,FOUND
+MVT,Maasvlakte,Netherlands,51.9543525,4.0197987,1411107,relation,"Maasvlakte, Rotterdam, Zuid-Holland, Nederland",boundary,administrative,FOUND
+NDB,Naarden-Bussum,Netherlands,52.280646,5.1571557,7045108268,node,"Naarden-Bussum, Stationsplein, Bussum, Gooise Meren, Noord-Holland, Nederland, 1404 AM, Nederland",railway,station,FOUND
+NWK,Nieuwerkerk a/d IJssel,Netherlands,51.9653044,4.6168787,7606556446,node,"Nieuwerkerk aan den IJssel, Oranjepad, 's-Gravenweg, Nieuwerkerk aan den IJssel, Zuidplas, Zuid-Holland, Nederland, 2911 AP, Nederland",railway,station,FOUND
+ODZ,Oldenzaal,Netherlands,52.3062438,6.9340349,46108981,node,"Oldenzaal, Groene Loper, Oldenzaal, Overijssel, Nederland, 7573 AV, Nederland",railway,station,FOUND
+OZBM,Oud Zaltbommel,Netherlands,51.7994597,5.2649639,1230251212,way,"Oud Zaltbommel, Van Voordenpark, Zaltbommel, Gelderland, Nederland",landuse,railway,FOUND
+PS,Pernis,Netherlands,51.8849426,4.3817895,4048801961,node,"Pernis, Schalekampplein, Pernis, Rotterdam, Zuid-Holland, Nederland, 3195 XW, Nederland",railway,station,FOUND
+RHEINE,Rheine,Germany,52.27617,7.4340189,3451020543,node,"Rheine, Bahnhofstraße, Hörstkamp, Dorenkamp, Rheine, Kreis Steinfurt, Nordrhein-Westfalen, 48431, Deutschland",railway,station,FOUND
+RLB,Rotterdam Lombardijen,Netherlands,51.8803596,4.5310527,7606556450,node,"Rotterdam Lombardijen, Spinozaweg, Zenobuurt, Lombardijen, IJsselmonde, Rotterdam, Zuid-Holland, Nederland, 3079 BG, Nederland",railway,station,FOUND
+RSN,Rijssen,Netherlands,52.3117493,6.5192167,7046834617,node,"Rijssen, Prinses Máximatunnel, Rijssen, Rijssen-Holten, Overijssel, Nederland, 7462 AE, Nederland",railway,station,FOUND
+RTA,Rotterdam Alexander,Netherlands,51.9517162,4.5524827,4048801964,node,"Rotterdam Alexander, Eridanusstraat, Oosterflank, Prins Alexander, Rotterdam, Zuid-Holland, Nederland, 3067 GX, Nederland",railway,station,FOUND
+RTB,Rotterdam Blaak,Netherlands,51.9200723,4.4890736,4048801966,node,"Rotterdam Blaak, Kolk, Stadsdriehoek, Centrum, Rotterdam, Zuid-Holland, Nederland, 3011 MD, Nederland",railway,station,FOUND
+RTD,Rotterdam Centraal,Netherlands,51.9250574,4.4692289,4048801967,node,"Rotterdam Centraal, Provenierstunnel, CS-Kwartier, Centrum, Rotterdam, Zuid-Holland, Nederland, 3013 EA, Nederland",railway,station,FOUND
+RTN,Rotterdam Noord,Netherlands,51.9422622,4.4815812,7606556448,node,"Rotterdam Noord, Ceintuurbaan, Kleiwegkwartier, Hillegersberg-Schiebroek, Rotterdam, Zuid-Holland, Nederland, 3051 AG, Nederland",railway,station,FOUND
+RTNG,Rotterdam Noord goederen,Netherlands,51.9461635,4.5119438,1133377423,way,"Rotterdam Noord goederen, Hillegersberg-Schiebroek, Rotterdam, Zuid-Holland, Nederland, 3034 KL, Nederland",landuse,railway,FOUND
+RTNGO,Rotterdam Noord goederen oost,Netherlands,51.948993,4.5315834,736241632,way,"Rotterdam Noord goederen Oost, Het Lage Land, Prins Alexander, Rotterdam, Zuid-Holland, Nederland",landuse,railway,FOUND
+RTNGW,Rotterdam Noord goederen west,Netherlands,51.9453656,4.5046349,5370103813,node,"Rotterdam Noord goederen West, N.S. Emplacement Noord, Nieuw-Crooswijk, Crooswijk, Rotterdam, Zuid-Holland, Nederland, 3056 KA, Nederland",railway,crossover,FOUND
+RTST,Rotterdam Stadion,Netherlands,51.893871,4.5196728,1600595884,node,"Rotterdam Stadion, Olympiaweg, Oud-IJsselmonde, IJsselmonde, Rotterdam, Zuid-Holland, Nederland, 3077 AL, Nederland",railway,halt,FOUND
+RTZ,Rotterdam Zuid,Netherlands,51.9049018,4.5098521,7606556449,node,"Rotterdam Zuid, Rosestraat, Kop van Zuid-Entrepot, Feijenoord, Rotterdam, Zuid-Holland, Nederland, 3071 AL, Nederland",railway,station,FOUND
+RWHV,Rotterdam Waalhaven,Netherlands,51.8918576,4.4408646,782692317,way,"Waalhaven, Charlois, Rotterdam, Zuid-Holland, Nederland",waterway,canal,FOUND
+SALZBERGEN,Salzbergen,Germany,52.3228782,7.3509592,288916670,node,"Salzbergen, Bahnhofstraße, Salzbergen, Landkreis Emsland, Niedersachsen, 48499, Deutschland",railway,station,FOUND
+SBG,Salzbergen (Duitsland),Germany,52.3228782,7.3509592,288916670,node,"Salzbergen, Bahnhofstraße, Salzbergen, Landkreis Emsland, Niedersachsen, 48499, Deutschland",railway,station,FOUND
+SDN,Soestduinen,Netherlands,52.1454081,5.2961857,45449892,node,"Soestduinen, Soest, Utrecht, Nederland, 3768 MJ, Nederland",place,hamlet,FOUND
+SPA,Snippeling aansluiting,Netherlands,52.2520063,6.1960108,12176222306,node,"Snippeling Aansluiting, Storminkstraat, Blauwenoord, Colmschate, Deventer, Overijssel, Nederland, 7418 GJ, Nederland",railway,junction,FOUND
+SPTN,Santpoort Noord,Netherlands,52.4326482,4.6327538,5996515302,node,"Santpoort Noord station, Santpoortse Dreef, Santpoort-Noord, Velsen, Noord-Holland, Nederland, 2071 TH, Nederland",highway,bus_stop,FOUND
+SPTZ,Santpoort Zuid,Netherlands,52.4193488,4.6314176,7606581799,node,"Santpoort Zuid, Willem de Zwijgerlaan, Santpoort-Zuid, Velsen, Noord-Holland, Nederland, 2082 VR, Nederland",railway,station,FOUND
+STO,Stroe,Netherlands,51.8950751,0.8960881,860364927,way,"North Station Road Convenience Stroe, 37, North Station Road, Colchester, Essex, England, CO1 1RQ, United Kingdom",shop,convenience,FOUND
+TB,Tilburg,Netherlands,51.5606465,5.0837958,4041466061,node,"Tilburg, 9, Stationspassage, Tilburg Centrum, Oud-Noord, Tilburg, Noord-Brabant, Nederland, 5038 CA, Nederland",railway,station,FOUND
+TBI,Tilburg industrieterrein,Netherlands,51.4460819,6.0618658,2792560296,node,"Van Tilburg Energie Design, 2, Expeditiestraat, Industrieterrein Hoogveld, Horst, Horst aan de Maas, Limburg, Nederland, 5961 PX, Nederland",office,company,FOUND
+TBR,Tilburg Reeshof,Netherlands,51.573665,4.9934935,2336169715,node,"Tilburg Reeshof, Ketelhavenplein, Campenhoef, Reeshof, Tilburg, Noord-Brabant, Nederland, 5045 NG, Nederland",railway,station,FOUND
+TBU,Tilburg Universiteit,Netherlands,51.5652341,5.0516776,43044523,node,"Tilburg Universiteit, Vijverpad, De Reit, West, Tilburg, Noord-Brabant, Nederland, 5042 RM, Nederland",railway,station,FOUND
+TWL,Twello,Netherlands,52.2383228,6.1007009,7606517378,node,"Twello, Stationplein, Centrum, Twello, Voorst, Gelderland, Nederland, 7391 BZ, Nederland",railway,station,FOUND
+UT,Utrecht Centraal,Netherlands,52.0893925,5.109821,45198301,node,"Utrecht Centraal, Stationshal, Hoog Catharijne, Ns, Jaarbeurs, Binnenstad City- En Winkelgebied, Binnenstad, Utrecht, Nederland, 3511 CE, Nederland",railway,station,FOUND
+UTLN,Utrecht Lunetten,Netherlands,52.0664082,5.1432619,45095869,node,"Utrecht Lunetten, Furkatunnel, Lunetten-Noord, Abstede, Gansstraat, Oost, Utrecht, Nederland, 3524 SH, Nederland",railway,station,FOUND
+UTO,Utrecht Overvecht,Netherlands,52.1101212,5.1257618,7606645163,node,"Utrecht Overvecht, Albrecht Thaerlaan, Tuindorp, Van Lieflandlaan-West, Tuindorp, Voordorp, Noordoost, Utrecht, Nederland, 3571 EG, Nederland",railway,station,FOUND
+UTVR,Utrecht Vaartsche Rijn,Netherlands,52.0787573,5.1218783,1233812055,node,"Utrecht Vaartsche Rijn, Westerkade, Rivierenwijk, Dichterswijk, Rivierenwijk, Zuidwest, Utrecht, Nederland, 3511 HC, Nederland",railway,station,FOUND
+VGA,Vught aansluiting,Netherlands,51.6625298,5.2907629,1263045842,way,"Vught aansluiting, Vught, Noord-Brabant, Nederland",landuse,railway,FOUND
+VSPA,Venserpolder aansluiting,Netherlands,52.3183909,4.9414978,5370103721,node,"Duivendrecht Aansluiting Zuid, Boris Pasternakstraat, Venserpolder, Zuidoost, Amsterdam, Noord-Holland, Nederland, 1102 TC, Nederland",railway,junction,FOUND
+WD,Woerden,Netherlands,52.0850884,4.8924874,4203968191,node,"Woerden, Stationsplein-Noord, Snellerpoort, Woerden, Utrecht, Nederland, 3445 AD, Nederland",railway,station,FOUND
+WDN,Wierden,Netherlands,52.36154,6.5921524,7046796326,node,"Wierden, Noord Parallelweg, Wierden, Overijssel, Nederland, 7641 BJ, Nederland",railway,station,FOUND
+WP,Weesp,Netherlands,52.3122067,5.0440484,7606648991,node,"Weesp, Stationsplein, Lanenrijk, Weesp, Amsterdam, Noord-Holland, Nederland, 1382 AD, Nederland",railway,station,FOUND
+ZBM,Zaltbommel,Netherlands,51.8078029,5.2633823,4041574195,node,"Zaltbommel, van Heemstraweg-oost, Van Voordenpark, Zaltbommel, Gelderland, Nederland, 5301 KG, Nederland",railway,station,FOUND
