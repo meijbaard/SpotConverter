@@ -180,29 +180,30 @@ function getTrainInfo(parsedMessage) {
     let images = [];
 
     if (parsedMessage.locomotive) {
-        const locoClean = parsedMessage.locomotive.replace(/\s/g, '');
-        if (materieelDatabase.exact[locoClean]) {
-            images.push(`assets/images/treinen/${materieelDatabase.exact[locoClean]}`);
-            locoNumber = parsedMessage.locomotive;
+        const locoClean = parsedMessage.locomotive.replace(/[\s-]/g, '');
+        let locoImage = materieelDatabase.exact[locoClean];
+
+        if (locoImage) {
             locoType = "Locomotief";
+            locoNumber = parsedMessage.locomotive;
         } else {
             for (const type in materieelDatabase.types) {
                 if (locoClean.startsWith(type)) {
-                    images.push(`assets/images/treinen/${materieelDatabase.types[type]}`);
+                    locoImage = materieelDatabase.types[type];
                     locoType = "Locomotief type";
                     locoNumber = type;
                     break;
                 }
             }
         }
-    }
-    if (images.length === 0) {
-         images.push(`assets/images/treinen/${materieelDatabase.default}`);
+        images.push(`assets/images/${locoImage || materieelDatabase.default}`);
+    } else {
+         images.push(`assets/images/${materieelDatabase.default}`);
     }
 
     if (parsedMessage.cargo && materieelDatabase.wagons[parsedMessage.cargo]) {
         for (let i = 0; i < 4; i++) {
-            images.push(`assets/images/treinen/${materieelDatabase.wagons[parsedMessage.cargo]}`);
+            images.push(`assets/images/${materieelDatabase.wagons[parsedMessage.cargo]}`);
         }
     }
     
