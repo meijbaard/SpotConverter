@@ -1,24 +1,29 @@
 # SpotConverter Pro
 
+![Deploy SpotConverter](https://github.com/meijbaard/SpotConverter/actions/workflows/pages.yml/badge.svg)
+
 SpotConverter Pro is een geavanceerde webapplicatie, specifiek ontworpen voor en door treinspotters en -enthousiastelingen. Het primaire doel van deze tool is om de vaak cryptische en met jargon doorspekte WhatsApp-berichten over treinwaarnemingen te transformeren in heldere, gestructureerde en direct bruikbare informatie.
 
 Waar een simpel spotbericht vaak alleen direct nuttig is voor de ontvanger, ontgrendelt deze tool de onderliggende data. De tool analyseert de inhoud van een spot-bericht, herkent routes op basis van vooraf gedefinieerde spoortrajecten en berekent een geschatte passage-tijd voor een door de gebruiker gekozen station, waardoor je sneller en beter kunt anticiperen op naderende treinen.
 
 De applicatie is ontworpen met gebruiksgemak als kernprincipe. Het werkt volledig in de browser en vereist geen installatie. Alle benodigde data, zoals stationslijsten, afstanden, en treinpatronen, wordt dynamisch ingeladen vanaf een centrale, openbare locatie (GitHub). Dit garandeert dat elke gebruiker altijd met de meest actuele informatie werkt.
 
-[**Bekijk hier de live versie**](https://www.markeijbaard.nl/spotconverter/)
+Live: **https://spotconverter.markeijbaard.nl**  
+
+Versie: **2.9.0** · Licentie: **MIT**
 
 ---
 
-### 🗂️ Inhoudsopgave
-
-* [✨ Features](#-features)
-* [🚀 Hoe te Gebruiken](#-hoe-te-gebruiken)
-* [🔧 Data & Configuratie](#-data--configuratie)
-* [🗺️ OSM-stationvalidatie](#️-osm-stationvalidatie)
-* [💾 Bronvermeldingen](#-bronvermeldingen)
-* [🤝 Bijdragen](#-bijdragen)
-* [📄 Licentie](#-licentie)
+## 🗂️ Inhoud
+- [✨ Features](#-features)
+- [🚀 Snel starten](#-snel-starten)
+- [🛠️ Local development](#️-local-development)
+- [🔧 Data & configuratie](#-data--configuratie)
+- [🗺️ OSM-stationvalidatie](#️-osm-stationvalidatie)
+- [📦 Deploy (GitHub Pages)](#-deploy-github-pages)
+- [🤝 Bijdragen](#-bijdragen)
+- [📄 Licentie](#-licentie)
+- [📝 Changelog](#-changelog)
 
 ---
 
@@ -35,19 +40,36 @@ De applicatie is ontworpen met gebruiksgemak als kernprincipe. Het werkt volledi
 
 ---
 
-### 🚀 Hoe te Gebruiken
+## 🚀 Snel starten
 
-1. **Open de Applicatie:** Start de tool door het `station_converter.html` bestand te openen in een moderne webbrowser zoals Chrome, Firefox, of Edge. Een internetverbinding is nodig om de meest recente data van GitHub te laden.
-2. **Navigeer door de Tabs:** Gebruik de knoppen bovenaan om te wisselen tussen de drie hoofdsecties:
-   * **Spot Analyse:** De kernfunctionaliteit voor het analyseren van berichten.
-   * **Heatmap:** Bekijk de passagefrequentie per uur voor een geselecteerd station.
-   * **Patronen:** Krijg een overzicht van alle bekende, terugkerende treinroutes.
-3. **Plak het Bericht:** Kopieer een spot-bericht en plak dit in het tekstveld "Plak je WhatsApp bericht hier:". De tool begint onmiddellijk met de analyse.
-4. **Kies je Doelstation:** In de dropdown-lijst "Bereken passage voor:" kun je het station selecteren waarvoor je een passage-tijd wilt weten. Standaard staat deze op "Baarn".
-5. **Bekijk de Resultaten:** De resultaten verschijnen direct en worden live bijgewerkt in de verschillende blokken:
-   * **Verwerkt Bericht:** De originele tekst, verrijkt met gemarkeerde, volledige stationsnamen en tooltips voor jargon.
-   * **Analyse:** Een duidelijke conclusie over de rijrichting en of de trein het gekozen station passeert, inclusief een berekende aankomsttijd.
-   * **Geparsede Data:** Een uitklapbaar blok met de technische data (in JSON-formaat) die de tool heeft geëxtraheerd.
+1. Ga naar **https://spotconverter.markeijbaard.nl**.  
+2. Plak je spotbericht bij **Spot Analyse**.  
+3. Kies **“Bereken passage voor”** → bekijk ETA, richting en analyse.  
+4. Gebruik **Station Zoeker**, **Heatmap** of **Patronen** voor extra context.
+
+---
+
+## 🛠️ Local development
+
+Omdat data vanaf GitHub wordt opgehaald, test je via een klein webservertje (CORS):
+
+~~~bash
+# in de root van dit repo
+python3 -m http.server 8000
+# open daarna: http://localhost:8000
+~~~
+
+**Projectstructuur**
+
+~~~text
+/
+├─ index.html
+├─ assets/
+│  ├─ css/spotconverter.css
+│  └─ js/spotconverter.js
+├─ CNAME                # spotconverter.markeijbaard.nl
+└─ .nojekyll            # leeg, zorgt dat Pages geen Jekyll draait
+~~~
 
 ---
 
@@ -64,16 +86,11 @@ De tool laadt alle data extern om de kernlogica gescheiden te houden van de info
 
 ---
 
-### 🗺️ OSM-stationvalidatie
+## 🗺️ OSM-stationvalidatie
 
-Naast de webapplicatie bevat dit project een hulpscript `osm_station_check.py` dat alle stations uit `trajecten.json` controleert in **OpenStreetMap (Nominatim)**. Het script:
+Het hulpscript `osm_station_check.py` controleert stations uit `trajecten.json` via **OpenStreetMap (Nominatim)** en slaat coördinaten op.
 
-- Zoekt per station naar de juiste coördinaten (lat/lon).
-- Schrijft tussentijds resultaten weg (**checkpointing**).
-- Kan een run hervatten met `--resume`.
-
-#### Installatie
-
+**Installatie**
 ~~~bash
 python3 -m venv .venv
 source .venv/bin/activate
@@ -81,17 +98,35 @@ python3 -m pip install --upgrade pip
 pip install pandas requests tqdm
 ~~~
 
-#### Gebruik (één regel)
-
+**Één-regelige run**
 ~~~bash
-curl -L -o stations.csv 'https://raw.githubusercontent.com/meijbaard/SpotConverter/refs/heads/main/stations.csv' && python3 osm_station_check.py --trajecten 'https://raw.githubusercontent.com/meijbaard/SpotConverter/refs/heads/main/trajecten.json' --stations stations.csv --out out_osm --sleep 0.8 --resume
+curl -L -o stations.csv 'https://raw.githubusercontent.com/meijbaard/SpotConverter/refs/heads/main/stations.csv' \
+  && python3 osm_station_check.py --trajecten 'https://raw.githubusercontent.com/meijbaard/SpotConverter/refs/heads/main/trajecten.json' \
+  --stations stations.csv --out out_osm --sleep 0.8 --resume
 ~~~
 
-- `--sleep 0.8` voldoet aan de Nominatim usage policy (pas aan als nodig, bijv. `1.0` of `1.2` bij rate limits).
-- De resultaten worden opgeslagen in `out_osm/`:
-  - `osm_stations_found.csv`
-  - `osm_stations_not_found.csv`
-  - `osm_stations_coords.json` (code → coördinaten)
+Uitvoer:
+- `out_osm/osm_stations_found.csv`
+- `out_osm/osm_stations_not_found.csv`
+- `out_osm/osm_stations_coords.json` (code → lat/lon)
+
+**Let op:** respecteer Nominatim’s rate limits (`--sleep 0.8` of hoger).
+
+---
+
+## 📦 Deploy (GitHub Pages)
+
+Deze repo is ingesteld op Pages via **GitHub Actions**.
+
+1. Zorg dat deze bestanden aanwezig zijn:
+   - `CNAME` met: `spotconverter.markeijbaard.nl`
+   - `.nojekyll` (leeg)
+   - `.github/workflows/pages.yml` (workflow die naar Pages deployt)
+2. **Settings → Pages**
+   - **Source**: *GitHub Actions*
+   - **Custom domain**: `spotconverter.markeijbaard.nl`
+   - **Enforce HTTPS** aanvinken zodra beschikbaar
+3. Commit & push → de workflow publiceert automatisch.
 
 ---
 
@@ -107,13 +142,25 @@ Voor de data die deze tool aandrijft, is dankbaar gebruik gemaakt van diverse op
 
 ---
 
-### 🤝 Bijdragen
+## 🤝 Bijdragen
 
-Bijdragen die de tool verbeteren zijn altijd welkom. Heb je een idee voor een nieuwe feature, een correctie op een traject, of een uitbreiding van de data? Voel je vrij om een issue aan te maken op de GitHub-repository of dien direct een pull request in.
+Issues en PR’s zijn welkom: <https://github.com/meijbaard/SpotConverter/issues>.  
+Draag bij met:
+- uitbreidingen/correcties aan `trajecten.json` en datasets,
+- verbeteringen aan UI/UX of performance,
+- bugfixes en tests.
 
 ---
 
-### 📄 Licentie
+## 📄 Licentie
 
-Dit project wordt beschikbaar gesteld onder de MIT Licentie.  
-Copyright © 2025 Mark Eijbaard.
+MIT © 2025 Mark Eijbaard
+
+---
+
+## 📝 Changelog
+
+### 2.9.0
+- Repo losgetrokken en via GitHub Pages gedeployed op `spotconverter.markeijbaard.nl`.
+- **Station Zoeker** toegevoegd; ETA-logica en trajectcombinaties verbeterd.
+- UI-tweaks, stabiliteit en documentatie opgefrist.
