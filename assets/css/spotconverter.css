@@ -58,7 +58,7 @@ body.ns-bg {
 .tab-btn.active { color: var(--ns-blue); border-bottom: 4px solid var(--ns-yellow); }
 .tab-btn:hover:not(.active) { background-color: #f2f2f2; }
 
-/* Reisoverzicht (NS Stijl) - FINAL CORRECTED */
+/* Reisoverzicht (NS Stijl) - FINAL */
 .journey-header {
   border-bottom: 1px solid var(--ns-border);
   padding-bottom: 1rem;
@@ -67,21 +67,45 @@ body.ns-bg {
   justify-content: space-between;
   align-items: center;
 }
+
+.train-info-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    /* Zorgt ervoor dat de container niet te breed wordt */
+    min-width: 0; 
+}
+
+.train-visualization {
+    display: flex;
+    align-items: flex-end;
+    overflow-x: auto; /* Activeert de schuifbalk */
+    white-space: nowrap; /* Voorkomt dat afbeeldingen onder elkaar springen */
+    flex-shrink: 1;
+    padding-bottom: 5px; /* Ruimte voor de schuifbalk */
+}
+.train-visualization img { 
+    height: 40px; 
+    margin-right: -10px; 
+    display: inline-block;
+}
+
 .train-details {
   font-size: 1.1rem; line-height: 1.4; color: var(--ns-blue);
+  white-space: nowrap; /* Voorkomt dat de tekst breekt */
 }
 .train-details p:first-child { font-size: 1.25rem; }
-.train-visualization { display: flex; align-items: flex-end; }
-.train-visualization img { height: 40px; margin-right: -10px; }
 
 .copy-btn {
     background-color: #f2f2f2; color: var(--ns-blue); font-weight: 600;
     padding: 0.5rem 1rem; border-radius: 999px;
     border: 1px solid var(--ns-border);
     transition: all 0.2s ease-in-out; cursor: pointer;
+    flex-shrink: 0; /* Voorkomt dat de knop krimpt */
 }
 .copy-btn:hover { background-color: #e5e5e5; }
 
+/* Tijdlijn */
 .journey-timeline { 
   display: grid;
   grid-template-columns: 60px 20px 1fr; /* Tijd | Marker | Naam */
@@ -89,49 +113,31 @@ body.ns-bg {
 }
 .timeline-station {
   grid-column: 1 / -1;
-  display: contents; /* Zorgt dat de kinderen zich gedragen als grid items */
+  display: contents; 
 }
 .timeline-time-col {
-  text-align: right;
-  font-weight: 700;
-  padding-top: 14px;
+  text-align: right; font-weight: 700; padding-top: 14px;
 }
-.timeline-marker-col {
-  position: relative;
-}
-/* De doorlopende verticale lijn */
+.timeline-marker-col { position: relative; }
 .timeline-marker-col::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 3px;
-  background-color: var(--ns-blue);
+  content: ''; position: absolute; top: 0; bottom: 0;
+  left: 50%; transform: translateX(-50%);
+  width: 3px; background-color: var(--ns-blue);
 }
-/* Pas de lijn aan voor het eerste en laatste station */
 .timeline-station:first-of-type .timeline-marker-col::before { top: 50%; }
 .timeline-station:last-of-type .timeline-marker-col::before { bottom: 50%; }
 
 .timeline-station-name-col {
-  padding-top: 15px;
-  font-weight: 500;
-  min-height: 50px;
+  padding-top: 15px; font-weight: 500; min-height: 50px;
 }
 .timeline-marker {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%); z-index: 1;
 }
-/* De RONDJES voor begin en eind */
 .timeline-marker.start-end {
   width: 14px; height: 14px; background-color: white;
   border: 3px solid var(--ns-blue); border-radius: 50%;
 }
-/* De HORIZONTALE STREEPJES voor tussenstations */
 .timeline-marker.intermediate {
   width: 10px; height: 3px; background-color: var(--ns-blue);
 }

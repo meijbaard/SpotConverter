@@ -220,7 +220,10 @@ function displayResults(analysis) {
     }
 
     const trainInfo = getTrainInfo(analysis.parsedMessage);
-    const imagesHtml = trainInfo.images.map(src => `<img src="${src}" />`).join('');
+    // Voegt onerror toe om gebroken afbeeldingen te verbergen
+    const imagesHtml = trainInfo.images
+        .map(img => `<img src="${img.src}" alt="${img.alt}" onerror="this.style.display='none'" />`)
+        .join('');
     
     let cargoText = "goederentrein";
     if (analysis.parsedMessage.cargo) {
@@ -229,15 +232,11 @@ function displayResults(analysis) {
 
     const headerHtml = `
       <div class="journey-header">
-        <div class="train-info-container flex items-center gap-4">
+        <div class="train-info-container">
             <div class="train-visualization">${imagesHtml}</div>
-            <div class="loco-type-info">
-                ${trainInfo.type}
-                <strong>${trainInfo.number}</strong>
-            </div>
             <div class="train-details">
                 <p><strong>${analysis.parsedMessage.carrier || 'Onbekende'} ${cargoText}</strong></p>
-                <p>Richting ${analysis.journey[analysis.journey.length - 1].name}</p>
+                <p>Locomotief: <strong>${trainInfo.number}</strong> | Richting ${analysis.journey[analysis.journey.length - 1].name}</p>
             </div>
         </div>
         <button id="copy-btn" class="copy-btn">Kopieer Info</button>
