@@ -174,40 +174,34 @@ function analyzeTrajectory(parsedData) {
     return { journey, parsedMessage: parsedData };
 }
 
-function getTrainInfo(parsedMessage) {
-    let locoType = "Standaard";
-    let locoNumber = "locomotief";
+function getTrainInfo(parsedData) {
+    let locoNumber = parsedData.locomotive || "Onbekend";
     let images = [];
 
-    if (parsedMessage.locomotive) {
-        const locoClean = parsedMessage.locomotive.replace(/[\s-]/g, '');
-        let locoImage = materieelDatabase.exact[locoClean];
-
-        if (locoImage) {
-            locoType = "Locomotief";
-            locoNumber = parsedMessage.locomotive;
-        } else {
+    if (parsedData.locomotive) {
+        const locoClean = parsedData.locomotive.replace(/[\s-]/g, '');
+        let locoImageFile = materieelDatabase.exact[locoClean];
+        
+        if (!locoImageFile) {
             for (const type in materieelDatabase.types) {
                 if (locoClean.startsWith(type)) {
-                    locoImage = materieelDatabase.types[type];
-                    locoType = "Locomotief type";
-                    locoNumber = type;
+                    locoImageFile = materieelDatabase.types[type];
                     break;
                 }
             }
         }
-        images.push(`assets/images/${locoImage || materieelDatabase.default}`);
+        images.push({ src: `assets/images/${locoImageFile || materieelDatabase.default}` });
     } else {
-         images.push(`assets/images/${materieelDatabase.default}`);
+         images.push({ src: `assets/images/${materieelDatabase.default}` });
     }
 
-    if (parsedMessage.cargo && materieelDatabase.wagons[parsedMessage.cargo]) {
+    if (parsedData.cargo && materieelDatabase.wagons[parsedData.cargo]) {
         for (let i = 0; i < 4; i++) {
-            images.push(`assets/images/${materieelDatabase.wagons[parsedMessage.cargo]}`);
+            images.push({ src: `assets/images/${materieelDatabase.wagons[parsedData.cargo]}` });
         }
     }
     
-    return { type: locoType, number: locoNumber, images };
+    return { number: locoNumber, images };
 }
 
 function displayResults(analysis) {
@@ -220,10 +214,7 @@ function displayResults(analysis) {
     }
 
     const trainInfo = getTrainInfo(analysis.parsedMessage);
-    // Voegt onerror toe om gebroken afbeeldingen te verbergen
-    const imagesHtml = trainInfo.images
-        .map(img => `<img src="${img.src}" alt="${img.alt}" onerror="this.style.display='none'" />`)
-        .join('');
+    const imagesHtml = trainInfo.images.map(img => `<img src="${img.src}" onerror="this.style.display='none'" />`).join('');
     
     let cargoText = "goederentrein";
     if (analysis.parsedMessage.cargo) {

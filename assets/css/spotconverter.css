@@ -72,7 +72,6 @@ body.ns-bg {
     display: flex;
     align-items: center;
     gap: 1rem;
-    /* Zorgt ervoor dat de container niet te breed wordt */
     min-width: 0; 
 }
 
@@ -92,7 +91,7 @@ body.ns-bg {
 
 .train-details {
   font-size: 1.1rem; line-height: 1.4; color: var(--ns-blue);
-  white-space: nowrap; /* Voorkomt dat de tekst breekt */
+  white-space: nowrap;
 }
 .train-details p:first-child { font-size: 1.25rem; }
 
@@ -101,7 +100,7 @@ body.ns-bg {
     padding: 0.5rem 1rem; border-radius: 999px;
     border: 1px solid var(--ns-border);
     transition: all 0.2s ease-in-out; cursor: pointer;
-    flex-shrink: 0; /* Voorkomt dat de knop krimpt */
+    flex-shrink: 0;
 }
 .copy-btn:hover { background-color: #e5e5e5; }
 
