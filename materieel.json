@@ -17,7 +17,7 @@
     "ketel": "ketelwagon.svg",
     "container": "containerwagon.svg",
     "trailer": "trailerwagon.svg",
-    "dicht": "dichtewagon.svg"
+    "dicht": "dichtewagon.svg",
 	"staal": "dichtewagon.svg"
   },
   "default": "default-loc.png"
