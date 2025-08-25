@@ -1,0 +1,23 @@
+{
+  "exact": {
+    "2454": "2454.png",
+    "4402": "4402.png",
+    "9902": "9902.png",
+    "9904": "9904.png"
+  },
+  "types": {
+    "18": "18_*.png",
+    "64": "64_*.png",
+    "186": "186_*.png",
+    "189": "189_*.png",
+    "193": "193_*.png",
+    "10100": "10100_*.png"
+  },
+  "wagons": {
+    "ketel": "ketelwagon.svg",
+    "container": "containerwagon.svg",
+    "trailer": "trailerwagon.svg",
+    "dicht": "dichtewagon.svg"
+  },
+  "default": "default-loc.png"
+}
