@@ -1,9 +1,9 @@
 // --- Global Variables ---
 let stations = [], distanceMatrix = {}, trajectories = {}, pathData = {}, parsedMessage = null, debounceTimeout = null, searchDebounceTimeout = null, heatmapData = {}, trainPatterns = {}, materieelDatabase = {};
 
-// --- Helper Functions & Data Loading (aangepast voor materieel.json) ---
+// --- Helper Functions & Data Loading ---
 async function loadData(){const e=document.getElementById("loader-overlay");e.style.display="flex";try{await Promise.all([loadStations(),loadAfstanden(),loadHeatmap(),loadPatterns(),loadGoederenpaden(),loadTrajectories(),loadMaterieel()]),populateStationDropdowns(),populateHeatmapDayDropdown(),updateHeatmap(),document.getElementById("patronen-output")&&renderPatronen(),processMessage(),searchStations()}catch(t){console.error("Error loading initial data:",t),document.getElementById("journey-output").innerHTML=`<p class="text-red-600 font-bold">Kon de data niet laden: ${t.message}.</p>`}finally{e.style.display="none"}}
-async function loadMaterieel(){let e=await fetch("materieel.json");if(!e.ok)throw new Error(`Failed to load materieel.json: ${e.statusText}`);materieelDatabase=await e.json()}
+async function loadMaterieel(){try{let e=await fetch("materieel.json");if(!e.ok)throw new Error(`Failed to load materieel.json: ${e.statusText}`);materieelDatabase=await e.json()}catch(e){console.error("Could not load materieel.json. Using empty database.",e),materieelDatabase={exact:{},types:{},wagons:{},default:"default-loc.png"}}}
 function getStationByCode(e){return stations.find(t=>t.code===e?.toUpperCase())}
 function debounceProcessMessage(){clearTimeout(debounceTimeout),debounceTimeout=setTimeout(processMessage,350)}
 function debounceSearch(){clearTimeout(searchDebounceTimeout),searchDebounceTimeout=setTimeout(searchStations,300)}
@@ -129,80 +129,109 @@ function analyzeTrajectory(parsedData) {
     if (!trajectoryInfo) return { journey: null, parsedMessage: parsedData };
     
     const { name, stations: journeyStations } = trajectoryInfo;
-    const journey = [];
     const [startHours, startMinutes] = parsedData.timestamp.split(':').map(Number);
     const startDate = new Date();
     startDate.setHours(startHours, startMinutes, 0, 0);
-    const startStationCode = parsedData.spotLocation.code;
     
-    let lastTime = startDate;
-    let lastStationCode = startStationCode;
-
-    for (let i = 0; i < journeyStations.length; i++) {
+    // Stap 1: Bereken ideale tijdlijn
+    let idealJourney = [];
+    let lastIdealTime = startDate;
+    let lastStationCode = journeyStations[0];
+    for(let i = 0; i < journeyStations.length; i++) {
         const stationCode = journeyStations[i];
-        const stationInfo = getStationByCode(stationCode);
-        if (!stationInfo) continue;
-
-        let time = null;
-        let newDate = new Date(lastTime.getTime());
-
-        if (i === 0) {
-            time = parsedData.timestamp;
-        } else {
-            const distance = distanceMatrix[lastStationCode]?.[stationCode];
-            if (distance !== undefined) {
-                const travelMinutes = Math.round((distance / 80) * 60);
-                newDate.setMinutes(newDate.getMinutes() + travelMinutes);
-                
-                const directionKey = name.includes('Bentheimroute') ? 'OOST' : 'WEST';
-                const pathInfo = pathData[stationCode]?.[directionKey];
-                
-                if (pathInfo?.length) {
-                    const pathMinutesSorted = pathInfo.sort((a,b) => a-b);
-                    const currentMinutes = newDate.getMinutes();
-                    let targetMinute = pathMinutesSorted.find(m => currentMinutes <= m) ?? pathMinutesSorted[0];
-                    if (currentMinutes > pathMinutesSorted[pathMinutesSorted.length - 1]) newDate.setHours(newDate.getHours() + 1);
-                    newDate.setMinutes(targetMinute, 0, 0);
-                }
-                time = newDate.toTimeString().substring(0, 5);
-                lastTime = newDate;
-            }
+        let newIdealTime = new Date(lastIdealTime.getTime());
+        if (i > 0) {
+            const distance = distanceMatrix[lastStationCode]?.[stationCode] || 0;
+            const travelMinutes = Math.round((distance / 80) * 60);
+            newIdealTime.setMinutes(newIdealTime.getMinutes() + travelMinutes);
         }
-        journey.push({ name: stationInfo.name_long, time: time });
+        idealJourney.push({ code: stationCode, time: newIdealTime });
+        lastIdealTime = newIdealTime;
         lastStationCode = stationCode;
     }
-    return { journey, parsedMessage: parsedData };
+
+    // Stap 2: Bereken realistische tijdlijn met goederenpaden
+    let realisticJourney = JSON.parse(JSON.stringify(idealJourney)); // Deep copy
+    realisticJourney.forEach(station => station.time = new Date(station.time));
+
+    const directionKey = name.includes('Bentheimroute') ? 'OOST' : 'WEST';
+    for (let i = 0; i < realisticJourney.length; i++) {
+        const station = realisticJourney[i];
+        const pathInfo = pathData[station.code]?.[directionKey];
+        if (pathInfo?.length) {
+            const pathMinutesSorted = pathInfo.sort((a,b) => a-b);
+            const currentMinutes = station.time.getMinutes();
+            let targetMinute = pathMinutesSorted.find(m => currentMinutes <= m) ?? pathMinutesSorted[0];
+
+            if (currentMinutes > pathMinutesSorted[pathMinutesSorted.length - 1]) {
+                station.time.setHours(station.time.getHours() + 1);
+            }
+            
+            if (station.time.getMinutes() !== targetMinute) {
+                station.time.setMinutes(targetMinute, 0, 0);
+                // Update de rest van de tijden na dit ankerpunt
+                for (let j = i + 1; j < realisticJourney.length; j++) {
+                    const prev = realisticJourney[j-1];
+                    const curr = realisticJourney[j];
+                    const dist = distanceMatrix[prev.code]?.[curr.code] || 0;
+                    const travelMins = Math.round((dist / 80) * 60);
+                    const newTime = new Date(prev.time.getTime() + travelMins * 60000);
+                    curr.time = newTime;
+                }
+            }
+        }
+    }
+
+    // Stap 3: Combineer en bereken wachttijd
+    const finalJourney = [];
+    for (let i = 0; i < realisticJourney.length; i++) {
+        const stationInfo = getStationByCode(journeyStations[i]);
+        const waitMinutes = Math.round((realisticJourney[i].time - idealJourney[i].time) / 60000);
+        finalJourney.push({
+            code: journeyStations[i],
+            name: stationInfo.name_long,
+            time: realisticJourney[i].time.toTimeString().substring(0, 5),
+            waitTime: waitMinutes > 1 ? waitMinutes : 0
+        });
+    }
+
+    return { journey: finalJourney, parsedMessage: parsedData };
 }
 
-function getTrainInfo(parsedData) {
-    let locoNumber = parsedData.locomotive || "Onbekend";
+function getTrainInfo(parsedMessage) {
+    let locoNumber = parsedMessage.locomotive || "Onbekend";
     let images = [];
+    const sortedTypes = Object.keys(materieelDatabase.types).sort((a, b) => b.length - a.length);
 
-    if (parsedData.locomotive) {
-        const locoClean = parsedData.locomotive.replace(/[\s-]/g, '');
+    if (parsedMessage.locomotive) {
+        const locoClean = parsedMessage.locomotive.replace(/[\s-]/g, '');
         let locoImageFile = materieelDatabase.exact[locoClean];
         
-        if (!locoImageFile) {
-            for (const type in materieelDatabase.types) {
+        if (locoImageFile) {
+            images.push({ src: `assets/images/${locoImageFile}`});
+        } else {
+            for (const type of sortedTypes) {
                 if (locoClean.startsWith(type)) {
                     locoImageFile = materieelDatabase.types[type];
+                    images.push({ src: `assets/images/${locoImageFile}`});
                     break;
                 }
             }
         }
-        images.push({ src: `assets/images/${locoImageFile || materieelDatabase.default}` });
-    } else {
-         images.push({ src: `assets/images/${materieelDatabase.default}` });
+    }
+    if (images.length === 0) {
+         images.push({ src: `assets/images/${materieelDatabase.default}`});
     }
 
-    if (parsedData.cargo && materieelDatabase.wagons[parsedData.cargo]) {
+    if (parsedMessage.cargo && materieelDatabase.wagons[parsedMessage.cargo]) {
         for (let i = 0; i < 4; i++) {
-            images.push({ src: `assets/images/${materieelDatabase.wagons[parsedData.cargo]}` });
+            images.push({ src: `assets/images/${materieelDatabase.wagons[parsedMessage.cargo]}`});
         }
     }
     
     return { number: locoNumber, images };
 }
+
 
 function displayResults(analysis) {
     document.getElementById('parsed-data-output').textContent = JSON.stringify(analysis, null, 2);
@@ -237,6 +266,8 @@ function displayResults(analysis) {
     let timelineHtml = '<div class="journey-timeline">';
     analysis.journey.forEach((station, index) => {
         let markerClass = (index === 0 || index === analysis.journey.length - 1) ? 'start-end' : 'intermediate';
+        let waitTimeHtml = station.waitTime > 0 && (station.code === 'AMF' || station.code === 'STO') ? `<div style="color: red; font-size: 0.8rem;">verwachte wachttijd ${station.waitTime} min</div>` : '';
+        
         timelineHtml += `
             <div class="timeline-station">
                 <div class="timeline-time-col">${station.time || '--:--'}</div>
@@ -245,6 +276,7 @@ function displayResults(analysis) {
                 </div>
                 <div class="timeline-station-name-col">
                     <span>${station.name}</span>
+                    ${waitTimeHtml}
                 </div>
             </div>`;
     });
