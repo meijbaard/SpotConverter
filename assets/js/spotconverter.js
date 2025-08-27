@@ -1,28 +1,35 @@
-/* =========================================================================
- * SpotConverter Pro – volledige herbouw
- * - Backprop tijdlijn ankerpunten (goederenpaden)
- * - Loc-herkenning: meest specifieke match
- * - Lading-herkenning: robuust
- * - Station-zoeker, Heatmap, Patronen
- * ========================================================================= */
+/* ========================================================================
+ * SpotConverter Pro — complete rebuild (Mark)
+ * ========================================================================
+ * - Robust data loader (timeouts + allSettled + overlay failsafe)
+ * - WhatsApp parser (time, carrier, locomotive, cargo, station codes)
+ * - Trajectory building (uses trajecten.json, HUB=AMF, optional target select)
+ * - Timeline with anchor minutes (goederenpaden) + forward/back propagation
+ * - Wait-badge shown only on AMF & STO
+ * - Heatmap / patronen / station-zoeker hooks
+ * - Auto re-run once data finished loading
+ * ====================================================================== */
 
 //
-// --------------------------- Globale staat -------------------------------
+// --------------------------- Globals -------------------------------------
 //
-let stations = [];                 // [{ code, name_long, lat, lon, ... }, ...]
-let distanceMatrix = {};           // { FROM: { TO: km, ... }, ... }
-let trajectories = {};             // { "Naam": ["AMF","BRN",...], ... }
-let pathData = {};                 // { STATION: { OOST: [minuten], WEST: [minuten] }, ... }
-let heatmapData = {};              // { STATION: { "Ma": { "00": n, ... }, ... } }
-let trainPatterns = {};            // { patternName: {...}, ... }
-let materieelDatabase = {          // geladen uit /materieel.json
-  exact: {}, types: {}, wagons: {}, default: "default-loc.png"
-};
+let stations = [];                 // [{code,name_long,lat,lon}]
+let distanceMatrix = {};           // { FROM: { TO: km } }
+let trajectories = {};             // { TrajName: [codes...] }
+let pathData = {};                 // { CODE: { OOST:[m...], WEST:[m...] } }
+let heatmapData = {};              // { Station: { Ma:{ "00":n } } }
+let trainPatterns = {};            // { name: { route:[codes], frequentie:... } }
+let materieelDatabase = { exact:{}, types:{}, wagons:{}, default:"default-loc.png" };
 
-let parsedMessage = null;
-let debounceTimeout = null, searchDebounceTimeout = null;
+let debounceMsgTimer = null;
+let debounceSearchTimer = null;
 
-// CDN/raw data (zoals je huidige repo)
+const HUB = "AMF";
+const WAIT_STATIONS = new Set(["AMF","STO"]);
+const DEFAULT_SPEED_KMH = 80;
+const FALLBACK_MINUTES_BETWEEN = 5;
+
+// Data endpoints
 const RAW_BASE = "https://raw.githubusercontent.com/meijbaard/SpotConverter/main";
 const URLS = {
   STATIONS: `${RAW_BASE}/stations.csv`,
@@ -30,167 +37,177 @@ const URLS = {
   GOEDERENPADEN: `${RAW_BASE}/goederenpaden.csv`,
   HEATMAP: `${RAW_BASE}/heatmap_treinpassages.json`,
   PATRONEN: `${RAW_BASE}/treinpatronen.json`,
-  TRAJECTEN: `${RAW_BASE}/trajecten.json`,
-  MATERIEEL: `materieel.json`
+  TRAJECTEN: `${RAW_BASE}/trajecten.json`
 };
 
-// Alleen hier tonen we expliciete wachttijd
-const WAIT_STATIONS = new Set(["AMF", "STO"]);
-
-// fallback rij-snelheid (km/h) voor tijdschatting
-const DEFAULT_SPEED_KMH = 80;
-const FALLBACK_MINUTES_BETWEEN = 5;
-
 //
-// --------------------------- Utilities -----------------------------------
+// ----------------------- Small helpers -----------------------------------
 //
-const by = (id) => document.getElementById(id);
-const fmtTime = (date) => date.toTimeString().slice(0,5);
+const $ = (id) => document.getElementById(id);
+const fmtTime = (d) => d.toTimeString().slice(0,5);
 
-function parseCSV(text) {
-  // Robuuste CSV: ondersteunt ; of , als scheiding
+function unique(arr){ return [...new Set(arr)]; }
+
+function toNumberSafe(v){
+  if (v == null || v === "") return NaN;
+  return Number(String(v).replace(",", "."));
+}
+
+function parseCSV(text){
   const sep = text.includes(";") ? ";" : ",";
   const lines = text.trim().split(/\r?\n/).filter(Boolean);
-  const header = lines.shift().split(sep).map(s => s.trim());
-  return lines.map(line => {
-    const cols = line.split(sep).map(s => s.trim());
-    const o = {};
-    header.forEach((h, i) => { o[h] = cols[i] ?? ""; });
+  const head = lines.shift().split(sep).map(s=>s.trim());
+  return lines.map(line=>{
+    const cols = line.split(sep).map(s=>s.trim());
+    const o={}; head.forEach((h,i)=>o[h]=cols[i]??"");
     return o;
   });
 }
 
-function toNumberSafe(x) {
-  // ondersteunt "12,3" en "12.3"
-  if (x == null || x === "") return NaN;
-  return Number(String(x).replace(",", "."));
-}
-
-function getStationByCode(code) {
-  const c = (code || "").toUpperCase();
-  return stations.find(s => s.code === c);
-}
-
-function minutesBetweenKm(km, speedKmh=DEFAULT_SPEED_KMH) {
+function minutesBetweenKm(km, speed=DEFAULT_SPEED_KMH){
   if (!km || !isFinite(km)) return FALLBACK_MINUTES_BETWEEN;
-  return Math.max(1, Math.round((km / speedKmh) * 60));
+  return Math.max(1, Math.round((km / speed)*60));
 }
 
-function travelMinutesBetween(fromCode, toCode) {
-  const f = (fromCode||"").toUpperCase(), t = (toCode||"").toUpperCase();
+function travelMinutesBetween(from, to){
+  const f=(from||"").toUpperCase(), t=(to||"").toUpperCase();
   const km = distanceMatrix[f]?.[t];
-  if (km == null) return FALLBACK_MINUTES_BETWEEN;
   return minutesBetweenKm(km);
 }
 
-function unique(arr) { return [...new Set(arr)]; }
+function getStationByCode(code){
+  const c=(code||"").toUpperCase();
+  return stations.find(s=>s.code===c);
+}
 
 //
-// --------------------------- Data laden ----------------------------------
+// ----------------------- Fetch with timeout ------------------------------
 //
-async function loadMaterieel() {
-  try {
-    const res = await fetch(URLS.MATERIEEL);
-    if (!res.ok) throw new Error(res.statusText);
-    materieelDatabase = await res.json();
-  } catch (e) {
-    console.warn("Materieel niet gevonden, gebruik lege database", e);
-    materieelDatabase = { exact:{}, types:{}, wagons:{}, default:"default-loc.png" };
+const FETCH_TIMEOUT_MS = 12000;
+
+async function fetchWithTimeout(url, opts={}, ms=FETCH_TIMEOUT_MS){
+  const ctrl = new AbortController();
+  const t = setTimeout(()=>ctrl.abort(), ms);
+  try{
+    const res = await fetch(url, { ...opts, signal: ctrl.signal, cache:"no-store" });
+    return res;
+  } finally {
+    clearTimeout(t);
   }
 }
 
-async function loadStations() {
-  const res = await fetch(URLS.STATIONS);
-  if (!res.ok) throw new Error(`stations.csv: ${res.statusText}`);
-  const rows = parseCSV(await res.text());
+// Overlay failsafe — spinner nooit eeuwig laten staan
+function hideLoader(){
+  const o = $("loader-overlay");
+  if (o) o.style.display = "none";
+}
+window.addEventListener("error", hideLoader);
+window.addEventListener("unhandledrejection", hideLoader);
 
-  // verwacht minimaal: code, name_long (val terug op name)
-  stations = rows.map(r => ({
-    code: (r.code || r.CODE || "").toUpperCase(),
-    name_long: r.name_long || r.name || r.naam || r.Naam || r.station || r.STATION || r.code,
-    lat: toNumberSafe(r.lat || r.latitude || r.Latitude),
-    lon: toNumberSafe(r.lon || r.longitude || r.Longitude)
-  })).filter(s => s.code);
-
-  // handig voor code-detectie (langste eerst voorkomt 'BR' vóór 'BRN')
-  stations.sort((a,b) => (b.code?.length||0) - (a.code?.length||0));
+//
+// ----------------------- Data loaders ------------------------------------
+//
+async function loadMaterieel(){
+  const candidates = [
+    "materieel.json",
+    "/materieel.json",
+    "assets/data/materieel.json",
+    "/assets/data/materieel.json"
+  ];
+  for (const url of candidates){
+    try{
+      const r = await fetchWithTimeout(url);
+      if (r.ok){ materieelDatabase = await r.json(); return; }
+    }catch{}
+  }
+  console.warn("Materieel niet gevonden — gebruik lege database.");
+  materieelDatabase = { exact:{}, types:{}, wagons:{}, default:"default-loc.png" };
 }
 
-async function loadAfstanden() {
-  const res = await fetch(URLS.AFSTANDEN);
-  if (!res.ok) throw new Error(`afstanden.csv: ${res.statusText}`);
-  const text = await res.text();
-  const sep = text.includes(";") ? ";" : ",";
-  const lines = text.trim().split(/\r?\n/).filter(Boolean);
-  const headers = lines.shift().split(sep).map(s => s.trim().toUpperCase()); // [ "FROM","AMF","BRN",... ] of [ "STATION","AMF",... ]
+async function loadStations(){
+  const r = await fetchWithTimeout(URLS.STATIONS);
+  if (!r.ok) throw new Error(`stations.csv: ${r.status}`);
+  const rows = parseCSV(await r.text());
+  stations = rows.map(x=>({
+    code: (x.code || x.CODE || "").toUpperCase(),
+    name_long: x.name_long || x.name || x.Naam || x.station || x.code,
+    lat: toNumberSafe(x.lat || x.latitude || x.Latitude),
+    lon: toNumberSafe(x.lon || x.longitude || x.Longitude)
+  })).filter(s=>s.code);
+  // sorteer op lengte, voorkomt dat "BR" vóór "BRN" matcht
+  stations.sort((a,b)=>(b.code?.length||0)-(a.code?.length||0));
+}
+
+async function loadAfstanden(){
+  const r = await fetchWithTimeout(URLS.AFSTANDEN);
+  if (!r.ok) throw new Error(`afstanden.csv: ${r.status}`);
+  const t = await r.text();
+  const sep = t.includes(";") ? ";" : ",";
+  const lines = t.trim().split(/\r?\n/).filter(Boolean);
+  const headers = lines.shift().split(sep).map(s=>s.trim().toUpperCase());
 
   distanceMatrix = {};
-  for (const line of lines) {
-    const cols = line.split(sep).map(s => s.trim());
+  for (const line of lines){
+    const cols = line.split(sep).map(s=>s.trim());
     const from = (cols[0]||"").toUpperCase();
     if (!from) continue;
     distanceMatrix[from] = distanceMatrix[from] || {};
-    for (let i = 1; i < headers.length; i++) {
-      const to = headers[i].toUpperCase();
+    for (let i=1;i<headers.length;i++){
+      const to = headers[i];
       const val = toNumberSafe(cols[i]);
-      if (!isNaN(val)) distanceMatrix[from][to] = val;
+      if (!isNaN(val)) distanceMatrix[from][to]=val;
     }
   }
 }
 
-async function loadGoederenpaden() {
-  const res = await fetch(URLS.GOEDERENPADEN);
-  if (!res.ok) throw new Error(`goederenpaden.csv: ${res.statusText}`);
-  const text = await res.text();
-  const lines = text.trim().split(/\r?\n/).filter(Boolean);
-
-  // Probeer beide vormen:
-  // a) station;richting;0,15,30,45
-  // b) station,richting,0,15,30,45
-  // c) station;richting;0;15;30;45
+async function loadGoederenpaden(){
+  const r = await fetchWithTimeout(URLS.GOEDERENPADEN);
+  if (!r.ok) throw new Error(`goederenpaden.csv: ${r.status}`);
+  const lines = (await r.text()).trim().split(/\r?\n/).filter(Boolean);
   pathData = {};
-  for (const line of lines.slice(1)) { // sla header over
+  for (const line of lines){ // header tolerant
     const sep = line.includes(";") ? ";" : ",";
-    const cols = line.split(sep).map(s => s.trim());
-    if (cols.length < 3) continue;
-    const st = (cols[0]||"").toUpperCase();
-    const dir = (cols[1]||"").toUpperCase(); // "OOST" / "WEST" (verwacht)
+    const cols = line.split(sep).map(s=>s.trim());
+    if (cols.length<3) continue;
+    if (/^station$/i.test(cols[0])) continue; // sla header over
+    const st  = (cols[0]||"").toUpperCase();
+    const dir = (cols[1]||"").toUpperCase();
     let mins = [];
-    if (cols.length === 3 && /[0-9]/.test(cols[2])) {
-      // derde kolom kan "0,15,30,45" of "0 15 30 45" zijn
-      mins = cols[2].split(/[,\s]+/).map(n => Number(n)).filter(n => Number.isFinite(n));
-    } else {
-      mins = cols.slice(2).map(n => Number(n)).filter(n => Number.isFinite(n));
-    }
-    if (!st || !dir || mins.length === 0) continue;
+    if (cols.length===3) mins = cols[2].split(/[,\s]+/).map(Number).filter(Number.isFinite);
+    else mins = cols.slice(2).map(Number).filter(Number.isFinite);
+    if (!st || !dir || !mins.length) continue;
     pathData[st] = pathData[st] || {};
     pathData[st][dir] = unique(mins).sort((a,b)=>a-b);
   }
 }
 
-async function loadHeatmap() {
-  const res = await fetch(URLS.HEATMAP);
-  if (!res.ok) throw new Error(`heatmap_treinpassages.json: ${res.statusText}`);
-  heatmapData = await res.json();
+async function loadHeatmap(){
+  const r = await fetchWithTimeout(URLS.HEATMAP);
+  if (!r.ok) throw new Error(`heatmap: ${r.status}`);
+  heatmapData = await r.json();
 }
 
-async function loadPatterns() {
-  const res = await fetch(URLS.PATRONEN);
-  if (!res.ok) throw new Error(`treinpatronen.json: ${res.statusText}`);
-  trainPatterns = await res.json();
+async function loadPatterns(){
+  const r = await fetchWithTimeout(URLS.PATRONEN);
+  if (!r.ok) throw new Error(`patronen: ${r.status}`);
+  trainPatterns = await r.json();
 }
 
-async function loadTrajectories() {
-  const res = await fetch(URLS.TRAJECTEN);
-  if (!res.ok) throw new Error(`trajecten.json: ${res.statusText}`);
-  trajectories = await res.json();
+async function loadTrajectories(){
+  const r = await fetchWithTimeout(URLS.TRAJECTEN);
+  if (!r.ok) throw new Error(`trajecten: ${r.status}`);
+  trajectories = await r.json();
 }
 
-async function loadData() {
-  const loader = by("loader");
-  if (loader) loader.style.display = "block";
-  try {
-    await Promise.all([
+async function loadData(){
+  const overlay = $("loader-overlay");
+  if (overlay) overlay.style.display = "flex";
+
+  // kill overlay na 15s anyway
+  const kill = setTimeout(hideLoader, 15000);
+
+  try{
+    const results = await Promise.allSettled([
       loadMaterieel(),
       loadStations(),
       loadAfstanden(),
@@ -199,110 +216,123 @@ async function loadData() {
       loadPatterns(),
       loadTrajectories()
     ]);
+
+    const failed = results.filter(r=>r.status==="rejected");
+    if (failed.length){
+      const details = failed.map(f=>f.reason?.message||"onbekend").join(" • ");
+      const box = $("journey-output");
+      if (box){
+        box.insertAdjacentHTML("afterbegin",
+          `<div class="p-3 mb-3 rounded bg-yellow-50 border border-yellow-300 text-yellow-800">
+            Let op: ${failed.length} dataset(s) niet geladen. Details: ${details}
+           </div>`);
+      }
+    }
+
     populateStationDropdowns();
     populateHeatmapControls();
     renderPatronen();
-  } catch (err) {
-    console.error(err);
-    by("journey-output").innerHTML =
-      `<p class="text-red-600 font-semibold">Kon de data niet laden: ${err.message}.</p>`;
+
+    // signal: data loaded
+    document.dispatchEvent(new CustomEvent("data-loaded"));
+  } catch(e){
+    const box = $("journey-output");
+    if (box) box.innerHTML = `<p class="text-red-600 font-semibold">Dataladen mislukt: ${e.message}</p>`;
   } finally {
-    if (loader) loader.style.display = "none";
+    clearTimeout(kill);
+    hideLoader();
   }
 }
 
 //
-// --------------------------- UI helpers ----------------------------------
+// ----------------------- UI helpers --------------------------------------
 //
-function populateStationDropdowns() {
-  const targetSel = by("targetStationSelect");
-  if (!targetSel) return;
-  targetSel.innerHTML = "";
-  // simpele alfabetische lijst op full name
-  const opts = [...stations]
-    .sort((a,b) => (a.name_long || a.code).localeCompare(b.name_long || b.code));
-  for (const st of opts) {
+function populateStationDropdowns(){
+  const sel = $("targetStationSelect");
+  if (!sel) return;
+  sel.innerHTML = "";
+  const list = [...stations].sort((a,b)=>(a.name_long||a.code).localeCompare(b.name_long||b.code));
+  for (const st of list){
     const o = document.createElement("option");
     o.value = st.code;
     o.textContent = `${st.name_long} (${st.code})`;
-    targetSel.appendChild(o);
+    sel.appendChild(o);
   }
-  // kleine UX: zet BRN als default als aanwezig
-  const hasBRN = stations.some(s => s.code === "BRN");
-  if (hasBRN) targetSel.value = "BRN";
+  if (stations.some(s=>s.code==="BRN")) sel.value="BRN";
 }
 
-function populateHeatmapControls() {
-  const selStation = by("heatmapstation");
-  const selDay = by("heatmapday");
-  if (!selStation || !selDay) return;
-
-  selStation.innerHTML = "";
-  const list = Object.keys(heatmapData).sort();
-  for (const s of list) {
-    const o = document.createElement("option");
-    o.value = s;
-    o.textContent = s;
-    selStation.appendChild(o);
+function populateHeatmapControls(){
+  const s = $("heatmapstation"), d = $("heatmapday");
+  if (!s || !d) return;
+  s.innerHTML=""; d.innerHTML="";
+  const stationList = Object.keys(heatmapData||{}).sort();
+  for (const st of stationList){
+    const o=document.createElement("option"); o.value=st; o.textContent=st; s.appendChild(o);
   }
-
-  // dagen NL volgorde
-  const days = ["Ma","Di","Wo","Do","Vr","Za","Zo"];
-  selDay.innerHTML = "";
-  for (const d of days) {
-    const o = document.createElement("option");
-    o.value = d;
-    o.textContent = d;
-    selDay.appendChild(o);
+  const days=["Ma","Di","Wo","Do","Vr","Za","Zo"];
+  for (const day of days){
+    const o=document.createElement("option"); o.value=day; o.textContent=day; d.appendChild(o);
   }
-
-  // default op huidige dag (ma=0)
-  const todayIdx = (new Date().getDay() + 6) % 7;
-  selDay.value = days[todayIdx];
-
-  // event listeners
-  selStation.addEventListener("change", updateHeatmap);
-  selDay.addEventListener("change", updateHeatmap);
+  d.value = days[(new Date().getDay()+6)%7];
+  s.addEventListener("change", updateHeatmap);
+  d.addEventListener("change", updateHeatmap);
   updateHeatmap();
 }
 
-function toggleParsedData() {
-  const pre = by("parsed-data-output");
-  const btn = by("toggle-data-btn");
-  const showing = pre.style.display !== "none";
-  pre.style.display = showing ? "none" : "block";
-  if (btn) btn.textContent = showing ? "(Toon)" : "(Verberg)";
+function renderPatronen(){
+  const out = $("patronen-output");
+  if (!out) return;
+  if (!Object.keys(trainPatterns||{}).length){
+    out.innerHTML = `<p class="text-slate-500">Geen patroondata geladen.</p>`;
+    return;
+  }
+  const html = Object.entries(trainPatterns).map(([name,obj])=>{
+    const route = (obj?.route||[]).map(c=>getStationByCode(c)?.name_long||c).join(" → ");
+    const freq = obj?.frequentie || obj?.frequency || "–";
+    return `<div class="p-4 mb-3 rounded-lg border border-slate-200 bg-white shadow-sm">
+      <div class="text-sm text-slate-500">${name}</div>
+      <div class="font-semibold text-slate-800">${route || "Onbekende route"}</div>
+      <div class="text-xs text-slate-500 mt-1">Frequentie: ${freq}</div>
+    </div>`;
+  }).join("");
+  out.innerHTML = html;
 }
 
-function debounceProcessMessage() {
-  clearTimeout(debounceTimeout);
-  debounceTimeout = setTimeout(processMessage, 350);
+function updateHeatmap(){
+  const st=$("heatmapstation")?.value, day=$("heatmapday")?.value, out=$("heatmap-output");
+  if (!st || !day || !out) return;
+  const dayData = heatmapData?.[st]?.[day];
+  if (!dayData){ out.innerHTML=`<p class="text-slate-500">Geen data.</p>`; return; }
+  const rows = Object.keys(dayData).sort().map(h=>`<tr><td class="px-2 py-1 font-mono text-right">${h}:00</td><td class="px-2 py-1">${dayData[h]}</td></tr>`).join("");
+  out.innerHTML = `<table class="min-w-[260px] border border-slate-200 rounded overflow-hidden">
+    <thead><tr class="bg-slate-50"><th class="px-2 py-1 text-left">Uur</th><th class="px-2 py-1 text-left">Passages</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
 }
 
-function debounceSearch() {
-  clearTimeout(searchDebounceTimeout);
-  searchDebounceTimeout = setTimeout(searchStations, 300);
+function toggleParsedData(){
+  const pre = $("parsed-data-output"), btn=$("toggle-data-btn");
+  if (!pre) return;
+  const show = pre.style.display==="none";
+  pre.style.display = show ? "block" : "none";
+  if (btn) btn.textContent = show ? "(Verberg)" : "(Toon)";
 }
 
 //
-// ---------------------- Parser: message → onderdelen ----------------------
+// ----------------------- Parser ------------------------------------------
 //
-function buildLocoRegex() {
-  // Combineer exact + type keys, langste eerst (186 vóór 18)
+function buildLocoRegex(){
   const tokens = [
-    ...Object.keys(materieelDatabase.exact || {}),
-    ...Object.keys(materieelDatabase.types || {})
-  ].filter(Boolean).sort((a,b) => b.length - a.length)
-   .map(t => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
-
-  // Match token, optioneel gevolgd door spatie/streep+cijfers (bijv. "186-123")
+    ...Object.keys(materieelDatabase.exact||{}),
+    ...Object.keys(materieelDatabase.types||{})
+  ].filter(Boolean).sort((a,b)=>b.length-a.length).map(t=>t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"));
   if (!tokens.length) return /\b$a/; // never
-  return new RegExp(`\\b(?:${tokens.join("|")})(?:[\\s-]?\\d+)?\\b`, "i");
+  return new RegExp(`\\b(?:${tokens.join("|")})(?:[\\s-]?\\d+)?\\b`,"i");
 }
 
-function parseMessage(message) {
-  const parsed = {
-    originalMessage: message,
+function parseMessage(msg){
+  const m = {
+    originalMessage: msg,
     timestamp: null,
     routeCodes: [],
     spotLocation: null,
@@ -311,263 +341,218 @@ function parseMessage(message) {
     cargo: null
   };
 
-  // Tijd (neem eerste hh:mm of h.mm)
-  const timeMatch = message.match(/(\d{1,2}[:.]\d{2})/);
-  if (timeMatch) parsed.timestamp = timeMatch[1].replace(".", ":");
+  // tijd
+  const t = msg.match(/(\d{1,2}[:.]\d{2})/);
+  if (t) m.timestamp = t[1].replace(".", ":");
 
-  // Carrier-codes (setje meest voorkomende)
-  const carriers = ['RFO','DBC','HSL','RTB','RTBC','LNS','LOC','TXL','TX','ERS',
-                    'TCS','PKP','MTR','FLP','RRF','RXP','SBB','CDC','LTE'];
-  const carrierRegex = new RegExp(`\\b(${carriers.join("|")})\\b`, "i");
-  const cMatch = message.match(carrierRegex);
-  if (cMatch) parsed.carrier = cMatch[1].toUpperCase();
+  // carrier
+  const carriers = ['RFO','DBC','HSL','RTB','RTBC','LNS','LOC','TXL','TX','ERS','TCS','PKP','MTR','FLP','RRF','RXP','SBB','CDC','LTE'];
+  const c = msg.match(new RegExp(`\\b(${carriers.join("|")})\\b`,"i"));
+  if (c) m.carrier = c[1].toUpperCase();
 
-  // Locomotief (meest specifieke)
-  const locoRegex = buildLocoRegex();
-  const lMatch = message.match(locoRegex);
-  if (lMatch) parsed.locomotive = lMatch[0];
+  // locomotive
+  const locoR = buildLocoRegex();
+  const l = msg.match(locoR);
+  if (l) m.locomotive = l[0];
 
-  // Lading (robuust op stam)
+  // cargo
   const cargoRules = [
-    { re: /\bketel\w*\b/i, key: 'ketel' },
-    { re: /\bcontainer\w*\b/i, key: 'container' },
-    { re: /\btrailer\w*\b/i, key: 'trailer' },
-    { re: /\b(schuifwand|dichte?)\w*\b/i, key: 'dicht' },
-    { re: /\bstaal\w*\b/i, key: 'staal' }
+    { re:/\bketel\w*\b/i, key:"ketel" },
+    { re:/\bcontainer\w*\b/i, key:"container" },
+    { re:/\btrailer\w*\b/i, key:"trailer" },
+    { re:/\b(schuifwand|dichte?)\w*\b/i, key:"dicht" },
+    { re:/\bstaal\w*\b/i, key:"staal" }
   ];
-  for (const rule of cargoRules) {
-    if (rule.re.test(message)) { parsed.cargo = rule.key; break; }
-  }
+  for (const r of cargoRules){ if (r.re.test(msg)){ m.cargo=r.key; break; } }
 
-  // Routecodes (alle bekende stations-codes in tekstvolgorde)
-  if (stations.length) {
-    const codePattern = new RegExp(`\\b(${stations.map(s=>s.code).join("|")})\\b`, "gi");
-    const matches = [...message.matchAll(codePattern)].map(m => m[1].toUpperCase());
-    parsed.routeCodes = unique(matches);
-    // spotlocatie = eerste code in tekst die als station bekend is
-    parsed.spotLocation = parsed.routeCodes[0] || null;
+  // stationcodes in tekstvolgorde
+  if (stations.length){
+    const pat = new RegExp(`\\b(${stations.map(s=>s.code).join("|")})\\b`,"gi");
+    const hits = [...msg.matchAll(pat)].map(x=>x[1].toUpperCase());
+    m.routeCodes = unique(hits);
+    m.spotLocation = m.routeCodes[0] || null;
   }
-
-  return parsed;
+  return m;
 }
 
 //
-// -------------- Traject-constructie vanuit route-codes --------------------
+// ----------------------- Trajectory building ------------------------------
 //
-function findTrajectoryContaining(code) {
-  for (const [name, list] of Object.entries(trajectories)) {
-    if (list.includes(code)) return { name, stations: list };
+function sliceBetween(list, a, b){
+  const ia = list.indexOf(a), ib = list.indexOf(b);
+  if (ia===-1 || ib===-1) return null;
+  if (ia<=ib) return list.slice(ia, ib+1);
+  const rev = [...list].reverse();
+  const ra = rev.indexOf(a), rb = rev.indexOf(b);
+  if (ra===-1 || rb===-1) return null;
+  return rev.slice(ra, rb+1);
+}
+
+function findTrajByContains(code){
+  for (const [name, arr] of Object.entries(trajectories)){
+    if (arr.includes(code)) return { name, stations: arr };
   }
   return null;
 }
 
-function sliceBetween(list, a, b) {
-  const ia = list.indexOf(a), ib = list.indexOf(b);
-  if (ia === -1 || ib === -1) return null;
-  if (ia <= ib) return list.slice(ia, ib+1);
-  const rev = [...list].reverse();
-  const ra = rev.indexOf(a), rb = rev.indexOf(b);
-  if (ra === -1 || rb === -1) return null;
-  return rev.slice(ra, rb+1);
-}
+function findFullTrajectory(routeCodes){
+  const known = routeCodes.filter(c=>getStationByCode(c));
+  const target = $("targetStationSelect")?.value || null;
 
-// Hub voor traject-koppeling (Amersfoort Aansluiting)
-const HUB = "AMF";
+  if (!known.length && target) return null;
+  if (known.length===1 && target && target!==known[0]) known.push(target);
 
-function findFullTrajectory(routeCodes) {
-  if (!routeCodes || routeCodes.length < 2) return null;
+  if (known.length<2) return null;
 
-  const known = routeCodes.filter(c => getStationByCode(c));
-  if (known.length < 2) return null;
+  const start = known[0], end = known[known.length-1];
+  const tStart = findTrajByContains(start);
+  const tEnd   = findTrajByContains(end);
 
-  const startCode = known[0];
-  const endCode = known[known.length - 1];
-
-  const startTraj = findTrajectoryContaining(startCode);
-  const endTraj   = findTrajectoryContaining(endCode);
-
-  // Zelfde traject?
-  if (startTraj && startTraj === endTraj) {
-    const seg = sliceBetween(startTraj.stations, startCode, endCode);
-    if (seg) return { name: startTraj.name, direction: (startTraj.stations.indexOf(startCode) <= startTraj.stations.indexOf(endCode)) ? "FORWARD" : "BACKWARD", stations: seg };
+  // zelfde traject
+  if (tStart && tEnd && tStart===tEnd){
+    const seg = sliceBetween(tStart.stations, start, end);
+    if (seg) return { name:tStart.name, stations:seg };
   }
 
-  // Verschillende trajecten: koppel via HUB
-  if (startTraj && endTraj) {
-    const first = sliceBetween(startTraj.stations, startCode, HUB);
-    const second = sliceBetween(endTraj.stations, HUB, endCode);
-    if (first && second) {
-      // richting is approx. richting van second segment
-      const dir = (endTraj.stations.indexOf(HUB) <= endTraj.stations.indexOf(endCode)) ? "FORWARD" : "BACKWARD";
-      return { name: `${startTraj.name} → ${endTraj.name}`, direction: dir, stations: [...first, ...second.slice(1)] };
-    }
+  // koppel via HUB
+  if (tStart && tEnd){
+    const a = sliceBetween(tStart.stations, start, HUB);
+    const b = sliceBetween(tEnd.stations, HUB, end);
+    if (a && b) return { name:`${tStart.name} → ${tEnd.name}`, stations:[...a, ...b.slice(1)] };
   }
 
-  // Fallback: probeer in elk geval een minimale keten door alle bekende codes te verbinden
-  const chain = unique(known);
-  return { name: "Ad-hoc route", direction: "FORWARD", stations: chain };
+  // fallback: ad hoc keten
+  return { name:"Ad-hoc route", stations: unique([start, ...known.slice(1)]) };
 }
 
-//
-// -------------------------- Tijdlijn analyse ------------------------------
-//
-function chooseDirectionKey(trajectoryInfo) {
-  // Goederenpaden bevatten vaak 'OOST'/'WEST'. We leiden dit af van
-  // de geografische ligging (oostelijker eindpunt → OOST).
-  try {
-    const stFirst = getStationByCode(trajectoryInfo.stations[0]);
-    const stLast  = getStationByCode(trajectoryInfo.stations[trajectoryInfo.stations.length - 1]);
-    if (stFirst && stLast) {
-      return (stLast.lon > stFirst.lon) ? "OOST" : "WEST";
-    }
-  } catch {}
+function chooseDirectionKey(stationsList){
+  try{
+    const A = getStationByCode(stationsList[0]);
+    const B = getStationByCode(stationsList[stationsList.length-1]);
+    if (A && B) return (B.lon > A.lon) ? "OOST" : "WEST";
+  }catch{}
   return "OOST";
 }
 
-function analyzeTrajectory(parsedData) {
-  if (!parsedData.timestamp || !parsedData.routeCodes.length) {
-    return { journey: null, parsedMessage: parsedData };
-  }
+//
+// ----------------------- Timeline analysis --------------------------------
+//
+function analyzeTrajectory(parsed){
+  if (!parsed.timestamp) return { journey:null, parsedMessage: parsed };
 
-  const trajectoryInfo = findFullTrajectory(parsedData.routeCodes);
-  if (!trajectoryInfo) return { journey: null, parsedMessage: parsedData };
+  const traj = findFullTrajectory(parsed.routeCodes);
+  if (!traj) return { journey:null, parsedMessage: parsed };
 
-  const { name, stations: journeyStations } = trajectoryInfo;
+  // starttijd (vandaag)
+  const [HH,MM] = parsed.timestamp.split(":").map(Number);
+  const t0 = new Date(); t0.setHours(HH||0, MM||0, 0, 0);
 
-  // starttijd op vandaag
-  const [HH, MM] = parsedData.timestamp.split(":").map(Number);
-  const start = new Date();
-  start.setHours(HH || 0, MM || 0, 0, 0);
-
-  // 1) Ideale tijdlijn (alleen rijtijd)
-  const idealJourney = journeyStations.map((code, i) => {
-    if (i === 0) return { code, time: new Date(start) };
-    const mins = travelMinutesBetween(journeyStations[i-1], code);
-    const t = new Date(idealJourney[i-1].time.getTime() + mins*60000);
-    return { code, time: t };
+  // 1) ideal
+  const ideal = traj.stations.map((code,i)=>{
+    if (i===0) return { code, time:new Date(t0) };
+    const mins = travelMinutesBetween(traj.stations[i-1], code);
+    return { code, time:new Date(ideal[i-1].time.getTime()+mins*60000) };
   });
 
-  // 2) Realistische tijdlijn initieel = kopie
-  const realisticJourney = idealJourney.map(s => ({ code: s.code, time: new Date(s.time) }));
+  // 2) realistic init copy
+  const real = ideal.map(s=>({ code:s.code, time:new Date(s.time) }));
 
-  // 3) Ankerpunten toepassen (goederenpaden) + back/forward propagate
-  const dirKey = chooseDirectionKey(trajectoryInfo);
+  // 3) apply anchors + forward/back propagate
+  const dirKey = chooseDirectionKey(traj.stations);
 
-  function applyAnchorAt(index) {
-    const st = realisticJourney[index];
-    const code = st.code;
+  function applyAnchorAt(idx){
+    const code = real[idx].code;
     const minsList = pathData[code]?.[dirKey];
-    if (!minsList || !minsList.length) return false;
+    if (!minsList || !minsList.length) return;
 
-    // kies dichtstbijzijnde volgende minuut op/na de huidige minuut
-    const curMin = st.time.getMinutes();
-    let target = minsList.find(m => curMin <= m);
-    const anchored = new Date(st.time);
-    if (target === undefined) {
-      target = minsList[0];
-      anchored.setHours(anchored.getHours() + 1);
-    }
-    anchored.setMinutes(target, 0, 0);
-    st.time = anchored;
+    const cur = real[idx].time;
+    const curMin = cur.getMinutes();
+    const sorted = [...minsList].sort((a,b)=>a-b);
+    let target = sorted.find(m=>curMin<=m);
+    const anchored = new Date(cur);
+    if (target===undefined){ target=sorted[0]; anchored.setHours(anchored.getHours()+1); }
+    anchored.setMinutes(target,0,0);
+    real[idx].time = anchored;
 
-    // FORWARD: na anker: pure rijtijd
-    for (let j = index + 1; j < realisticJourney.length; j++) {
-      const prev = realisticJourney[j-1].code;
-      const cur  = realisticJourney[j].code;
-      const mins = travelMinutesBetween(prev, cur);
-      realisticJourney[j].time = new Date(realisticJourney[j-1].time.getTime() + mins*60000);
+    // forward
+    for (let j=idx+1;j<real.length;j++){
+      const prev = real[j-1].code, curc = real[j].code;
+      const m = travelMinutesBetween(prev, curc);
+      real[j].time = new Date(real[j-1].time.getTime()+m*60000);
     }
-    // BACKWARD: vóór anker: pure rijtijd (terugrekenen)
-    for (let j = index - 1; j >= 0; j--) {
-      const next = realisticJourney[j+1].code;
-      const cur  = realisticJourney[j].code;
-      const mins = travelMinutesBetween(cur, next);
-      realisticJourney[j].time = new Date(realisticJourney[j+1].time.getTime() - mins*60000);
+    // backward
+    for (let j=idx-1;j>=0;j--){
+      const nxt = real[j+1].code, curc = real[j].code;
+      const m = travelMinutesBetween(curc, nxt);
+      real[j].time = new Date(real[j+1].time.getTime()-m*60000);
     }
-    return true;
   }
 
-  // loop door alle stations; als er pad-minuten zijn → anker
-  for (let i = 0; i < realisticJourney.length; i++) {
-    applyAnchorAt(i);
-  }
+  for (let i=0;i<real.length;i++) applyAnchorAt(i);
 
-  // 4) Eindreeks + wachttijd-badge alleen op AMF/STO
-  const finalJourney = realisticJourney.map((node, idx) => {
+  // 4) final + wait badge
+  const finalJourney = real.map((node, idx)=>{
     const info = getStationByCode(node.code) || { name_long: node.code };
-    const wait = Math.max(0, Math.round((node.time - idealJourney[idx].time)/60000));
+    const wait = Math.max(0, Math.round((node.time - ideal[idx].time)/60000));
     return {
       code: node.code,
       name: info.name_long || node.code,
       time: fmtTime(node.time),
-      waitTime: WAIT_STATIONS.has(node.code) && wait > 1 ? wait : 0
+      waitTime: (WAIT_STATIONS.has(node.code) && wait>1) ? wait : 0
     };
   });
 
-  return { name, journey: finalJourney, parsedMessage: parsedData };
+  return { name: traj.name, journey: finalJourney, parsedMessage: parsed };
 }
 
 //
-// --------------------------- Materieel info --------------------------------
+// ----------------------- Train visuals ------------------------------------
 //
-function getTrainInfo(parsedMessage) {
-  let images = [];
-  let locoLabel = parsedMessage.locomotive || "Onbekend";
-
-  // 1) exact match op '1234' / '9902' etc.
-  if (parsedMessage.locomotive) {
-    const clean = parsedMessage.locomotive.replace(/[\s-]/g, "");
-    const exactImg = materieelDatabase.exact?.[clean];
-    if (exactImg) images.push({ src: `assets/images/${exactImg}` });
-
-    // 2) type match (langste eerst)
-    if (images.length === 0) {
-      const types = Object.keys(materieelDatabase.types || {}).sort((a,b)=>b.length-a.length);
-      for (const t of types) {
-        if (clean.startsWith(t)) {
-          images.push({ src: `assets/images/${materieelDatabase.types[t]}` });
-          break;
-        }
-      }
+function getTrainInfo(parsed){
+  const imgs = [];
+  const label = parsed.locomotive || "Onbekend";
+  if (parsed.locomotive){
+    const clean = parsed.locomotive.replace(/[\s-]/g,"");
+    const ex = materieelDatabase.exact?.[clean];
+    if (ex) imgs.push({ src:`assets/images/${ex}` });
+    if (!imgs.length){
+      const types = Object.keys(materieelDatabase.types||{}).sort((a,b)=>b.length-a.length);
+      for (const t of types){ if (clean.startsWith(t)){ imgs.push({ src:`assets/images/${materieelDatabase.types[t]}` }); break; } }
     }
   }
-
-  // Wagon (lading) afbeelding
-  if (parsedMessage.cargo) {
-    const wagonFile = materieelDatabase.wagons?.[parsedMessage.cargo];
-    if (wagonFile) images.push({ src: `assets/images/${wagonFile}` });
+  if (parsed.cargo){
+    const w = materieelDatabase.wagons?.[parsed.cargo];
+    if (w) imgs.push({ src:`assets/images/${w}` });
   }
-
-  // fallback
-  if (images.length === 0 && materieelDatabase.default) {
-    images.push({ src: `assets/images/${materieelDatabase.default}` });
+  if (!imgs.length && materieelDatabase.default){
+    imgs.push({ src:`assets/images/${materieelDatabase.default}` });
   }
-
-  return { locoLabel, images };
+  return { locoLabel:label, images:imgs };
 }
 
 //
-// --------------------------- Rendering ------------------------------------
+// ----------------------- Rendering ----------------------------------------
 //
-function renderTimeline(analysis) {
+function renderTimeline(analysis){
   const { journey } = analysis;
-  if (!journey || journey.length === 0) {
+  if (!journey || !journey.length){
     return `<p class="text-slate-500">Plak een spotbericht om het reisoverzicht te genereren.</p>`;
   }
-  const rows = journey.map(st => `
-    <div class="flex items-start gap-3 py-2 border-b border-slate-100">
-      <div class="w-16 shrink-0 font-mono text-slate-800">${st.time}</div>
-      <div class="grow">
-        <div class="font-semibold text-slate-800">${st.name} <span class="text-slate-400">(${st.code})</span></div>
-        ${st.waitTime ? `<div class="text-xs text-slate-500 mt-1">wachttijd ~ ${st.waitTime} min</div>` : ``}
+  return `<div class="ns-timeline">
+    ${journey.map(st=>`
+      <div class="flex items-start gap-3 py-2 border-b border-slate-100">
+        <div class="w-16 shrink-0 font-mono text-slate-800">${st.time}</div>
+        <div class="grow">
+          <div class="font-semibold text-slate-800">${st.name} <span class="text-slate-400">(${st.code})</span></div>
+          ${st.waitTime ? `<div class="text-xs text-slate-500 mt-1">wachttijd ~ ${st.waitTime} min</div>` : ``}
+        </div>
       </div>
-    </div>
-  `).join("");
-  return `<div class="ns-timeline">${rows}</div>`;
+    `).join("")}
+  </div>`;
 }
 
-function displayResults(analysis) {
-  const target = by("journey-output");
+function displayResults(analysis){
+  const target = $("journey-output");
   const { parsedMessage } = analysis;
 
   const trainInfo = getTrainInfo(parsedMessage);
@@ -577,162 +562,131 @@ function displayResults(analysis) {
     parsedMessage.cargo ? `${parsedMessage.cargo}trein` : null
   ].filter(Boolean).join(" · ");
 
-  const imagesHtml = trainInfo.images.map(img =>
-    `<img src="${img.src}" class="h-10 inline-block align-middle mr-2" alt="materieel">`
-  ).join("");
+  const imgs = trainInfo.images.map(i=>`<img src="${i.src}" class="h-10 inline-block align-middle mr-2" alt="materieel">`).join("");
 
-  const headerHtml = `
+  const header = `
     <div class="flex items-center justify-between mb-4">
       <div>
         <div class="text-slate-500 text-xs uppercase tracking-wide">Spot</div>
         <div class="text-lg font-bold text-slate-800">${infoLine || "Onbekende trein"}</div>
       </div>
       <div class="flex items-center">
-        ${imagesHtml}
+        ${imgs}
         <button id="copy-btn" class="ml-3 px-3 py-2 text-xs rounded bg-slate-900 text-white hover:opacity-90">Kopieer Info</button>
       </div>
-    </div>
-  `;
+    </div>`;
 
-  const timelineHtml = renderTimeline(analysis);
-  target.innerHTML = headerHtml + timelineHtml;
+  target.innerHTML = header + renderTimeline(analysis);
 
-  // parsed-data (debug)
-  const parsedBox = by("parsed-data-output");
-  if (parsedBox) {
-    parsedBox.textContent = JSON.stringify(analysis, (k,v)=>v instanceof Date ? v.toISOString() : v, 2);
+  const pre = $("parsed-data-output");
+  if (pre){
+    pre.textContent = JSON.stringify(analysis, (k,v)=>v instanceof Date ? v.toISOString() : v, 2);
   }
 
-  // copy knop
-  const btn = by("copy-btn");
-  if (btn) {
-    btn.addEventListener("click", () => copyJourneyToClipboard(analysis));
+  const btn = $("copy-btn");
+  if (btn){
+    btn.addEventListener("click", ()=>copyJourneyToClipboard(analysis));
   }
 }
 
-function copyJourneyToClipboard(analysis) {
+function copyJourneyToClipboard(analysis){
   const { journey, parsedMessage } = analysis;
-  if (!journey || journey.length < 1) return;
-  const first = journey[0], last = journey[journey.length - 1];
-  const info = [ parsedMessage.carrier, parsedMessage.locomotive, parsedMessage.cargo ].filter(Boolean).join(" ");
+  if (!journey || !journey.length) return;
+  const first = journey[0], last = journey[journey.length-1];
+  const info = [parsedMessage.carrier, parsedMessage.locomotive, parsedMessage.cargo].filter(Boolean).join(" ");
   const text = `${info} | Gespot: ${first.name} (${first.time}) | Verwacht in ${last.name}: ~${last.time}`;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = by('copy-btn');
-    if (!btn) return;
-    const old = btn.textContent;
-    btn.textContent = 'Gekopieerd!';
-    setTimeout(()=>{ btn.textContent = old; }, 1500);
+  navigator.clipboard.writeText(text).then(()=>{
+    const b=$("copy-btn"); if(!b) return;
+    const old=b.textContent; b.textContent="Gekopieerd!"; setTimeout(()=>b.textContent=old,1200);
   });
 }
 
 //
-// --------------------- Station-zoeker / Heatmap / Patronen ----------------
+// ----------------------- Station search -----------------------------------
 //
-function searchStations() {
-  const q = (by("stationSearchInput")?.value || "").trim().toLowerCase();
-  const results = !q ? [] : stations.filter(s =>
+function debounceProcessMessage(){ clearTimeout(debounceMsgTimer); debounceMsgTimer=setTimeout(processMessage, 350); }
+function debounceSearch(){ clearTimeout(debounceSearchTimer); debounceSearchTimer=setTimeout(searchStations, 300); }
+
+function searchStations(){
+  const q = ($("stationSearchInput")?.value || "").trim().toLowerCase();
+  const list = !q ? [] : stations.filter(s =>
     s.code.toLowerCase().includes(q) || (s.name_long||"").toLowerCase().includes(q)
   );
-  renderSearchResults(results);
-}
-
-function renderSearchResults(list) {
-  const out = by("stationSearchResults");
+  const out = $("stationSearchResults");
   if (!out) return;
-  if (!list.length) { out.innerHTML = `<p class="text-slate-500">Geen resultaten.</p>`; return; }
-
-  out.innerHTML = list.map(s => `
+  if (!list.length){ out.innerHTML=`<p class="text-slate-500">Geen resultaten.</p>`; return; }
+  out.innerHTML = list.map(s=>`
     <div class="p-4 rounded-lg border border-slate-200 bg-white shadow-sm">
       <div class="text-sm text-slate-500">${s.code}</div>
       <div class="font-semibold text-slate-800">${s.name_long || s.code}</div>
-      ${(Number.isFinite(s.lat) && Number.isFinite(s.lon)) ? `<div class="text-xs text-slate-500 mt-1">(${s.lat.toFixed(4)}, ${s.lon.toFixed(4)})</div>` : ``}
+      ${(Number.isFinite(s.lat)&&Number.isFinite(s.lon))?`<div class="text-xs text-slate-500 mt-1">(${s.lat.toFixed(4)}, ${s.lon.toFixed(4)})</div>`:""}
     </div>
   `).join("");
 }
 
-function updateHeatmap() {
-  const st = by("heatmapstation")?.value;
-  const day = by("heatmapday")?.value;
-  const out = by("heatmap-output");
-  if (!st || !day || !out) return;
-  out.innerHTML = renderHeatmap(st, day);
-}
-
-function renderHeatmap(station, dayName) {
-  const dayData = heatmapData?.[station]?.[dayName];
-  if (!dayData) return `<p class="text-slate-500">Geen heatmap-data voor ${station} (${dayName}).</p>`;
-  const rows = Object.keys(dayData).sort().map(hh => `
-    <tr><td class="px-2 py-1 text-right font-mono">${hh}:00</td><td class="px-2 py-1">${dayData[hh]}</td></tr>
-  `).join("");
-  return `
-    <table class="min-w-[260px] border border-slate-200 rounded overflow-hidden">
-      <thead><tr class="bg-slate-50"><th class="px-2 py-1 text-left">Uur</th><th class="px-2 py-1 text-left">Passages</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  `;
-}
-
-function renderPatronen() {
-  const out = by("patronen-output");
-  if (!out || !Object.keys(trainPatterns||{}).length) return;
-
-  const html = Object.entries(trainPatterns).map(([name, obj]) => {
-    const route = (obj?.route || []).map(c => getStationByCode(c)?.name_long || c).join(" → ");
-    const freq  = obj?.frequentie || obj?.frequency || "–";
-    return `
-      <div class="p-4 mb-3 rounded-lg border border-slate-200 bg-white shadow-sm">
-        <div class="text-sm text-slate-500">${name}</div>
-        <div class="font-semibold text-slate-800">${route || "Onbekende route"}</div>
-        <div class="text-xs text-slate-500 mt-1">Frequentie: ${freq}</div>
-      </div>
-    `;
-  }).join("");
-
-  out.innerHTML = html;
-}
-
 //
-// --------------------------- Hoofdactie -----------------------------------
+// ----------------------- Main processing ----------------------------------
 //
-function processMessage() {
-  const input = by("whatsappMessage")?.value || "";
-  if (!input.trim()) {
-    by("journey-output").innerHTML = `<p class="text-slate-500">Plak een spotbericht om het reisoverzicht te genereren.</p>`;
-    const pre = by("parsed-data-output"); if (pre) pre.textContent = "";
+function processMessage(){
+  const input = ($("whatsappMessage")?.value || "");
+  const out = $("journey-output");
+
+  if (!input.trim()){
+    out.innerHTML = `<p class="text-slate-500">Plak een spotbericht om het reisoverzicht te genereren.</p>`;
+    const pre=$("parsed-data-output"); if(pre) pre.textContent="";
     return;
   }
-  parsedMessage = parseMessage(input);
-  const analysis = analyzeTrajectory(parsedMessage);
+
+  if (!stations.length || !Object.keys(trajectories||{}).length){
+    out.innerHTML = `<p class="text-slate-500">Data wordt nog geladen… ik analyseer zodra het klaar is.</p>`;
+    return;
+  }
+
+  const parsed = parseMessage(input);
+  const analysis = analyzeTrajectory(parsed);
   displayResults(analysis);
 }
 
 //
-// --------------------------- Tabs & init ----------------------------------
+// ----------------------- Boot --------------------------------------------
 //
 document.addEventListener("DOMContentLoaded", () => {
-  // Tabs
-  const tabContainer = by("tab-container");
-  if (tabContainer) {
-    tabContainer.addEventListener("click", (e) => {
+  // Tabs (indien aanwezig)
+  const tabWrap = $("tab-container");
+  if (tabWrap){
+    tabWrap.addEventListener("click",(e)=>{
       if (!e.target.classList.contains("tab-btn")) return;
-      const tabId = e.target.getAttribute("data-tab");
-      // activeren
-      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
       e.target.classList.add("active");
-      // tonen/verbergen
-      document.querySelectorAll("main").forEach(tab => {
-        tab.id === `tab-${tabId}` ? tab.classList.remove("hidden") : tab.classList.add("hidden");
+      const id = e.target.getAttribute("data-tab");
+      document.querySelectorAll("main").forEach(m=>{
+        m.id===`tab-${id}` ? m.classList.remove("hidden") : m.classList.add("hidden");
       });
     });
   }
 
-  // Heatmap dropdown listeners zitten in populateHeatmapControls()
+  // Input listeners (ook als inline attribuut ontbreekt)
+  const ta = $("whatsappMessage");
+  if (ta) ta.addEventListener("input", debounceProcessMessage);
 
-  // Data laden
+  const searchIn = $("stationSearchInput");
+  if (searchIn) searchIn.addEventListener("input", debounceSearch);
+
+  // Re-run once data finished, if user pasted already
+  document.addEventListener("data-loaded", ()=>{
+    if (($("whatsappMessage")?.value || "").trim()) processMessage();
+  });
+
+  // Failsafe re-run
+  setTimeout(()=>{
+    if (($("whatsappMessage")?.value || "").trim()) processMessage();
+  }, 2000);
+
+  // Start loading data
   loadData();
 });
 
-// Expose voor inline HTML-handlers
+// Expose (optional inline handlers)
 window.debounceProcessMessage = debounceProcessMessage;
 window.processMessage = processMessage;
 window.debounceSearch = debounceSearch;
