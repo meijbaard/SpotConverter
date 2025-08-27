@@ -5,148 +5,53 @@
   --ns-text-dark: #333333;
   --ns-border: #dcdcdc;
 }
-
-body.ns-bg {
-  font-family: 'Inter', sans-serif;
-  background-color: #f2f2f2;
-  color: var(--ns-text-dark);
-}
-
-.ns-top-bar {
-    background-color: white;
-    height: 4rem;
-    width: 100%;
-    border-bottom: 1px solid var(--ns-border);
-}
-
-.main-content-wrapper {
-    max-width: 56rem;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 1rem;
-}
-
-.ns-planner-block {
-    background-color: var(--ns-yellow);
-    padding: 2rem;
-    border-radius: 0.5rem;
-    margin-top: 2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-#loader-overlay {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-color: rgba(242, 242, 242, 0.8);
-  display: flex; justify-content: center; align-items: center;
-  z-index: 9999; flex-direction: column; gap: 1rem;
-  backdrop-filter: blur(4px);
-}
-.spinner {
-  border: 5px solid #e2e8f0; border-top: 5px solid var(--ns-blue);
-  border-radius: 50%; width: 50px; height: 50px;
-  animation: spin 1s linear infinite;
-}
+body.ns-bg { font-family: 'Inter', sans-serif; background-color: #f2f2f2; color: var(--ns-text-dark); }
+.ns-top-bar { background-color: white; height: 4rem; width: 100%; border-bottom: 1px solid var(--ns-border); }
+.main-content-wrapper { max-width: 56rem; margin-left: auto; margin-right: auto; padding: 0 1rem; }
+.ns-planner-block { background-color: var(--ns-yellow); padding: 2rem; border-radius: 0.5rem; margin-top: 2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+#loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(242, 242, 242, 0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; flex-direction: column; gap: 1rem; backdrop-filter: blur(4px); }
+.spinner { border: 5px solid #e2e8f0; border-top: 5px solid var(--ns-blue); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 /* Tab Knoppen */
 #tab-container { display: flex; height: 100%; align-items: center; }
-.tab-btn {
-    padding: 0 1rem; height: 100%; display: flex; align-items: center;
-    font-weight: 600; color: var(--ns-blue); background-color: transparent;
-    border: none; border-bottom: 4px solid transparent; transition: all 0.2s ease-in-out;
-}
+.tab-btn { padding: 0 1rem; height: 100%; display: flex; align-items: center; font-weight: 600; color: var(--ns-blue); background-color: transparent; border: none; border-bottom: 4px solid transparent; transition: all 0.2s ease-in-out; }
 .tab-btn.active { color: var(--ns-blue); border-bottom: 4px solid var(--ns-yellow); }
 .tab-btn:hover:not(.active) { background-color: #f2f2f2; }
 
-/* Reisoverzicht (NS Stijl) - FINAL CORRECTED */
-.journey-header {
-  border-bottom: 1px solid var(--ns-border);
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.train-details {
-  font-size: 1.1rem; line-height: 1.4; color: var(--ns-blue);
-}
+/* Reisoverzicht */
+.journey-header { border-bottom: 1px solid var(--ns-border); padding-bottom: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+.train-info-container { display: flex; align-items: center; gap: 1rem; min-width: 0; }
+.train-visualization { display: flex; align-items: flex-end; overflow-x: auto; white-space: nowrap; flex-shrink: 1; padding-bottom: 5px; }
+.train-visualization img { height: 40px; margin-right: -10px; display: inline-block; }
+.train-visualization img:first-child { margin-right: -2px; }
+.train-details { font-size: 1.1rem; line-height: 1.4; color: var(--ns-blue); white-space: nowrap; }
 .train-details p:first-child { font-size: 1.25rem; }
-.train-visualization {
-    display: flex;
-    align-items: flex-end;
-    overflow-x: auto; /* Activeert de schuifbalk */
-    white-space: nowrap; /* Voorkomt dat afbeeldingen onder elkaar springen */
-    flex-shrink: 1;
-    padding-bottom: 5px; /* Ruimte voor de schuifbalk */
-}
-.train-visualization img { 
-    height: 40px; 
-    margin-right: -10px; 
-    display: inline-block;
-}
-/* Voegt extra ruimte toe na het eerste kind (de loc) */
-.train-visualization img:first-child {
-    margin-right: -2px;
-}
-
-.copy-btn {
-    background-color: #f2f2f2; color: var(--ns-blue); font-weight: 600;
-    padding: 0.5rem 1rem; border-radius: 999px;
-    border: 1px solid var(--ns-border);
-    transition: all 0.2s ease-in-out; cursor: pointer;
-    flex-shrink: 0;
-}
+.copy-btn { background-color: #f2f2f2; color: var(--ns-blue); font-weight: 600; padding: 0.5rem 1rem; border-radius: 999px; border: 1px solid var(--ns-border); transition: all 0.2s ease-in-out; cursor: pointer; flex-shrink: 0; }
 .copy-btn:hover { background-color: #e5e5e5; }
 
-.journey-timeline { 
-  display: grid;
-  grid-template-columns: 60px 20px 1fr; /* Tijd | Marker | Naam */
-  gap: 0 15px;
-}
-.timeline-station {
-  grid-column: 1 / -1;
-  display: contents; /* Zorgt dat de kinderen zich gedragen als grid items */
-}
-.timeline-time-col {
-  text-align: right;
-  font-weight: 700;
-  padding-top: 14px;
-}
-.timeline-marker-col {
-  position: relative;
-}
-/* De doorlopende verticale lijn */
-.timeline-marker-col::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 3px;
-  background-color: var(--ns-blue);
-}
+/* Tijdlijn */
+.journey-timeline { display: grid; grid-template-columns: 60px 20px 1fr; gap: 0 15px; }
+.timeline-station { grid-column: 1 / -1; display: contents; }
+.timeline-time-col { text-align: right; font-weight: 700; padding-top: 14px; }
+.timeline-marker-col { position: relative; }
+.timeline-marker-col::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 3px; background-color: var(--ns-blue); }
 .timeline-station:first-of-type .timeline-marker-col::before { top: 50%; }
 .timeline-station:last-of-type .timeline-marker-col::before { bottom: 50%; }
+.timeline-station-name-col { padding-top: 15px; font-weight: 500; min-height: 50px; }
+.timeline-marker { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; }
+.timeline-marker.start-end { width: 14px; height: 14px; background-color: white; border: 3px solid var(--ns-blue); border-radius: 50%; }
+.timeline-marker.intermediate { width: 10px; height: 3px; background-color: var(--ns-blue); }
 
-.timeline-station-name-col {
-  padding-top: 15px;
-  font-weight: 500;
-  min-height: 50px;
+/* Zorgt voor correcte uitlijning in de journey header */
+.journey-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Duwt de info en de knop uit elkaar */
+    gap: 16px; /* Zorgt voor wat ademruimte */
 }
-.timeline-marker {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-}
-/* De RONDJES voor begin en eind */
-.timeline-marker.start-end {
-  width: 14px; height: 14px; background-color: white;
-  border: 3px solid var(--ns-blue); border-radius: 50%;
-}
-/* De HORIZONTALE STREEPJES voor tussenstations */
-.timeline-marker.intermediate {
-  width: 10px; height: 3px; background-color: var(--ns-blue);
+
+.train-info-container {
+    flex: 1; /* Laat dit element de beschikbare ruimte vullen */
+    min-width: 0; /* Dit is de sleutel: het zorgt ervoor dat de tekst kan afbreken */
 }

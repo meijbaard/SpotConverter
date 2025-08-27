@@ -15,10 +15,12 @@
   },
   "wagons": {
     "ketel": "ketel.png",
-    "container": "containerwagon.svg",
-    "trailer": "trailerwagon.svg",
-    "dicht": "dichtewagon.svg",
-	"staal": "dichtewagon.svg"
+    "container": "container.png",
+    "trailer": "trailer.png",
+	"auto": "trailer.png",
+    "dicht": "dicht.png",
+	"staal": "dicht.png",
+	"graan": "bulk.png"
   },
   "default": "default-loc.png"
 }
