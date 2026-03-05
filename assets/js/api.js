@@ -5,7 +5,6 @@ const BASE_URL = 'https://raw.githubusercontent.com/meijbaard/SpotConverter/main
 
 export async function initializeData() {
     try {
-        // We wachten tot alle beloften parallel zijn opgelost
         await Promise.all([
             loadStations(),
             loadAfstanden(),
@@ -14,12 +13,12 @@ export async function initializeData() {
             loadPatterns(),
             loadTrajectories(),
             loadMaterieel(),
-            loadCoords()
+            loadCoords() // De nieuwe aanroep voor Fase 2
         ]);
         return true;
     } catch (error) {
         console.error("Fout tijdens het laden van de initiële data:", error);
-        throw error; // Geef de fout door naar app.js voor de UI-afhandeling
+        throw error;
     }
 }
 
@@ -49,7 +48,6 @@ async function loadStations() {
         return stationObj;
     });
     
-    // Sorteer op lengte van de code voor de parser
     stations.sort((a, b) => (b.code?.length || 0) - (a.code?.length || 0));
     updateState('stations', stations);
 }
@@ -111,12 +109,14 @@ async function loadTrajectories() {
 
 async function loadMaterieel() {
     try {
-        // Aanname dat materieel.json lokaal of op dezelfde basis-URL staat
         const data = await fetchJSON(`materieel.json`);
         updateState('materieelDatabase', data);
     } catch (error) {
         console.warn("Kon materieel.json niet laden. Er wordt teruggevallen op de lege database.", error);
     }
+}
+
+// Hier staat de functie veilig in de globale scope van deze module
 async function loadCoords() {
     try {
         const data = await fetchJSON(`${BASE_URL}/afstanden_check/out_osm/osm_stations_coords.json`);
@@ -125,5 +125,4 @@ async function loadCoords() {
         console.warn("Kon geografische coördinaten niet laden, er wordt teruggevallen op de oude logica.", error);
         updateState('stationCoords', {});
     }
-}
 }
