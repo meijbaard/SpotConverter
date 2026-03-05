@@ -2,31 +2,34 @@
 import { getState, getStationByCode } from './state.js';
 
 export function findFullTrajectory(routeCodes) {
-    if (routeCodes.length < 1) return null;
+    // We hebben minimaal 2 stations nodig om een richting te kunnen bepalen
+    if (routeCodes.length < 2) return null; 
+
     const startCode = routeCodes[0];
     const endCode = routeCodes[routeCodes.length - 1];
-    const isSubArray = (arr, sub) => arr.join(',').includes(sub.join(','));
     const trajectories = getState().trajectories;
 
-    // Eerst zoeken naar een directe match op één enkel traject
+    // 1. Zoeken op één enkel traject (Slimmer: checkt of ze op dezelfde lijn liggen, ongeacht tussenstations)
     for (const name in trajectories) {
         const traject = trajectories[name];
-        if (isSubArray(traject, routeCodes)) {
-            const startIndex = traject.indexOf(startCode);
-            const endIndex = traject.indexOf(endCode);
-            if (startIndex <= endIndex) return { name, direction: 'forward', stations: traject.slice(startIndex, endIndex + 1) };
-        }
-        const reversed = [...traject].reverse();
-        if (isSubArray(reversed, routeCodes)) {
-            const startIndex = reversed.indexOf(startCode);
-            const endIndex = reversed.indexOf(endCode);
-             if (startIndex <= endIndex) return { name, direction: 'backward', stations: reversed.slice(startIndex, endIndex + 1) };
+        const startIndex = traject.indexOf(startCode);
+        const endIndex = traject.indexOf(endCode);
+
+        if (startIndex !== -1 && endIndex !== -1) {
+            // Beide stations liggen op dit traject!
+            if (startIndex < endIndex) {
+                return { name, direction: 'forward', stations: traject.slice(startIndex, endIndex + 1) };
+            } else if (startIndex > endIndex) {
+                // Ze liggen in omgekeerde volgorde op de route, dus draai de array om
+                return { name, direction: 'backward', stations: traject.slice(endIndex, startIndex + 1).reverse() };
+            }
         }
     }
 
-    // Complexe routeherkenning via knooppunt Amersfoort
+    // 2. Complexe routeherkenning via knooppunt Amersfoort (Over twee trajecten heen)
     const hub = "AMF";
     let startTrajInfo = null, endTrajInfo = null;
+    
     for (const name in trajectories) {
         if (trajectories[name].includes(startCode) && trajectories[name].includes(hub)) startTrajInfo = { name, stations: trajectories[name] };
         if (trajectories[name].includes(endCode) && trajectories[name].includes(hub)) endTrajInfo = { name, stations: trajectories[name] };
@@ -52,6 +55,7 @@ export function findFullTrajectory(routeCodes) {
         }
         return { name: `${startName} -> ${endName}`, direction: finalDirection, stations: [...firstLeg, ...secondLeg] };
     }
+    
     return null;
 }
 
