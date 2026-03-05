@@ -64,7 +64,34 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         return { journey: null, parsedMessage: parsedData };
     }
     
-    const trajectoryInfo = findFullTrajectory(parsedData.routeCodes);
+    const { distanceMatrix, pathData, stationCoords } = getState();
+    
+    // Kopieer de routeCodes zodat we er veilig voorspellingen aan kunnen toevoegen
+    let routeCodes = [...parsedData.routeCodes];
+
+    // --- FASE 4: Route Voorspelling (Extrapolatie) ---
+    if (parsedData.extrapolate && routeCodes.length >= 2) {
+        const startCode = routeCodes[0];
+        const endCode = routeCodes[routeCodes.length - 1];
+        
+        const startCoord = stationCoords[startCode];
+        const endCoord = stationCoords[endCode];
+        
+        if (startCoord && endCoord && startCoord.lon !== undefined && endCoord.lon !== undefined) {
+            // Check of de lengtegraad toeneemt (trein rijdt naar het Oosten)
+            if (Number(endCoord.lon) > Number(startCoord.lon)) {
+                // Regel: Oostwaarts met 'e.v.' betekent vrijwel altijd grens over bij Bad Bentheim
+                if (!routeCodes.includes('BH')) {
+                    routeCodes.push('BH');
+                }
+            } else {
+                // (Ruimte voor latere Westwaartse voorspellingen, bijv. naar Kijfhoek (KHF) of Amsterdam (ASD) o.b.v. lading/vervoerder)
+            }
+        }
+    }
+
+    // Gebruik nu de (mogelijk aangevulde) routeCodes om de hele lijn te trekken
+    const trajectoryInfo = findFullTrajectory(routeCodes);
     if (!trajectoryInfo) {
         return { journey: null, parsedMessage: parsedData };
     }
@@ -74,26 +101,21 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
     const startDate = new Date();
     startDate.setHours(startHours, startMinutes, 0, 0);
 
-    // --- FASE 2: Geografische Richtingsbepaling ---
-    const { distanceMatrix, pathData, stationCoords } = getState();
+    // Bepaal de definitieve rijrichting o.b.v. het volledige (voorspelde) traject
+    let directionKey = 'WEST'; 
+    const finalStartCode = journeyStations[0];
+    const finalEndCode = journeyStations[journeyStations.length - 1];
     
-    let directionKey = 'WEST'; // Standaard fallback
-    const startCode = journeyStations[0];
-    const endCode = journeyStations[journeyStations.length - 1];
+    const finalStartCoord = stationCoords[finalStartCode];
+    const finalEndCoord = stationCoords[finalEndCode];
     
-    const startCoord = stationCoords[startCode];
-    const endCoord = stationCoords[endCode];
-    
-    if (startCoord && endCoord && startCoord.lon !== undefined && endCoord.lon !== undefined) {
-        // Wiskundige bepaling:
-        // Longitude (lengtegraad) neemt toe naar het oosten, en af naar het westen.
-        if (Number(endCoord.lon) > Number(startCoord.lon)) {
+    if (finalStartCoord && finalEndCoord && finalStartCoord.lon !== undefined && finalEndCoord.lon !== undefined) {
+        if (Number(finalEndCoord.lon) > Number(finalStartCoord.lon)) {
             directionKey = 'OOST';
         } else {
             directionKey = 'WEST';
         }
     } else {
-        // Veiligheids-fallback naar de oude logica als OSM-coördinaten ontbreken
         if (name.includes('Bentheimroute')) {
             directionKey = (direction === 'forward') ? 'WEST' : 'OOST';
         } else {
@@ -113,7 +135,8 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         
         if (i > 0) {
             const distance = distanceMatrix[lastStationCode]?.[stationCode] || 0;
-            const travelMinutes = Math.round((distance / 80) * 60); // Aanname: 80 km/u
+            // Valideren of afstand bestaat, anders aanname van 5 min om niet vast te lopen
+            const travelMinutes = distance ? Math.round((distance / 80) * 60) : 5; 
             idealTime.setMinutes(idealTime.getMinutes() + travelMinutes);
         }
         
@@ -163,7 +186,6 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         }
     }
     
-    // Formatteer de datums naar leesbare tijden voor de weergave
     const finalJourney = journey.map(s => ({
         ...s,
         time: s.finalTime.toTimeString().substring(0, 5)
