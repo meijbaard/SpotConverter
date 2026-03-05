@@ -42,11 +42,11 @@
         <div class="grid md:grid-cols-2 gap-6">
             <div>
                 <label for="whatsappMessage" class="block text-sm font-semibold text-slate-700 mb-2">Plak je WhatsApp bericht hier:</label>
-                <textarea id="whatsappMessage" class="form-input w-full h-36 border rounded-lg p-3 shadow-sm" placeholder="Bijv. 13:07 Bh ri Asd RFO 193 150 met keteltrein" oninput="debounceProcessMessage()"></textarea>
+                <textarea id="whatsappMessage" class="form-input w-full h-36 border rounded-lg p-3 shadow-sm" placeholder="Bijv. 13:07 Bh ri Asd RFO 193 150 met keteltrein"></textarea>
             </div>
             <div>
                 <label for="targetStationSelect" class="block text-sm font-semibold text-slate-700 mb-2">Doelstation (voor extra context):</label>
-                <select id="targetStationSelect" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white" onchange="processMessage()"></select>
+                <select id="targetStationSelect" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white"></select>
             </div>
         </div>
       </div>
@@ -58,7 +58,7 @@
         <div class="mt-8">
           <div class="flex justify-between items-center mb-2">
             <h2 class="text-xl font-bold text-slate-800">Geparsede Data (voor analyse)</h2>
-            <button id="toggle-data-btn" onclick="toggleParsedData()" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition">(Toon)</button>
+            <button id="toggle-data-btn" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition">(Toon)</button>
           </div>
           <pre id="parsed-data-output" class="p-4 bg-slate-800 text-white text-xs rounded-lg overflow-x-auto" style="display: none;"></pre>
         </div>
@@ -66,7 +66,7 @@
 
       <main class="bg-white p-6 md:p-8 rounded-b-lg shadow-lg hidden" id="tab-zoeker">
         <h2 class="text-2xl font-bold text-slate-800 mb-4">Zoek Station</h2>
-        <input type="text" id="stationSearchInput" class="form-input w-full max-w-lg mx-auto block border rounded-lg p-3 shadow-sm" placeholder="Zoek op afkorting of naam..." oninput="debounceSearch()">
+        <input type="text" id="stationSearchInput" class="form-input w-full max-w-lg mx-auto block border rounded-lg p-3 shadow-sm" placeholder="Zoek op afkorting of naam...">
         <div id="stationSearchResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6"></div>
       </main>
       
@@ -76,6 +76,6 @@
           <p><a href="https://github.com/meijbaard/SpotConverter/issues" target="_blank" class="text-cyan-600 hover:underline">Meld een probleem of wens</a></p>
       </footer>
     </div>
-    <script src="assets/js/spotconverter.js" defer></script>
+    <script type="module" src="assets/js/app.js" defer></script>
   </body>
 </html>
