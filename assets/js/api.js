@@ -13,7 +13,8 @@ export async function initializeData() {
             loadHeatmap(),
             loadPatterns(),
             loadTrajectories(),
-            loadMaterieel()
+            loadMaterieel(),
+            loadCoords()
         ]);
         return true;
     } catch (error) {
@@ -116,4 +117,13 @@ async function loadMaterieel() {
     } catch (error) {
         console.warn("Kon materieel.json niet laden. Er wordt teruggevallen op de lege database.", error);
     }
+async function loadCoords() {
+    try {
+        const data = await fetchJSON(`${BASE_URL}/afstanden_check/out_osm/osm_stations_coords.json`);
+        updateState('stationCoords', data);
+    } catch (error) {
+        console.warn("Kon geografische coördinaten niet laden, er wordt teruggevallen op de oude logica.", error);
+        updateState('stationCoords', {});
+    }
+}
 }

@@ -6,6 +6,7 @@ const state = {
     pathData: {},
     heatmapData: {},
     trainPatterns: {},
+    stationCoords: {},
     materieelDatabase: {
         exact: {},
         types: {},

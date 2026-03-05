@@ -70,16 +70,31 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
     const startDate = new Date();
     startDate.setHours(startHours, startMinutes, 0, 0);
 
-    // Bepaal de hoofdrijrichting (dit wordt later in Fase 2 vervangen door geografische coördinaten)
-    let directionKey;
-    if (name.includes('Bentheimroute')) {
-        directionKey = (direction === 'forward') ? 'WEST' : 'OOST';
-    } else {
-        const amfIndexInJourney = journeyStations.indexOf('AMF');
-        if (amfIndexInJourney > 0) {
+    // --- FASE 2: Geografische Richtingsbepaling ---
+    const { distanceMatrix, pathData, stationCoords } = getState();
+    
+    let directionKey = 'WEST'; // Standaard fallback
+    const startCode = journeyStations[0];
+    const endCode = journeyStations[journeyStations.length - 1];
+    
+    const startCoord = stationCoords[startCode];
+    const endCoord = stationCoords[endCode];
+    
+    if (startCoord && endCoord && startCoord.lon !== undefined && endCoord.lon !== undefined) {
+        // Wiskundige bepaling:
+        // Longitude (lengtegraad) neemt toe naar het oosten, en af naar het westen.
+        if (Number(endCoord.lon) > Number(startCoord.lon)) {
             directionKey = 'OOST';
         } else {
             directionKey = 'WEST';
+        }
+    } else {
+        // Veiligheids-fallback naar de oude logica als OSM-coördinaten ontbreken
+        if (name.includes('Bentheimroute')) {
+            directionKey = (direction === 'forward') ? 'WEST' : 'OOST';
+        } else {
+            const amfIndexInJourney = journeyStations.indexOf('AMF');
+            directionKey = (amfIndexInJourney > 0) ? 'OOST' : 'WEST';
         }
     }
 
@@ -87,7 +102,6 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
     let journey = [];
     let lastTime = new Date(startDate.getTime());
     let lastStationCode = journeyStations[0];
-    const { distanceMatrix, pathData } = getState();
     
     for (let i = 0; i < journeyStations.length; i++) {
         const stationCode = journeyStations[i];
