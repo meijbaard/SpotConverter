@@ -36,22 +36,22 @@
         </div>
     </header>
 
-    <div class="main-content-wrapper">
-      <div class="ns-planner-block">
-        <h1 class="text-2xl font-bold text-ns-blue mb-4">Analyseer je spot</h1>
-        <div class="grid md:grid-cols-2 gap-6">
-            <div>
-                <label for="whatsappMessage" class="block text-sm font-semibold text-slate-700 mb-2">Plak je WhatsApp bericht hier:</label>
-                <textarea id="whatsappMessage" class="form-input w-full h-36 border rounded-lg p-3 shadow-sm" placeholder="Bijv. 13:07 Bh ri Asd RFO 193 150 met keteltrein"></textarea>
-            </div>
-            <div>
-                <label for="targetStationSelect" class="block text-sm font-semibold text-slate-700 mb-2">Doelstation (voor extra context):</label>
-                <select id="targetStationSelect" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white"></select>
+    <div class="main-content-wrapper mt-6">
+      <main class="bg-white p-6 md:p-8 rounded-lg shadow-lg" id="tab-spot">
+        <div class="ns-planner-block mb-8 rounded-lg">
+            <h1 class="text-2xl font-bold text-ns-blue mb-4">Analyseer je spot</h1>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <label for="whatsappMessage" class="block text-sm font-semibold text-slate-700 mb-2">Plak je WhatsApp bericht hier:</label>
+                    <textarea id="whatsappMessage" class="form-input w-full h-36 border rounded-lg p-3 shadow-sm" placeholder="Bijv. 13:07 Bh ri Asd RFO 193 150 met keteltrein"></textarea>
+                </div>
+                <div>
+                    <label for="targetStationSelect" class="block text-sm font-semibold text-slate-700 mb-2">Doelstation (voor extra context):</label>
+                    <select id="targetStationSelect" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white"></select>
+                </div>
             </div>
         </div>
-      </div>
 
-      <main class="bg-white p-6 md:p-8 rounded-b-lg shadow-lg" id="tab-spot">
         <div id="journey-output" class="min-h-[100px]">
             <p class="text-slate-500">Plak een spotbericht om het reisoverzicht te genereren.</p>
         </div>
@@ -64,12 +64,32 @@
         </div>
       </main>
 
-      <main class="bg-white p-6 md:p-8 rounded-b-lg shadow-lg hidden" id="tab-zoeker">
+      <main class="bg-white p-6 md:p-8 rounded-lg shadow-lg hidden" id="tab-zoeker">
         <h2 class="text-2xl font-bold text-slate-800 mb-4">Zoek Station</h2>
         <input type="text" id="stationSearchInput" class="form-input w-full max-w-lg mx-auto block border rounded-lg p-3 shadow-sm" placeholder="Zoek op afkorting of naam...">
         <div id="stationSearchResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6"></div>
       </main>
       
+      <main class="bg-white p-6 md:p-8 rounded-lg shadow-lg hidden" id="tab-heatmap">
+        <h2 class="text-2xl font-bold text-slate-800 mb-4">Heatmap: Drukte per station</h2>
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <label for="heatmapstation" class="block text-sm font-semibold text-slate-700 mb-2">Kies een station:</label>
+                <select id="heatmapstation" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white"></select>
+            </div>
+            <div>
+                <label for="heatmapday" class="block text-sm font-semibold text-slate-700 mb-2">Kies een dag:</label>
+                <select id="heatmapday" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white"></select>
+            </div>
+        </div>
+        <div id="heatmap-output" class="overflow-x-auto"></div>
+      </main>
+
+      <main class="bg-white p-6 md:p-8 rounded-lg shadow-lg hidden" id="tab-patronen">
+        <h2 class="text-2xl font-bold text-slate-800 mb-4">Bekende Treinpatronen</h2>
+        <div id="patronen-output" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </main>
+
       <footer class="text-center text-sm text-slate-500 py-6">
           <p>Versie 3.1.0</p>
           <p>Copyright &copy; 2025 Mark Eijbaard. MIT licentie.</p>
