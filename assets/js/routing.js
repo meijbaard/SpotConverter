@@ -61,7 +61,7 @@ export function findFullTrajectory(routeCodes) {
 }
 
 /**
- * Analyseert de route, berekent de rijrichting en voorspelt het traject bij 'e.v.' meldingen.
+ * Analyseert de route, berekent de rijrichting en voorspelt het traject.
  */
 export function analyzeTrajectory(parsedData, targetStationCode) {
     if (!parsedData.routeCodes.length || !parsedData.timestamp) {
@@ -71,8 +71,7 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
     const { distanceMatrix, pathData, stationCoords } = getState();
     let routeCodes = [...parsedData.routeCodes];
 
-    // --- FASE 4 & 5: Route Voorspelling (Nu met fail-safe voor goederen) ---
-    // We extrapoleren als er 'e.v.' staat, óf als we met zekerheid een goederentrein (cargo) hebben herkend.
+    // --- FASE 4 & 5: Route Voorspelling ---
     const isCargoTrain = parsedData.cargo !== null;
     const shouldExtrapolate = parsedData.extrapolate || isCargoTrain;
 
@@ -93,47 +92,39 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
             else {
                 let destination = null;
 
-                // 1. Pon autotrein
                 if (msg.includes('pon') || msg.includes('auto')) {
                     destination = 'AMF'; 
                 }
-                // 2. CD Cargo Staaltrein / Schroot naar Amsterdam Westhaven
                 else if ((msg.includes('staal') && msg.includes('cd cargo')) || msg.includes('schroot') || msg.includes('cd-cargo')) {
                     destination = 'ASW'; 
                 }
-                // 3. Reguliere Staaltrein / Shimmens naar Beverwijk Hoogovens
                 else if (msg.includes('staal') || msg.includes('shimmens')) {
                     destination = 'BVHC';
                 }
-                // 4. Kąty shuttle naar Moerdijk
                 else if (msg.includes('kąty') || msg.includes('katy') || msg.includes('clip')) {
                     destination = 'MDK'; 
                 }
-                // 5. KLK Kolb naar Delden
                 else if (msg.includes('klk') || msg.includes('servo')) {
                     destination = 'DDN';
                 }
-                // 6. Malmö shuttle naar Coevorden
                 else if (msg.includes('malmö') || msg.includes('malmo')) {
                     destination = 'COV';
                 }
-                // 7. Tilburg Shuttles (Rzepin, Chengdu, Nanjing)
                 else if (msg.includes('rzepin') || msg.includes('chengdu') || msg.includes('nanjing') || msg.includes('tilburg')) {
                     destination = 'TB';
                 }
-                // 8. Sloehaven (Nosta, Kolen, Erts)
-                else if (msg.includes('kolen') || msg.includes('erts') || msg.includes('nosta') || msg.includes('sloe')) {
-                    // Deze gaan via Tilburg naar Sloehaven
+                else if (msg.includes('kolen') || msg.includes('erts') || msg.includes('nosta') || msg.includes('nostra') || msg.includes('sloe')) {
                     if (!routeCodes.includes('TB')) routeCodes.push('TB');
                     destination = 'SHL';
                 }
-                // 9. Europoort / Maasvlakte Shuttles (Lovosice, Magdeburg, Poznań, PCC)
-                else if (msg.includes('lovosice') || msg.includes('magdeburg') || msg.includes('poznań') || msg.includes('poznan') || msg.includes('pcc')) {
-                    destination = 'EUR'; // Gebruik EUR (Europoort) of MVX (Maasvlakte) o.b.v. je trajecten.json
+                else if (msg.includes('lovosice') || msg.includes('poznań') || msg.includes('poznan')) {
+                    destination = 'ERP'; // Europoort
                 }
-                // 10. Overige vloeistoffen en containers -> Botlek / Kijfhoek (Fallback voor haven)
-                else if (msg.includes('zonnebloem') || msg.includes('biodiesel') || msg.includes('lotos') || msg.includes('brwinów') || msg.includes('brwinow') || parsedData.cargo === 'container' || parsedData.cargo === 'trailer') {
-                    destination = 'KHF'; // Kijfhoek als algemeen verzamelpunt
+                else if (msg.includes('magdeburg') || msg.includes('pcc')) {
+                    destination = 'MVT'; // Maasvlakte
+                }
+                else if (msg.includes('zonnebloem') || msg.includes('biodiesel') || msg.includes('lotos') || msg.includes('brwinów') || msg.includes('brwinow') || msg.includes('brinow') || parsedData.cargo === 'container' || parsedData.cargo === 'trailer') {
+                    destination = 'KHF'; // Kijfhoek (of andere havens als fallback)
                 }
 
                 if (destination && !routeCodes.includes(destination)) routeCodes.push(destination);
@@ -141,8 +132,15 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         }
     }
 
-    // Zoek het volledige traject op basis van (voorspelde) codes
-    const trajectoryInfo = findFullTrajectory(routeCodes);
+    let trajectoryInfo = findFullTrajectory(routeCodes);
+    
+    // --- DE VEILIGHEIDS-FALLBACK (Voorkomt de crash als de traject-lijn nog mist) ---
+    if (!trajectoryInfo && routeCodes.length > parsedData.routeCodes.length) {
+        console.warn("Voorspelde bestemming niet gevonden in netwerk. Terugval naar originele route.");
+        routeCodes = [...parsedData.routeCodes];
+        trajectoryInfo = findFullTrajectory(routeCodes);
+    }
+
     if (!trajectoryInfo) {
         return { journey: null, parsedMessage: parsedData };
     }
@@ -152,7 +150,6 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
     const startDate = new Date();
     startDate.setHours(startHours, startMinutes, 0, 0);
 
-    // Richtingsbepaling o.b.v. geografische coördinaten
     let directionKey = 'WEST'; 
     const finalStartCoord = stationCoords[journeyStations[0]];
     const finalEndCoord = stationCoords[journeyStations[journeyStations.length - 1]];
@@ -160,7 +157,6 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
     if (finalStartCoord && finalEndCoord && finalStartCoord.lon !== undefined && finalEndCoord.lon !== undefined) {
         directionKey = (Number(finalEndCoord.lon) > Number(finalStartCoord.lon)) ? 'OOST' : 'WEST';
     } else {
-        // Fallback
         if (name.includes('Bentheimroute')) {
             directionKey = (direction === 'forward') ? 'WEST' : 'OOST';
         } else {
@@ -168,7 +164,6 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         }
     }
 
-    // Tijdlijn samenstellen
     let journey = [];
     let lastTime = new Date(startDate.getTime());
     let lastStationCode = journeyStations[0];
@@ -195,7 +190,6 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         lastStationCode = stationCode;
     }
 
-    // Wachttijden berekenen (Goederenpaden)
     const targetStation = journey.find(s => s.code === targetStationCode);
     let totalDelay = 0;
     
@@ -215,7 +209,6 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         }
     }
     
-    // Vertraging propageren
     if (totalDelay > 0) {
         const waitStationCode = directionKey === 'WEST' ? 'AMF' : 'STO';
         const waitStationIndex = journey.findIndex(s => s.code === waitStationCode);

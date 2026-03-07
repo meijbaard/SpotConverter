@@ -10,23 +10,19 @@ export function parseMessage(message) {
         carrier: null, 
         locomotive: null, 
         cargo: null,
-        // --- VLAGGEN VOOR FASE 3 & 4 ---
         hasDirectionMarker: false, 
         extrapolate: false,        
         kopmaken: false            
     };
 
-    // 1. Tijd extraheren
     const timeMatch = message.match(/(\d{1,2}[:.]\d{2})/g);
     if (timeMatch) parsed.timestamp = timeMatch[0].replace('.', ':');
 
-    // 2. Vervoerder detecteren
     const carriers = ['RFO', 'DBC', 'HSL', 'RTB', 'RTBC', 'LNS', 'SR', 'VR', 'TCS', 'PKP', 'MTR', 'FLP', 'RRF', 'RXP', 'SBB', 'CDC', 'LTE'];
     const carrierRegex = new RegExp(`\\b(${carriers.join('|')})\\b`, 'gi');
     const carrierMatch = message.match(carrierRegex);
     if (carrierMatch) parsed.carrier = carrierMatch[0].toUpperCase();
     
-    // 3. Meervoudige tractie & opzending detecteren
     const locoRegex = /(\b(18|64|186|189|193|2454|4402|9902|9904|10100)[\s-]?\d*\b)/gi;
     const locoMatch = message.match(locoRegex);
     if (locoMatch) {
@@ -36,18 +32,26 @@ export function parseMessage(message) {
         }
     }
 
-    // 4. Lading classificeren (in parser.js)
+// 4. Lading classificeren (Nu inclusief specifieke shuttlenamen én veelvoorkomende typo's)
     const cargoMap = {
         'keteltrein': 'ketel', 'ketels': 'ketel', 'ketel': 'ketel',
         'zonnebloemolie': 'ketel', 'biodiesel': 'ketel', 'styreen': 'ketel',
-        'containertrein': 'container', 'containers': 'container', 'shuttle': 'container', // <-- 'shuttle' toegevoegd!
+        'containertrein': 'container', 'containers': 'container', 'shuttle': 'container', 
         'trailertrein': 'trailer', 'trailers': 'trailer',
         'dichtetrein': 'dicht', 'schuifwandwagon': 'dicht', 'dicht': 'dicht',
         'aluminium': 'dicht', 'aluminiumoxidetrein': 'dicht',
         'eanos': 'bulk', 'eanos\'en': 'bulk', 'ertstrein': 'bulk', 
         'staaltrein': 'bulk', 'kolentrein': 'bulk', 'staal': 'bulk', 
-        'schroot': 'bulk', 'shimmens': 'bulk', 'auto': 'auto'
+        'schroot': 'bulk', 'shimmens': 'bulk', 'auto': 'auto',
+        // Namen direct als trigger voor extrapolatie:
+        'lovosice': 'container', 'magdeburg': 'container', 'poznań': 'container',
+        'poznan': 'container', 'pcc': 'container', 'rzepin': 'container',
+        'chengdu': 'container', 'nanjing': 'container', 'katy': 'container',
+        'kąty': 'container', 'nosta': 'container', 'nostra': 'container', 
+        'brwinów': 'container', 'brwinow': 'container', 'brinow': 'container', 
+        'lotos': 'ketel'
     };
+    
     for (const key in cargoMap) {
         if (new RegExp(`\\b${key}\\b`, 'i').test(message)) {
             parsed.cargo = cargoMap[key];
@@ -55,57 +59,39 @@ export function parseMessage(message) {
         }
     }
 
-    // 5. Context & Preposities detecteren
-    if (/(?:^|\s)(ri|richting|>)(?:\s|$)/i.test(message)) {
-        parsed.hasDirectionMarker = true;
-    }
-    // De veilige methode die ook e.v. aan het einde van een zin feilloos oppakt
-    if (/(?:^|\s)(e\.v\.|ev|en verder)(?:\s|$)/i.test(message)) {
-        parsed.extrapolate = true;
-    }
-    if (/(kopmaken|maakt kop|draait)/i.test(message)) {
-        parsed.kopmaken = true;
-    }
+    if (/(?:^|\s)(ri|richting|>)(?:\s|$)/i.test(message)) parsed.hasDirectionMarker = true;
+    if (/(?:^|\s)(e\.v\.|ev|en verder)(?:\s|$)/i.test(message)) parsed.extrapolate = true;
+    if (/(kopmaken|maakt kop|draait)/i.test(message)) parsed.kopmaken = true;
 
-    // 6. Stations zoeken met uitsluiting van valse positieven
     let foundMatches = [];
     const stations = getState().stations;
-    
-    // Woorden die in normaal taalgebruik voorkomen, moeten case-sensitive gecheckt worden
     const commonWords = ['en', 'in', 'op', 'te', 'de', 'het', 'een', 'met', 'van', 'tot'];
     
     stations.forEach(station => {
         if (!station.code) return;
-        
         let regex;
         if (commonWords.includes(station.code.toLowerCase())) {
-            // Als de code overeenkomt met een veelvoorkomend woord, eisen we dat het begint met een hoofdletter (bijv. 'En' in plaats van 'en')
             regex = new RegExp(`\\b(${station.code}|${station.code.charAt(0).toUpperCase() + station.code.slice(1).toLowerCase()})\\b`, 'g');
         } else {
-            // Anders zoeken we case-insensitive
             regex = new RegExp(`\\b(${station.code})\\b`, 'gi');
         }
-
         let match;
         while ((match = regex.exec(message)) !== null) {
             foundMatches.push({ station, index: match.index });
         }
     });
     
-    // Sorteer op volgorde van verschijnen in de tekst
     foundMatches.sort((a, b) => a.index - b.index);
     
     if (foundMatches.length > 0) {
         const uniqueRouteCodes = [];
         let lastCode = null;
-        
         foundMatches.forEach(m => {
             if (m.station.code !== lastCode) {
                 uniqueRouteCodes.push(m.station.code);
                 lastCode = m.station.code;
             }
         });
-
         parsed.spotLocation = foundMatches[0].station;
         parsed.routeCodes = uniqueRouteCodes;
     }
