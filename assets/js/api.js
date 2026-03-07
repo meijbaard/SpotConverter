@@ -1,7 +1,9 @@
 // api.js
 import { updateState } from './state.js';
 
-const BASE_URL = 'https://raw.githubusercontent.com/meijbaard/SpotConverter/main';
+// We gebruiken een relatief pad ('.') zodat hij altijd lokaal zoekt 
+// tijdens het ontwikkelen, en later ook correct werkt op GitHub Pages.
+const BASE_URL = '.';
 
 export async function initializeData() {
     try {
@@ -13,7 +15,7 @@ export async function initializeData() {
             loadPatterns(),
             loadTrajectories(),
             loadMaterieel(),
-            loadCoords() // De nieuwe aanroep voor Fase 2
+            loadCoords() 
         ]);
         return true;
     } catch (error) {
@@ -103,7 +105,8 @@ async function loadPatterns() {
 }
 
 async function loadTrajectories() {
-    const data = await fetchJSON(`${BASE_URL}/trajecten.json`);
+    // Cache Buster toegevoegd: dwingt de browser altijd de échte, verse versie op te halen
+    const data = await fetchJSON(`${BASE_URL}/trajecten.json?t=${new Date().getTime()}`);
     updateState('trajectories', data);
 }
 
@@ -116,7 +119,6 @@ async function loadMaterieel() {
     }
 }
 
-// Hier staat de functie veilig in de globale scope van deze module
 async function loadCoords() {
     try {
         const data = await fetchJSON(`${BASE_URL}/afstanden_check/out_osm/osm_stations_coords.json`);

@@ -92,39 +92,49 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
             else {
                 let destination = null;
 
+                // 1. Pon autotrein
                 if (msg.includes('pon') || msg.includes('auto')) {
                     destination = 'AMF'; 
                 }
+                // 2. CD Cargo Staaltrein / Schroot naar Amsterdam Westhaven (AWH)
                 else if ((msg.includes('staal') && msg.includes('cd cargo')) || msg.includes('schroot') || msg.includes('cd-cargo')) {
-                    destination = 'ASW'; 
+                    destination = 'AWH'; // Aangepast van ASW naar AWH
                 }
+                // 3. Reguliere Staaltrein / Shimmens naar Beverwijk Hoogovens
                 else if (msg.includes('staal') || msg.includes('shimmens')) {
                     destination = 'BVHC';
                 }
+                // 4. Kąty shuttle naar Moerdijk (MDK)
                 else if (msg.includes('kąty') || msg.includes('katy') || msg.includes('clip')) {
                     destination = 'MDK'; 
                 }
+                // 5. KLK Kolb naar Delden
                 else if (msg.includes('klk') || msg.includes('servo')) {
                     destination = 'DDN';
                 }
+                // 6. Malmö shuttle naar Coevorden
                 else if (msg.includes('malmö') || msg.includes('malmo')) {
                     destination = 'COV';
                 }
+                // 7. Tilburg Shuttles (Rzepin, Chengdu, Nanjing)
                 else if (msg.includes('rzepin') || msg.includes('chengdu') || msg.includes('nanjing') || msg.includes('tilburg')) {
                     destination = 'TB';
                 }
+                // 8. Sloehaven (Nosta/Nostra, Kolen, Erts) -> Nu naar SLOE
                 else if (msg.includes('kolen') || msg.includes('erts') || msg.includes('nosta') || msg.includes('nostra') || msg.includes('sloe')) {
                     if (!routeCodes.includes('TB')) routeCodes.push('TB');
-                    destination = 'SHL';
+                    destination = 'SLOE'; // Aangepast van SHL naar SLOE!
                 }
+                // 9. Europoort / Maasvlakte Shuttles
                 else if (msg.includes('lovosice') || msg.includes('poznań') || msg.includes('poznan')) {
-                    destination = 'ERP'; // Europoort
+                    destination = 'ERP'; 
                 }
                 else if (msg.includes('magdeburg') || msg.includes('pcc')) {
-                    destination = 'MVT'; // Maasvlakte
+                    destination = 'MVT'; 
                 }
+                // 10. Overige vloeistoffen en containers -> Kijfhoek -> Nu naar KFH
                 else if (msg.includes('zonnebloem') || msg.includes('biodiesel') || msg.includes('lotos') || msg.includes('brwinów') || msg.includes('brwinow') || msg.includes('brinow') || parsedData.cargo === 'container' || parsedData.cargo === 'trailer') {
-                    destination = 'KHF'; // Kijfhoek (of andere havens als fallback)
+                    destination = 'KFH'; // Aangepast van KHF naar KFH!
                 }
 
                 if (destination && !routeCodes.includes(destination)) routeCodes.push(destination);
@@ -134,9 +144,8 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
 
     let trajectoryInfo = findFullTrajectory(routeCodes);
     
-    // --- DE VEILIGHEIDS-FALLBACK (Voorkomt de crash als de traject-lijn nog mist) ---
+    // --- DE VEILIGHEIDS-FALLBACK (Geruisloze terugval als de traject-lijn mist) ---
     if (!trajectoryInfo && routeCodes.length > parsedData.routeCodes.length) {
-        console.warn("Voorspelde bestemming niet gevonden in netwerk. Terugval naar originele route.");
         routeCodes = [...parsedData.routeCodes];
         trajectoryInfo = findFullTrajectory(routeCodes);
     }
