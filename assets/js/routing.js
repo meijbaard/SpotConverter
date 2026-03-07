@@ -99,7 +99,7 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
                 }
                 // 2. Staal naar Beverwijk
                 else if (msg.includes('staal') || msg.includes('shimmens')) {
-                    destination = 'BVK';
+                    destination = 'BVHC';
                 }
                 // 3. Tilburg / Rzepin
                 else if (msg.includes('rzepin') || msg.includes('tilburg')) {
