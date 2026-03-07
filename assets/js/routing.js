@@ -107,7 +107,7 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
                 }
                 // 4. Kąty shuttle naar Moerdijk
                 else if (msg.includes('kąty') || msg.includes('katy') || msg.includes('clip')) {
-                    destination = 'MRK'; 
+                    destination = 'MDK'; 
                 }
                 // 5. KLK Kolb naar Delden
                 else if (msg.includes('klk') || msg.includes('servo')) {
