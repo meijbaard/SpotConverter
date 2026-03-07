@@ -93,47 +93,62 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
                 let destination = null;
 
                 // 1. Pon autotrein
+                // 1. Pon autotrein
                 if (msg.includes('pon') || msg.includes('auto')) {
                     destination = 'AMF'; 
                 }
                 // 2. CD Cargo Staaltrein / Schroot naar Amsterdam Westhaven (AWH)
+                // 2. CD Cargo Staaltrein / Schroot naar Amsterdam Westhaven (AWH)
                 else if ((msg.includes('staal') && msg.includes('cd cargo')) || msg.includes('schroot') || msg.includes('cd-cargo')) {
                     destination = 'AWH'; // Aangepast van ASW naar AWH
+                    destination = 'AWH'; // Aangepast van ASW naar AWH
                 }
+                // 3. Reguliere Staaltrein / Shimmens naar Beverwijk Hoogovens
                 // 3. Reguliere Staaltrein / Shimmens naar Beverwijk Hoogovens
                 else if (msg.includes('staal') || msg.includes('shimmens')) {
                     destination = 'BVHC';
                 }
                 // 4. Kąty shuttle naar Moerdijk (MDK)
+                // 4. Kąty shuttle naar Moerdijk (MDK)
                 else if (msg.includes('kąty') || msg.includes('katy') || msg.includes('clip')) {
                     destination = 'MDK'; 
                 }
+                // 5. KLK Kolb naar Delden
                 // 5. KLK Kolb naar Delden
                 else if (msg.includes('klk') || msg.includes('servo')) {
                     destination = 'DDN';
                 }
                 // 6. Malmö shuttle naar Coevorden
+                // 6. Malmö shuttle naar Coevorden
                 else if (msg.includes('malmö') || msg.includes('malmo')) {
                     destination = 'COV';
                 }
+                // 7. Tilburg Shuttles (Rzepin, Chengdu, Nanjing)
                 // 7. Tilburg Shuttles (Rzepin, Chengdu, Nanjing)
                 else if (msg.includes('rzepin') || msg.includes('chengdu') || msg.includes('nanjing') || msg.includes('tilburg')) {
                     destination = 'TB';
                 }
                 // 8. Sloehaven (Nosta/Nostra, Kolen, Erts) -> Nu naar SLOE
+                // 8. Sloehaven (Nosta/Nostra, Kolen, Erts) -> Nu naar SLOE
                 else if (msg.includes('kolen') || msg.includes('erts') || msg.includes('nosta') || msg.includes('nostra') || msg.includes('sloe')) {
                     if (!routeCodes.includes('TB')) routeCodes.push('TB');
                     destination = 'SLOE'; // Aangepast van SHL naar SLOE!
+                    destination = 'SLOE'; // Aangepast van SHL naar SLOE!
                 }
                 // 9. Europoort / Maasvlakte Shuttles
+                // 9. Europoort / Maasvlakte Shuttles
                 else if (msg.includes('lovosice') || msg.includes('poznań') || msg.includes('poznan')) {
+                    destination = 'ERP'; 
                     destination = 'ERP'; 
                 }
                 else if (msg.includes('magdeburg') || msg.includes('pcc')) {
                     destination = 'MVT'; 
+                    destination = 'MVT'; 
                 }
                 // 10. Overige vloeistoffen en containers -> Kijfhoek -> Nu naar KFH
+                // 10. Overige vloeistoffen en containers -> Kijfhoek -> Nu naar KFH
                 else if (msg.includes('zonnebloem') || msg.includes('biodiesel') || msg.includes('lotos') || msg.includes('brwinów') || msg.includes('brwinow') || msg.includes('brinow') || parsedData.cargo === 'container' || parsedData.cargo === 'trailer') {
+                    destination = 'KFH'; // Aangepast van KHF naar KFH!
                     destination = 'KFH'; // Aangepast van KHF naar KFH!
                 }
 
