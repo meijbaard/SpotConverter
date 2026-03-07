@@ -36,16 +36,17 @@ export function parseMessage(message) {
         }
     }
 
-    // 4. Lading classificeren
+    // 4. Lading classificeren (in parser.js)
     const cargoMap = {
         'keteltrein': 'ketel', 'ketels': 'ketel', 'ketel': 'ketel',
-        'containertrein': 'container', 'containers': 'container',
+        'zonnebloemolie': 'ketel', 'biodiesel': 'ketel', 'styreen': 'ketel',
+        'containertrein': 'container', 'containers': 'container', 'shuttle': 'container', // <-- 'shuttle' toegevoegd!
         'trailertrein': 'trailer', 'trailers': 'trailer',
         'dichtetrein': 'dicht', 'schuifwandwagon': 'dicht', 'dicht': 'dicht',
-        'eanos': 'bulk', 'eanos\'en': 'bulk', 'ertstrein': 'bulk', 'staaltrein': 'bulk', 'kolentrein': 'bulk', 'staal': 'bulk', 
-        'schroot': 'bulk',
-        'shimmens': 'bulk',
-        'auto': 'auto' // Nieuw type voor Pon
+        'aluminium': 'dicht', 'aluminiumoxidetrein': 'dicht',
+        'eanos': 'bulk', 'eanos\'en': 'bulk', 'ertstrein': 'bulk', 
+        'staaltrein': 'bulk', 'kolentrein': 'bulk', 'staal': 'bulk', 
+        'schroot': 'bulk', 'shimmens': 'bulk', 'auto': 'auto'
     };
     for (const key in cargoMap) {
         if (new RegExp(`\\b${key}\\b`, 'i').test(message)) {
