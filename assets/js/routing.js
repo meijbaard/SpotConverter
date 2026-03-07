@@ -1,26 +1,27 @@
 // routing.js
 import { getState, getStationByCode } from './state.js';
 
+/**
+ * Zoekt het volledige traject op basis van een lijst met stationscodes.
+ * Werkt zowel voor directe trajecten als complexe routes via knooppunt Amersfoort.
+ */
 export function findFullTrajectory(routeCodes) {
-    // We hebben minimaal 2 stations nodig om een richting te kunnen bepalen
     if (routeCodes.length < 2) return null; 
 
     const startCode = routeCodes[0];
     const endCode = routeCodes[routeCodes.length - 1];
     const trajectories = getState().trajectories;
 
-    // 1. Zoeken op één enkel traject (Slimmer: checkt of ze op dezelfde lijn liggen, ongeacht tussenstations)
+    // 1. Zoeken op één enkel traject (checkt of ze op dezelfde lijn liggen)
     for (const name in trajectories) {
         const traject = trajectories[name];
         const startIndex = traject.indexOf(startCode);
         const endIndex = traject.indexOf(endCode);
 
         if (startIndex !== -1 && endIndex !== -1) {
-            // Beide stations liggen op dit traject!
             if (startIndex < endIndex) {
                 return { name, direction: 'forward', stations: traject.slice(startIndex, endIndex + 1) };
             } else if (startIndex > endIndex) {
-                // Ze liggen in omgekeerde volgorde op de route, dus draai de array om
                 return { name, direction: 'backward', stations: traject.slice(endIndex, startIndex + 1).reverse() };
             }
         }
@@ -59,38 +60,73 @@ export function findFullTrajectory(routeCodes) {
     return null;
 }
 
+/**
+ * Analyseert de route, berekent de rijrichting en voorspelt het traject bij 'e.v.' meldingen.
+ */
 export function analyzeTrajectory(parsedData, targetStationCode) {
     if (!parsedData.routeCodes.length || !parsedData.timestamp) {
         return { journey: null, parsedMessage: parsedData };
     }
     
     const { distanceMatrix, pathData, stationCoords } = getState();
-    
-    // Kopieer de routeCodes zodat we er veilig voorspellingen aan kunnen toevoegen
     let routeCodes = [...parsedData.routeCodes];
 
-    // --- FASE 4: Route Voorspelling (Extrapolatie) ---
-    if (parsedData.extrapolate && routeCodes.length >= 2) {
+    // --- FASE 4 & 5: Route Voorspelling (Nu met fail-safe voor goederen) ---
+    // We extrapoleren als er 'e.v.' staat, óf als we met zekerheid een goederentrein (cargo) hebben herkend.
+    const isCargoTrain = parsedData.cargo !== null;
+    const shouldExtrapolate = parsedData.extrapolate || isCargoTrain;
+
+    if (shouldExtrapolate && routeCodes.length >= 2) {
         const startCode = routeCodes[0];
         const endCode = routeCodes[routeCodes.length - 1];
+        const msg = parsedData.originalMessage.toLowerCase();
         
         const startCoord = stationCoords[startCode];
         const endCoord = stationCoords[endCode];
         
         if (startCoord && endCoord && startCoord.lon !== undefined && endCoord.lon !== undefined) {
-            // Check of de lengtegraad toeneemt (trein rijdt naar het Oosten)
+            // OOSTWAARTS
             if (Number(endCoord.lon) > Number(startCoord.lon)) {
-                // Regel: Oostwaarts met 'e.v.' betekent vrijwel altijd grens over bij Bad Bentheim
-                if (!routeCodes.includes('BH')) {
-                    routeCodes.push('BH');
+                if (!routeCodes.includes('BH')) routeCodes.push('BH');
+            } 
+            // WESTWAARTS
+            else {
+                let destination = null;
+
+                // 1. Pon autotrein stopt op Amersfoort (Goederen)
+                if (msg.includes('pon') || msg.includes('auto')) {
+                    destination = 'AMF'; // Let op: AMF gebruikt als robuuste fallback i.p.v. AMFG
                 }
-            } else {
-                // (Ruimte voor latere Westwaartse voorspellingen, bijv. naar Kijfhoek (KHF) of Amsterdam (ASD) o.b.v. lading/vervoerder)
+                // 2. Staal naar Beverwijk
+                else if (msg.includes('staal') || msg.includes('shimmens')) {
+                    destination = 'BVK';
+                }
+                // 3. Tilburg / Rzepin
+                else if (msg.includes('rzepin') || msg.includes('tilburg')) {
+                    destination = 'TB';
+                }
+                // 4. Schroot naar Amsterdam Westhaven
+                else if (msg.includes('schroot')) {
+                    destination = 'ASW'; // Let op: ASW of ASD moet wel in je trajectories.json staan!
+                }
+                // 5. Kolen/Erts naar Sloehaven
+                else if (msg.includes('kolen') || msg.includes('erts') || msg.includes('nosta') || msg.includes('sloe')) {
+                    if (!routeCodes.includes('TB')) routeCodes.push('TB');
+                    destination = 'SHL'; // Let op: verbinding via AMF -> TB -> SHL vereist in trajectories.json
+                }
+                // 6. Containers/Trailers naar Kijfhoek
+                else if (parsedData.cargo === 'container' || parsedData.cargo === 'trailer') {
+                    destination = 'KHF';
+                }
+
+                if (destination && !routeCodes.includes(destination)) {
+                    routeCodes.push(destination);
+                }
             }
         }
     }
 
-    // Gebruik nu de (mogelijk aangevulde) routeCodes om de hele lijn te trekken
+    // Zoek het volledige traject op basis van (voorspelde) codes
     const trajectoryInfo = findFullTrajectory(routeCodes);
     if (!trajectoryInfo) {
         return { journey: null, parsedMessage: parsedData };
@@ -101,30 +137,23 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
     const startDate = new Date();
     startDate.setHours(startHours, startMinutes, 0, 0);
 
-    // Bepaal de definitieve rijrichting o.b.v. het volledige (voorspelde) traject
+    // Richtingsbepaling o.b.v. geografische coördinaten
     let directionKey = 'WEST'; 
-    const finalStartCode = journeyStations[0];
-    const finalEndCode = journeyStations[journeyStations.length - 1];
-    
-    const finalStartCoord = stationCoords[finalStartCode];
-    const finalEndCoord = stationCoords[finalEndCode];
+    const finalStartCoord = stationCoords[journeyStations[0]];
+    const finalEndCoord = stationCoords[journeyStations[journeyStations.length - 1]];
     
     if (finalStartCoord && finalEndCoord && finalStartCoord.lon !== undefined && finalEndCoord.lon !== undefined) {
-        if (Number(finalEndCoord.lon) > Number(finalStartCoord.lon)) {
-            directionKey = 'OOST';
-        } else {
-            directionKey = 'WEST';
-        }
+        directionKey = (Number(finalEndCoord.lon) > Number(finalStartCoord.lon)) ? 'OOST' : 'WEST';
     } else {
+        // Fallback
         if (name.includes('Bentheimroute')) {
             directionKey = (direction === 'forward') ? 'WEST' : 'OOST';
         } else {
-            const amfIndexInJourney = journeyStations.indexOf('AMF');
-            directionKey = (amfIndexInJourney > 0) ? 'OOST' : 'WEST';
+            directionKey = (journeyStations.indexOf('AMF') > 0) ? 'OOST' : 'WEST';
         }
     }
 
-    // Stel de tijdlijn samen met initiële rijtijden
+    // Tijdlijn samenstellen
     let journey = [];
     let lastTime = new Date(startDate.getTime());
     let lastStationCode = journeyStations[0];
@@ -135,7 +164,6 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         
         if (i > 0) {
             const distance = distanceMatrix[lastStationCode]?.[stationCode] || 0;
-            // Valideren of afstand bestaat, anders aanname van 5 min om niet vast te lopen
             const travelMinutes = distance ? Math.round((distance / 80) * 60) : 5; 
             idealTime.setMinutes(idealTime.getMinutes() + travelMinutes);
         }
@@ -152,7 +180,7 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         lastStationCode = stationCode;
     }
 
-    // Bereken eventuele wachttijden op basis van goederenpaden
+    // Wachttijden berekenen (Goederenpaden)
     const targetStation = journey.find(s => s.code === targetStationCode);
     let totalDelay = 0;
     
@@ -168,12 +196,11 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
                 targetMinute -= 60;
             }
             targetTime.setMinutes(targetMinute, 0, 0);
-            
             totalDelay = Math.round((targetTime - targetStation.idealTime) / 60000);
         }
     }
     
-    // Propageer de vertraging vanaf het wachtstation
+    // Vertraging propageren
     if (totalDelay > 0) {
         const waitStationCode = directionKey === 'WEST' ? 'AMF' : 'STO';
         const waitStationIndex = journey.findIndex(s => s.code === waitStationCode);

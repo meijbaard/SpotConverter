@@ -42,7 +42,10 @@ export function parseMessage(message) {
         'containertrein': 'container', 'containers': 'container',
         'trailertrein': 'trailer', 'trailers': 'trailer',
         'dichtetrein': 'dicht', 'schuifwandwagon': 'dicht', 'dicht': 'dicht',
-        'eanos': 'bulk', 'eanos\'en': 'bulk', 'ertstrein': 'bulk', 'staaltrein': 'bulk', 'kolentrein': 'bulk'
+        'eanos': 'bulk', 'eanos\'en': 'bulk', 'ertstrein': 'bulk', 'staaltrein': 'bulk', 'kolentrein': 'bulk', 'staal': 'bulk', 
+        'schroot': 'bulk',
+        'shimmens': 'bulk',
+        'auto': 'auto' // Nieuw type voor Pon
     };
     for (const key in cargoMap) {
         if (new RegExp(`\\b${key}\\b`, 'i').test(message)) {
@@ -52,13 +55,14 @@ export function parseMessage(message) {
     }
 
     // 5. Context & Preposities detecteren
-    if (/\b(ri|richting|>)\b/i.test(message)) {
+    if (/(?:^|\s)(ri|richting|>)(?:\s|$)/i.test(message)) {
         parsed.hasDirectionMarker = true;
     }
-    if (/\b(e\.v\.|ev|en verder)\b/i.test(message)) {
+    // De veilige methode die ook e.v. aan het einde van een zin feilloos oppakt
+    if (/(?:^|\s)(e\.v\.|ev|en verder)(?:\s|$)/i.test(message)) {
         parsed.extrapolate = true;
     }
-    if (/\b(kopmaken|maakt kop|draait)\b/i.test(message)) {
+    if (/(kopmaken|maakt kop|draait)/i.test(message)) {
         parsed.kopmaken = true;
     }
 
