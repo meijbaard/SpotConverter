@@ -204,7 +204,7 @@
 		"KFHAZ",
 		"KFH"
 	],
-	"Tilburg-route": [
+	"Tilburg/Sloe-route": [
 		"AMF",
 		"AMFVA",
 		"SDN",
@@ -239,5 +239,41 @@
 		"BD",
 		"SLOE",
 		"SLOHST"
+	],
+	"Tilburg/Moerdijk-route": [
+		"AMF",
+		"AMFVA",
+		"SDN",
+		"DLD",
+		"BHV",
+		"BLOA",
+		"UTO",
+		"UTOA",
+		"UT",
+		"UTVR",
+		"UTZA",
+		"UTLN",
+		"HTN",
+		"HTNC",
+		"LEK",
+		"CL",
+		"GDM",
+		"MBTWAN",
+		"MBTWAZ",
+		"ZBM",
+		"OZBM",
+		"HDL",
+		"HTDA",
+		"HT",
+		"VGA",
+		"TBI",
+		"TB",
+		"TBGE",
+		"TBU",
+		"TBR",
+		"GZ",
+		"BD",
+		"MKD",
+		"MDBZ"
 	]
 }
