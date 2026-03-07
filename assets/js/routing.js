@@ -89,39 +89,54 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
             if (Number(endCoord.lon) > Number(startCoord.lon)) {
                 if (!routeCodes.includes('BH')) routeCodes.push('BH');
             } 
-            // WESTWAARTS
+            // WESTWAARTS (Vanuit Bentheim of oost-Nederland naar de bestemming)
             else {
                 let destination = null;
 
-                // 1. Pon autotrein stopt op Amersfoort (Goederen)
+                // 1. Pon autotrein
                 if (msg.includes('pon') || msg.includes('auto')) {
-                    destination = 'AMF'; // Let op: AMF gebruikt als robuuste fallback i.p.v. AMFG
+                    destination = 'AMF'; 
                 }
-                // 2. Staal naar Beverwijk
+                // 2. CD Cargo Staaltrein / Schroot naar Amsterdam Westhaven
+                else if ((msg.includes('staal') && msg.includes('cd cargo')) || msg.includes('schroot') || msg.includes('cd-cargo')) {
+                    destination = 'ASW'; 
+                }
+                // 3. Reguliere Staaltrein / Shimmens naar Beverwijk Hoogovens
                 else if (msg.includes('staal') || msg.includes('shimmens')) {
                     destination = 'BVHC';
                 }
-                // 3. Tilburg / Rzepin
-                else if (msg.includes('rzepin') || msg.includes('tilburg')) {
+                // 4. Kąty shuttle naar Moerdijk
+                else if (msg.includes('kąty') || msg.includes('katy') || msg.includes('clip')) {
+                    destination = 'MRD'; 
+                }
+                // 5. KLK Kolb naar Delden
+                else if (msg.includes('klk') || msg.includes('servo')) {
+                    destination = 'DDN';
+                }
+                // 6. Malmö shuttle naar Coevorden
+                else if (msg.includes('malmö') || msg.includes('malmo')) {
+                    destination = 'COV';
+                }
+                // 7. Tilburg Shuttles (Rzepin, Chengdu, Nanjing)
+                else if (msg.includes('rzepin') || msg.includes('chengdu') || msg.includes('nanjing') || msg.includes('tilburg')) {
                     destination = 'TB';
                 }
-                // 4. Schroot naar Amsterdam Westhaven
-                else if (msg.includes('schroot')) {
-                    destination = 'ASW'; // Let op: ASW of ASD moet wel in je trajectories.json staan!
-                }
-                // 5. Kolen/Erts naar Sloehaven
+                // 8. Sloehaven (Nosta, Kolen, Erts)
                 else if (msg.includes('kolen') || msg.includes('erts') || msg.includes('nosta') || msg.includes('sloe')) {
+                    // Deze gaan via Tilburg naar Sloehaven
                     if (!routeCodes.includes('TB')) routeCodes.push('TB');
-                    destination = 'SHL'; // Let op: verbinding via AMF -> TB -> SHL vereist in trajectories.json
+                    destination = 'SHL';
                 }
-                // 6. Containers/Trailers naar Kijfhoek
-                else if (parsedData.cargo === 'container' || parsedData.cargo === 'trailer') {
-                    destination = 'KHF';
+                // 9. Europoort / Maasvlakte Shuttles (Lovosice, Magdeburg, Poznań, PCC)
+                else if (msg.includes('lovosice') || msg.includes('magdeburg') || msg.includes('poznań') || msg.includes('poznan') || msg.includes('pcc')) {
+                    destination = 'EUR'; // Gebruik EUR (Europoort) of MVX (Maasvlakte) o.b.v. je trajecten.json
+                }
+                // 10. Overige vloeistoffen en containers -> Botlek / Kijfhoek (Fallback voor haven)
+                else if (msg.includes('zonnebloem') || msg.includes('biodiesel') || msg.includes('lotos') || msg.includes('brwinów') || msg.includes('brwinow') || parsedData.cargo === 'container' || parsedData.cargo === 'trailer') {
+                    destination = 'KHF'; // Kijfhoek als algemeen verzamelpunt
                 }
 
-                if (destination && !routeCodes.includes(destination)) {
-                    routeCodes.push(destination);
-                }
+                if (destination && !routeCodes.includes(destination)) routeCodes.push(destination);
             }
         }
     }
