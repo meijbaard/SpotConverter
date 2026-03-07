@@ -159,6 +159,18 @@ MIT © 2025 Mark Eijbaard
 
 ## 📝 Changelog
 
+## Versiegeschiedenis
+
+### v3.2.0 - Geavanceerde Westwaartse Routevoorspelling & Fallbacks
+In deze grote update is de intelligentie van de route-engine aanzienlijk uitgebreid, met een specifieke focus op de goederenstromen vanuit Oost-Nederland (Bad Bentheim) richting de havens en industriële knooppunten. 
+
+**Belangrijkste functionaliteiten & verbeteringen:**
+* **Slimme Cargo & Shuttle Herkenning:** De parser (`parser.js`) herkent nu direct specifieke goederenshuttles op naam (zoals Lovosice, Kąty, Nosta, Brwinów, CD Cargo, PCC, Malmö) en corrigeert automatisch veelvoorkomende typfouten van spotters (zoals 'nostra' of 'brinow').
+* **Automatische Route Extrapolatie:** Zodra een specifieke lading of shuttle wordt gedetecteerd, voorspelt `routing.js` volledig autonoom de correcte eindbestemming (zoals Moerdijk, Sloehaven, Europoort, Maasvlakte of Amsterdam Westhaven), zélfs als de spotter geen 'e.v.' (en verder) in zijn bericht heeft gezet.
+* **Veiligheids-fallback Systeem:** De route-engine is robuuster gemaakt. Als de engine een logische bestemming voorspelt, maar het pad daarnaartoe nog ontbreekt in `trajecten.json`, crasht de applicatie niet meer ("Geen geldig traject"). Hij breekt de voorspelling geruisloos af en valt veilig terug op de originele, bekende route uit het bericht.
+* **Lokale Data Resolutie & Cache Buster:** De `api.js` is geoptimaliseerd met relatieve paden en een 'Cache Buster' (`?t=...`). Dit dwingt browsers om lokaal altijd de meest verse data-bestanden (zoals trajecten en stations) in te laden en voorkomt dat agressieve caching de ontwikkeling verstoort.
+* **Wagon-mapping hersteld:** De visualisatie herkent nu ook de overkoepelende categorie 'bulk' (staal, kolen, schroot) en koppelt hier automatisch het juiste wagon-icoontje aan.
+
 ### 3.1.0
 - **Fundamentele Logica Gecorrigeerd:** De kernlogica voor het berekenen van trajecten (`analyzeTrajectory`) is volledig herschreven.
   - De rijrichting (OOST/WEST) wordt nu correct bepaald op basis van het traject, wat de juiste wachttijden en wachtstations (Amersfoort/Stroe) garandeert.
