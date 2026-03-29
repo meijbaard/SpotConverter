@@ -20,7 +20,15 @@ async function initApp() {
         UI.renderPatronen();
         
         setupEventListeners();
-        
+
+        // Lees ?q= URL-parameter in (voor iOS Shortcut integratie)
+        const urlParams = new URLSearchParams(window.location.search);
+        const sharedText = urlParams.get('q');
+        if (sharedText) {
+            const messageInput = document.getElementById('whatsappMessage');
+            if (messageInput) messageInput.value = decodeURIComponent(sharedText);
+        }
+
         // Optioneel: direct de initiële staat laden
         processMessage();
         searchStations();
