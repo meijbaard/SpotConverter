@@ -1,6 +1,26 @@
 // ui.js
 import { getState, getStationByCode } from './state.js';
 
+const CARRIER_SLUGS = {
+    'RFO':  'RFO',
+    'DBC':  'DBC',
+    'HSL':  'HSL',
+    'RTBC': 'RTBC',
+    'RTB':  'RTBC',
+    'LNS':  'SRTLNS',
+    'TCS':  'TCS',
+    'PKP':  'PKPC',
+    'MTR':  'MTR',
+    'FLP':  'FLP',
+    'RRF':  'RRF',
+    'RXP':  'Railexperts',
+    'SBB':  'SBBC',
+    'CDC':  'CDC',
+    'LTE':  'LTE',
+    'SR':   'Shunter',
+    'VR':   'VFR',
+};
+
 export function populateStationDropdowns() {
     const { stations, heatmapData } = getState();
     const uniqueNames = [...new Set(stations.map(e => e.name_long))].sort((a, b) => a.localeCompare(b));
@@ -172,13 +192,31 @@ export function displayResults(analysis, copyCallback) {
         cargoText = analysis.parsedMessage.cargo.charAt(0).toUpperCase() + analysis.parsedMessage.cargo.slice(1) + 'trein';
     }
 
+    const carrier = analysis.parsedMessage.carrier;
+    const locomotive = analysis.parsedMessage.locomotive;
+
+    const carrierSlug = carrier ? CARRIER_SLUGS[carrier] : null;
+    const carrierLinkHtml = carrierSlug
+        ? `<a href="https://treinposities.nl/materieel/${carrierSlug}" target="_blank" rel="noopener" style="color:var(--color-accent);font-size:0.8rem;">Info Vervoerder</a>`
+        : '';
+
+    const firstLoco = locomotive ? locomotive.split(/\s*\+\s*/)[0].replace(/\s/g, '') : null;
+    const locoLinkHtml = firstLoco
+        ? `<a href="https://treinposities.nl/?q=${encodeURIComponent(firstLoco)}" target="_blank" rel="noopener" style="color:var(--color-accent);font-size:0.8rem;">Zoek Locnummer</a>`
+        : '';
+
+    const externalLinksHtml = (carrierLinkHtml || locoLinkHtml)
+        ? `<p class="text-sm" style="display:flex;gap:0.75rem;margin-top:0.25rem;">${carrierLinkHtml}${locoLinkHtml}</p>`
+        : '';
+
     const headerHtml = `
       <div class="journey-header">
         <div class="train-info-container">
             <div class="train-visualization">${imagesHtml}</div>
             <div class="train-details">
-                <p class="text-sm"><strong>${analysis.parsedMessage.carrier || 'Onbekende'} ${cargoText}</strong></p>
-                <p class="text-sm">Locomotief: <strong>${analysis.parsedMessage.locomotive || "Onbekend"}</strong> | Richting ${analysis.journey[analysis.journey.length - 1].name}</p>
+                <p class="text-sm"><strong>${carrier || 'Onbekende'} ${cargoText}</strong></p>
+                <p class="text-sm">Locomotief: <strong>${locomotive || "Onbekend"}</strong> | Richting ${analysis.journey[analysis.journey.length - 1].name}</p>
+                ${externalLinksHtml}
             </div>
         </div>
         <button id="copy-btn" class="copy-btn">Kopieer Info</button>
