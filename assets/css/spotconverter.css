@@ -1,27 +1,28 @@
-/* Globale Stijl & Variabelen */
+/* Globale Stijl & Variabelen — gebaseerd op rijdendetreinen.nl */
 :root {
-  --color-bg: #f4f4f5;
+  --color-bg: #f0f6fb;
   --color-surface: #ffffff;
-  --color-header: #1c1c1e;
-  --color-text: #18181b;
-  --color-text-muted: #71717a;
-  --color-border: #e4e4e7;
-  --color-accent: #2563eb;
-  --color-accent-light: #eff6ff;
+  --color-header: #ffffff;
+  --color-text: #1a1a1a;
+  --color-text-muted: #6b7280;
+  --color-border: #dde6ef;
+  --color-accent: #1976c8;
+  --color-accent-light: #e8f2fc;
+  --color-accent-dark: #145da0;
 }
 body.ns-bg { font-family: 'Inter', sans-serif; background-color: var(--color-bg); color: var(--color-text); }
-.ns-top-bar { background-color: var(--color-header); height: 4rem; width: 100%; }
+.ns-top-bar { background-color: var(--color-header); height: 4rem; width: 100%; border-bottom: 1px solid var(--color-border); }
 .main-content-wrapper { max-width: 56rem; margin-left: auto; margin-right: auto; padding: 0 1rem; }
-.ns-planner-block { background-color: var(--color-surface); padding: 2rem; border-radius: 0.5rem; margin-top: 2rem; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07); border: 1px solid var(--color-border); }
-#loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(244, 244, 245, 0.85); display: flex; justify-content: center; align-items: center; z-index: 9999; flex-direction: column; gap: 1rem; backdrop-filter: blur(4px); }
+.ns-planner-block { background-color: var(--color-accent-light); padding: 2rem; border-radius: 0.75rem; margin-top: 2rem; border: 1px solid var(--color-border); }
+#loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(240, 246, 251, 0.85); display: flex; justify-content: center; align-items: center; z-index: 9999; flex-direction: column; gap: 1rem; backdrop-filter: blur(4px); }
 .spinner { border: 5px solid var(--color-border); border-top: 5px solid var(--color-accent); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 /* Tab Knoppen */
 #tab-container { display: flex; height: 100%; align-items: center; }
-.tab-btn { padding: 0 1rem; height: 100%; display: flex; align-items: center; font-weight: 600; color: #a1a1aa; background-color: transparent; border: none; border-bottom: 3px solid transparent; transition: all 0.2s ease-in-out; }
-.tab-btn.active { color: #ffffff; border-bottom: 3px solid #ffffff; }
-.tab-btn:hover:not(.active) { color: #e4e4e7; }
+.tab-btn { padding: 0 1rem; height: 100%; display: flex; align-items: center; font-weight: 600; color: #4b5563; background-color: transparent; border: none; border-bottom: 3px solid transparent; transition: all 0.2s ease-in-out; }
+.tab-btn.active { color: var(--color-accent); border-bottom: 3px solid var(--color-accent); }
+.tab-btn:hover:not(.active) { color: var(--color-accent); background-color: var(--color-accent-light); }
 
 /* Reisoverzicht */
 .journey-header { border-bottom: 1px solid var(--color-border); padding-bottom: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
@@ -31,8 +32,8 @@ body.ns-bg { font-family: 'Inter', sans-serif; background-color: var(--color-bg)
 .train-visualization img:first-child { margin-right: -2px; }
 .train-details { font-size: 1.1rem; line-height: 1.4; color: var(--color-text); white-space: nowrap; }
 .train-details p:first-child { font-size: 1.25rem; }
-.copy-btn { background-color: var(--color-bg); color: var(--color-text); font-weight: 600; padding: 0.5rem 1rem; border-radius: 999px; border: 1px solid var(--color-border); transition: all 0.2s ease-in-out; cursor: pointer; flex-shrink: 0; }
-.copy-btn:hover { background-color: var(--color-border); }
+.copy-btn { background-color: var(--color-accent); color: #ffffff; font-weight: 600; padding: 0.5rem 1.25rem; border-radius: 999px; border: none; transition: all 0.2s ease-in-out; cursor: pointer; flex-shrink: 0; }
+.copy-btn:hover { background-color: var(--color-accent-dark); }
 
 /* Tijdlijn */
 .journey-timeline { display: grid; grid-template-columns: 60px 20px 1fr; gap: 0 15px; }
