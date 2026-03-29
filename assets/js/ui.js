@@ -63,10 +63,10 @@ export function renderSearchResults(results) {
         return;
     }
     container.innerHTML = results.map(e => `
-        <div class="bg-white p-4 rounded-lg shadow-md border border-slate-200">
+        <div class="bg-white p-4 rounded-lg border border-zinc-200">
             <div class="flex justify-between items-start">
-                <h3 class="text-lg font-bold text-cyan-800">${e.name_long || "Onbekend"}</h3>
-                <span class="text-sm font-semibold bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full">${e.code || "N/A"}</span>
+                <h3 class="text-lg font-bold text-zinc-800">${e.name_long || "Onbekend"}</h3>
+                <span class="text-sm font-semibold bg-zinc-100 text-zinc-600 px-2 py-1 rounded-full">${e.code || "N/A"}</span>
             </div>
         </div>`).join("");
 }
