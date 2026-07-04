@@ -3,16 +3,19 @@ import { getState } from './state.js';
 
 export function parseMessage(message) {
     const parsed = {
-        originalMessage: message, 
-        timestamp: null, 
-        routeCodes: [], 
+        originalMessage: message,
+        timestamp: null,
+        routeCodes: [],
         spotLocation: null,
-        carrier: null, 
-        locomotive: null, 
+        carrier: null,
+        locomotive: null,
         cargo: null,
-        hasDirectionMarker: false, 
-        extrapolate: false,        
-        kopmaken: false            
+        cargoRaw: null,            // het letterlijk herkende ladingwoord (voor berichtgeneratie)
+        llt: false,                // losse lok
+        belading: null,            // badl / ladl (containertreinen)
+        hasDirectionMarker: false,
+        extrapolate: false,
+        kopmaken: false
     };
 
     const timeMatch = message.match(/(\d{1,2}[:.]\d{2})/g);
@@ -22,8 +25,9 @@ export function parseMessage(message) {
     const carrierRegex = new RegExp(`\\b(${carriers.join('|')})\\b`, 'gi');
     const carrierMatch = message.match(carrierRegex);
     if (carrierMatch) parsed.carrier = carrierMatch[0].toUpperCase();
-    
-    const locoRegex = /(\b(18|64|186|189|193|2454|4402|9902|9904|10100)[\s-]?\d*\b)/gi;
+
+    // Langste typenummers eerst, anders 'kaapt' 18 de series 186/189 (bug: '189 024' werd '189')
+    const locoRegex = /(\b(10100|9902|9904|4402|2454|186|189|193|64|18)[\s-]?\d*\b)/gi;
     const locoMatch = message.match(locoRegex);
     if (locoMatch) {
         parsed.locomotive = [...new Set(locoMatch)].join(' + ');
@@ -32,30 +36,45 @@ export function parseMessage(message) {
         }
     }
 
-// 4. Lading classificeren (Nu inclusief specifieke shuttlenamen én veelvoorkomende typo's)
+    // Losse lok (llt) en beladingsstatus (badl/ladl)
+    if (/\b(llt|losse\s*lok)\b/i.test(message)) parsed.llt = true;
+    const beladingMatch = message.match(/\b(badl|ladl)\b/i);
+    if (beladingMatch) parsed.belading = beladingMatch[0].toLowerCase();
+
+    // Lading classificeren (inclusief specifieke shuttlenamen én veelvoorkomende typo's)
     const cargoMap = {
         'keteltrein': 'ketel', 'ketels': 'ketel', 'ketel': 'ketel',
         'zonnebloemolie': 'ketel', 'biodiesel': 'ketel', 'styreen': 'ketel',
-        'containertrein': 'container', 'containers': 'container', 'shuttle': 'container', 
+        'containertrein': 'container', 'containers': 'container', 'shuttle': 'container',
         'trailertrein': 'trailer', 'trailers': 'trailer',
         'dichtetrein': 'dicht', 'schuifwandwagon': 'dicht', 'dicht': 'dicht',
         'aluminium': 'dicht', 'aluminiumoxidetrein': 'dicht',
-        'eanos': 'bulk', 'eanos\'en': 'bulk', 'ertstrein': 'bulk', 
-        'staaltrein': 'bulk', 'kolentrein': 'bulk', 'staal': 'bulk', 
+        'eanos': 'bulk', 'eanos\'en': 'bulk', 'ertstrein': 'bulk',
+        'staaltrein': 'bulk', 'kolentrein': 'bulk', 'staal': 'bulk',
         'schroot': 'bulk', 'shimmens': 'bulk', 'auto': 'auto',
         // Namen direct als trigger voor extrapolatie:
         'lovosice': 'container', 'magdeburg': 'container', 'poznań': 'container',
         'poznan': 'container', 'pcc': 'container', 'rzepin': 'container',
         'chengdu': 'container', 'nanjing': 'container', 'katy': 'container',
-        'kąty': 'container', 'nosta': 'container', 'nostra': 'container', 
-        'brwinów': 'container', 'brwinow': 'container', 'brinow': 'container', 
+        'kąty': 'container', 'nosta': 'container', 'nostra': 'container',
+        'brwinów': 'container', 'brwinow': 'container', 'brinow': 'container',
         'lotos': 'ketel'
     };
-    
+
     for (const key in cargoMap) {
         if (new RegExp(`\\b${key}\\b`, 'i').test(message)) {
             parsed.cargo = cargoMap[key];
-            break; 
+            parsed.cargoRaw = key;
+            break;
+        }
+    }
+
+    // Specifieke shuttlenaam heeft voorrang op generiek 'shuttle' in het gegenereerde bericht
+    const shuttleNames = ['lovosice', 'magdeburg', 'poznań', 'poznan', 'pcc', 'rzepin', 'chengdu', 'nanjing', 'kąty', 'katy', 'nosta', 'brwinów', 'brwinow'];
+    for (const name of shuttleNames) {
+        if (new RegExp(`\\b${name}\\b`, 'i').test(message)) {
+            parsed.cargoRaw = `${name.charAt(0).toUpperCase() + name.slice(1)} shuttle`;
+            break;
         }
     }
 
@@ -66,7 +85,7 @@ export function parseMessage(message) {
     let foundMatches = [];
     const stations = getState().stations;
     const commonWords = ['en', 'in', 'op', 'te', 'de', 'het', 'een', 'met', 'van', 'tot'];
-    
+
     stations.forEach(station => {
         if (!station.code) return;
         let regex;
@@ -80,9 +99,9 @@ export function parseMessage(message) {
             foundMatches.push({ station, index: match.index });
         }
     });
-    
+
     foundMatches.sort((a, b) => a.index - b.index);
-    
+
     if (foundMatches.length > 0) {
         const uniqueRouteCodes = [];
         let lastCode = null;
@@ -95,6 +114,6 @@ export function parseMessage(message) {
         parsed.spotLocation = foundMatches[0].station;
         parsed.routeCodes = uniqueRouteCodes;
     }
-    
+
     return parsed;
 }

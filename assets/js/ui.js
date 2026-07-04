@@ -1,5 +1,6 @@
 // ui.js
 import { getState, getStationByCode } from './state.js';
+import { buildGroupMessage } from './message.js';
 
 const CARRIER_SLUGS = {
     'RFO':  'RFO',
@@ -21,13 +22,20 @@ const CARRIER_SLUGS = {
     'VR':   'VFR',
 };
 
+const TARGET_STORAGE_KEY = 'sc-target-station';
+
 export function populateStationDropdowns() {
     const { stations, heatmapData } = getState();
     const uniqueNames = [...new Set(stations.map(e => e.name_long))].sort((a, b) => a.localeCompare(b));
-    
+
     const targetSelect = document.getElementById("targetStationSelect");
     if (targetSelect) {
         targetSelect.innerHTML = "";
+        const noneOption = document.createElement("option");
+        noneOption.value = "";
+        noneOption.textContent = "— Geen doelstation —";
+        targetSelect.appendChild(noneOption);
+
         uniqueNames.forEach(name => {
             const station = stations.find(t => t.name_long === name);
             if (station) {
@@ -37,7 +45,12 @@ export function populateStationDropdowns() {
                 targetSelect.appendChild(option);
             }
         });
-        targetSelect.value = "BRN"; // Standaardwaarde
+
+        // Onthouden keuze herstellen; anders standaard Baarn
+        let saved = null;
+        try { saved = localStorage.getItem(TARGET_STORAGE_KEY); } catch (e) { /* private mode */ }
+        targetSelect.value = (saved !== null) ? saved : "BRN";
+        if (targetSelect.selectedIndex === -1) targetSelect.value = "";
     }
 
     const heatmapSelect = document.getElementById("heatmapstation");
@@ -60,6 +73,10 @@ export function populateStationDropdowns() {
     }
 }
 
+export function saveTargetStation(code) {
+    try { localStorage.setItem(TARGET_STORAGE_KEY, code ?? ""); } catch (e) { /* private mode */ }
+}
+
 export function populateHeatmapDayDropdown() {
     const e = document.getElementById("heatmapday");
     if (!e) return;
@@ -75,19 +92,21 @@ export function populateHeatmapDayDropdown() {
     e.value = days[currentDayIndex];
 }
 
-export function renderSearchResults(results) {
+export function renderSearchResults(results, hasQuery) {
     const container = document.getElementById("stationSearchResults");
     if (!container) return;
+    if (!hasQuery) {
+        container.innerHTML = '<p class="muted">Typ een afkorting of naam om te zoeken.</p>';
+        return;
+    }
     if (results.length === 0) {
-        container.innerHTML = "";
+        container.innerHTML = '<p class="muted">Geen stations gevonden.</p>';
         return;
     }
     container.innerHTML = results.map(e => `
-        <div class="bg-white p-4 rounded-lg border border-zinc-200">
-            <div class="flex justify-between items-start">
-                <h3 class="text-lg font-bold text-zinc-800">${e.name_long || "Onbekend"}</h3>
-                <span class="text-sm font-semibold bg-zinc-100 text-zinc-600 px-2 py-1 rounded-full">${e.code || "N/A"}</span>
-            </div>
+        <div class="station-card">
+            <h3>${e.name_long || "Onbekend"}</h3>
+            <span class="station-code">${e.code || "N/A"}</span>
         </div>`).join("");
 }
 
@@ -105,18 +124,18 @@ export function updateHeatmap() {
     const station = document.getElementById("heatmapstation")?.value;
     const day = document.getElementById("heatmapday")?.value;
     const output = document.getElementById("heatmap-output");
-    
+
     if (!station || !day || !output) return;
 
     const dayData = heatmapData[station]?.[day];
     if (!dayData) {
-        output.innerHTML = "<em>Geen data voor dit station op deze dag.</em>";
+        output.innerHTML = '<p class="muted"><em>Geen data voor dit station op deze dag.</em></p>';
         return;
     }
 
     const allValues = Object.values(heatmapData[station]).flatMap(d => Object.values(d));
     let maxVal = Math.max(...allValues, 1);
-    
+
     const rows = Object.entries(dayData).sort(([h1], [h2]) => Number(h1) - Number(h2)).map(([hour, count]) => {
         let level = 0;
         if (count >= Math.max(1, 0.7 * maxVal)) level = 3;
@@ -132,11 +151,11 @@ export function renderPatronen() {
     const container = document.getElementById("patronen-output");
     const trainPatterns = getState().trainPatterns;
     if (!container || !trainPatterns) return;
-    
+
     container.innerHTML = Object.values(trainPatterns).map(p => `
         <div class="pattern-block">
             <div class="pattern-name">${p.name}</div>
-            <div class="mt-1">${p.description}</div>
+            <div class="pattern-desc">${p.description}</div>
             <div class="pattern-route">Route: ${p.commonRouteCodes.map(c => getStationByCode(c)?.name_long || c).join(" → ")}</div>
         </div>`).join("");
 }
@@ -149,7 +168,7 @@ function getTrainInfoImages(parsedMessage) {
     if (parsedMessage.locomotive) {
         const locoClean = parsedMessage.locomotive.replace(/[\s-]/g, '');
         let locoImageFile = db.exact?.[locoClean];
-        
+
         if (locoImageFile) {
             images.push({ src: `assets/images/${locoImageFile}`});
         } else {
@@ -174,21 +193,63 @@ function getTrainInfoImages(parsedMessage) {
     return images;
 }
 
-export function displayResults(analysis, copyCallback) {
+/** Bouwt en koppelt het WhatsApp-berichtblok onder de tijdlijn. */
+function setupWhatsAppBlock(analysis) {
+    const checkbox = document.getElementById('wa-include-eta');
+    const msgEl = document.getElementById('wa-msg');
+    const copyBtn = document.getElementById('wa-copy-btn');
+    const shareBtn = document.getElementById('wa-share-btn');
+    if (!msgEl) return;
+
+    const regenerate = () => {
+        const targetCode = document.getElementById('targetStationSelect')?.value || null;
+        msgEl.textContent = buildGroupMessage(analysis, {
+            includeEta: checkbox ? checkbox.checked : true,
+            targetCode
+        });
+    };
+    regenerate();
+
+    if (checkbox) checkbox.addEventListener('change', regenerate);
+
+    if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(msgEl.textContent).then(() => {
+                copyBtn.textContent = 'Gekopieerd!';
+                setTimeout(() => { copyBtn.textContent = 'Kopieer bericht'; }, 2000);
+            });
+        });
+    }
+
+    if (shareBtn) {
+        shareBtn.addEventListener('click', async () => {
+            const text = msgEl.textContent;
+            if (navigator.share) {
+                try { await navigator.share({ text }); return; } catch (e) { /* geannuleerd */ }
+            } else {
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+            }
+        });
+    }
+}
+
+export function displayResults(analysis) {
     const rawDataBlock = document.getElementById('parsed-data-output');
     if (rawDataBlock) rawDataBlock.textContent = JSON.stringify(analysis, null, 2);
-    
+
     const journeyOutput = document.getElementById('journey-output');
     if (!analysis.journey || analysis.journey.length === 0) {
-        journeyOutput.innerHTML = '<p class="text-slate-500">Geen geldig traject gevonden. Controleer de stationsvolgorde in je bericht.</p>';
+        journeyOutput.innerHTML = '<p class="muted">Geen geldig traject gevonden. Controleer de stationsvolgorde in je bericht.</p>';
         return;
     }
 
     const images = getTrainInfoImages(analysis.parsedMessage);
-    const imagesHtml = images.map(img => `<img src="${img.src}" onerror="this.style.display='none'" />`).join('');
-    
+    const imagesHtml = images.map(img => `<img src="${img.src}" alt="" onerror="this.style.display='none'" />`).join('');
+
     let cargoText = "goederentrein";
-    if (analysis.parsedMessage.cargo) {
+    if (analysis.parsedMessage.llt) {
+        cargoText = "losse lok (llt)";
+    } else if (analysis.parsedMessage.cargo) {
         cargoText = analysis.parsedMessage.cargo.charAt(0).toUpperCase() + analysis.parsedMessage.cargo.slice(1) + 'trein';
     }
 
@@ -197,16 +258,16 @@ export function displayResults(analysis, copyCallback) {
 
     const carrierSlug = carrier ? CARRIER_SLUGS[carrier] : null;
     const carrierLinkHtml = carrierSlug
-        ? `<a href="https://treinposities.nl/materieel/${carrierSlug}" target="_blank" rel="noopener" style="color:var(--color-accent);font-size:0.8rem;">Info Vervoerder</a>`
+        ? `<a href="https://treinposities.nl/materieel/${carrierSlug}" target="_blank" rel="noopener">Info Vervoerder</a>`
         : '';
 
     const firstLoco = locomotive ? locomotive.split(/\s*\+\s*/)[0].replace(/\s/g, '') : null;
     const locoLinkHtml = firstLoco
-        ? `<a href="https://treinposities.nl/?q=${encodeURIComponent(firstLoco)}" target="_blank" rel="noopener" style="color:var(--color-accent);font-size:0.8rem;">Zoek Locnummer</a>`
+        ? `<a href="https://treinposities.nl/?q=${encodeURIComponent(firstLoco)}" target="_blank" rel="noopener">Zoek Locnummer</a>`
         : '';
 
     const externalLinksHtml = (carrierLinkHtml || locoLinkHtml)
-        ? `<p class="text-sm" style="display:flex;gap:0.75rem;margin-top:0.25rem;">${carrierLinkHtml}${locoLinkHtml}</p>`
+        ? `<p class="external-links">${carrierLinkHtml}${locoLinkHtml}</p>`
         : '';
 
     const headerHtml = `
@@ -214,20 +275,26 @@ export function displayResults(analysis, copyCallback) {
         <div class="train-info-container">
             <div class="train-visualization">${imagesHtml}</div>
             <div class="train-details">
-                <p class="text-sm"><strong>${carrier || 'Onbekende'} ${cargoText}</strong></p>
-                <p class="text-sm">Locomotief: <strong>${locomotive || "Onbekend"}</strong> | Richting ${analysis.journey[analysis.journey.length - 1].name}</p>
+                <p><strong>${carrier || 'Onbekende'} ${cargoText}</strong></p>
+                <p>Locomotief: <strong>${locomotive || "Onbekend"}</strong> | Richting ${analysis.journey[analysis.journey.length - 1].name}</p>
                 ${externalLinksHtml}
             </div>
         </div>
-        <button id="copy-btn" class="copy-btn">Kopieer Info</button>
       </div>
     `;
 
     let timelineHtml = '<div class="journey-timeline">';
     analysis.journey.forEach((station, index) => {
-        let markerClass = (index === 0 || index === analysis.journey.length - 1) ? 'start-end' : 'intermediate';
-        let waitTimeHtml = station.waitTime > 0 && (station.code === 'AMF' || station.code === 'STO') ? `<div style="color: red; font-size: 0.8rem;">verwachte wachttijd ${station.waitTime} min</div>` : '';
-        
+        const markerClass = (index === 0 || index === analysis.journey.length - 1) ? 'start-end' : 'intermediate';
+        const waitTimeHtml = station.waitTime > 0 && (station.code === 'AMF' || station.code === 'STO')
+            ? `<div class="timeline-wait">verwachte wachttijd ${station.waitTime} min</div>` : '';
+        const isSpot = index === 0;
+        const badge = isSpot
+            ? '<span class="badge badge-pad">gespot</span>'
+            : (station.viaPad
+                ? '<span class="badge badge-pad">✓ pad</span>'
+                : '<span class="badge badge-schatting">± schatting</span>');
+
         timelineHtml += `
             <div class="timeline-station">
                 <div class="timeline-time-col">${station.time || '--:--'}</div>
@@ -235,15 +302,31 @@ export function displayResults(analysis, copyCallback) {
                     <div class="timeline-marker ${markerClass}"></div>
                 </div>
                 <div class="timeline-station-name-col">
-                    <span>${station.name}</span>
+                    <span>${station.name}</span>${badge}
                     ${waitTimeHtml}
                 </div>
             </div>`;
     });
     timelineHtml += '</div>';
-    journeyOutput.innerHTML = headerHtml + timelineHtml;
-    
-    document.getElementById('copy-btn').addEventListener('click', () => copyCallback(analysis));
+    timelineHtml += '<p class="reliability-legend"><span class="badge badge-pad">✓ pad</span> = uitgelijnd op vaste goederenpaden · <span class="badge badge-schatting">± schatting</span> = berekend op afstand/snelheid</p>';
+
+    const waBlockHtml = `
+      <div class="wa-block">
+        <h3>Bericht voor de groep</h3>
+        <label class="wa-option">
+          <input type="checkbox" id="wa-include-eta" checked />
+          Verwachte doorkomst meenemen (pad via SpotConverter)
+        </label>
+        <pre id="wa-msg" class="wa-msg"></pre>
+        <div class="wa-actions">
+          <button id="wa-copy-btn" class="btn" type="button">Kopieer bericht</button>
+          <button id="wa-share-btn" class="btn btn-wa" type="button">Deel via WhatsApp</button>
+        </div>
+      </div>
+    `;
+
+    journeyOutput.innerHTML = headerHtml + timelineHtml + waBlockHtml;
+    setupWhatsAppBlock(analysis);
 }
 
 export function toggleLoader(show) {
@@ -253,5 +336,10 @@ export function toggleLoader(show) {
 
 export function showError(message) {
     const journeyOutput = document.getElementById("journey-output");
-    if (journeyOutput) journeyOutput.innerHTML = `<p class="text-red-600 font-bold">${message}</p>`;
+    if (!journeyOutput) return;
+    journeyOutput.innerHTML = "";
+    const p = document.createElement("p");
+    p.className = "error";
+    p.textContent = message; // textContent: geen HTML-injectie via foutmeldingen
+    journeyOutput.appendChild(p);
 }

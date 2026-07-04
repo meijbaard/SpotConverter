@@ -3,105 +3,156 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SpotConverter Pro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="assets/css/spotconverter.css" />
-    <link rel="manifest" href="manifest.json" />
+    <title>SpotConverter – Analyseer treinspots &amp; bereken doorkomsttijden</title>
+    <meta name="description" content="Plak een WhatsApp-spotbericht en zie direct de route, het materieel en de verwachte doorkomsttijden van goederentreinen. Gratis tool voor treinspotters." />
+    <link rel="canonical" href="https://spotconverter.markeijbaard.nl/" />
+
+    <!-- Open Graph / social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SpotConverter" />
+    <meta property="og:title" content="SpotConverter – Analyseer treinspots & bereken doorkomsttijden" />
+    <meta property="og:description" content="Plak een WhatsApp-spotbericht en zie direct de route, het materieel en de verwachte doorkomsttijden van goederentreinen." />
+    <meta property="og:url" content="https://spotconverter.markeijbaard.nl/" />
+    <meta property="og:image" content="https://spotconverter.markeijbaard.nl/assets/images/web-app-manifest-512x512.png" />
+    <meta property="og:locale" content="nl_NL" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="SpotConverter – Analyseer treinspots" />
+    <meta name="twitter:description" content="Van WhatsApp-spot naar route, materieel en doorkomsttijden. Gratis tool voor treinspotters." />
+    <meta name="twitter:image" content="https://spotconverter.markeijbaard.nl/assets/images/web-app-manifest-512x512.png" />
+
+    <!-- Icons & PWA -->
+    <link rel="icon" href="assets/images/favicon.ico" sizes="any" />
+    <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png" />
+    <link rel="manifest" href="manifest.json" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="SpotConverter" />
     <meta name="theme-color" content="#1976c8" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/spotconverter.css" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SpotConverter",
+      "url": "https://spotconverter.markeijbaard.nl/",
+      "description": "Analyseer WhatsApp-spotberichten over goederentreinen: route, materieel en verwachte doorkomsttijden.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "nl",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+    }
+    </script>
   </head>
-  <body class="ns-bg">
+  <body>
     <div id="loader-overlay">
-      <div class="spinner"></div>
-      <p class="text-lg font-semibold text-slate-600">Data laden...</p>
+      <div class="spinner" role="status" aria-label="Data laden"></div>
+      <p class="loader-text">Data laden...</p>
     </div>
 
-    <header class="ns-top-bar">
-        <div class="max-w-5xl mx-auto px-4 flex items-center justify-between h-full">
-            <div class="flex items-center">
-                <svg class="h-8 w-auto mr-4" viewBox="0 0 100 35" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M 5 15 C 5 5, 15 5, 25 15 S 45 35, 55 25 C 65 15, 75 15, 85 25" stroke="#1976c8" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M 75 15 C 75 5, 85 5, 95 15" stroke="#1976c8" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <div id="tab-container">
-                    <button class="tab-btn active" data-tab="spot">Spot Analyse</button>
-                    <button class="tab-btn" data-tab="zoeker">Station Zoeker</button>
-                    <button class="tab-btn" data-tab="heatmap">Heatmap</button>
-                    <button class="tab-btn" data-tab="patronen">Patronen</button>
-                </div>
-            </div>
-        </div>
+    <header class="top-bar">
+      <div class="container top-bar-inner">
+        <a class="brand" href="/" aria-label="SpotConverter home">
+          <svg class="brand-logo" viewBox="0 0 100 35" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M 5 15 C 5 5, 15 5, 25 15 S 45 35, 55 25 C 65 15, 75 15, 85 25" stroke="currentColor" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 75 15 C 75 5, 85 5, 95 15" stroke="currentColor" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="brand-name">SpotConverter</span>
+        </a>
+        <nav id="tab-container" role="tablist" aria-label="Onderdelen">
+          <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-spot" data-tab="spot">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="14" rx="3"/><path d="M4 11h16M8 21l2-4m6 4-2-4"/><circle cx="8.5" cy="14" r=".5"/><circle cx="15.5" cy="14" r=".5"/></svg>
+            <span>Spot Analyse</span>
+          </button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-zoeker" data-tab="zoeker">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <span>Stations</span>
+          </button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-heatmap" data-tab="heatmap">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="12" width="4" height="8" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="17" rx="1"/></svg>
+            <span>Heatmap</span>
+          </button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-patronen" data-tab="patronen">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 6h8a4 4 0 0 1 0 8H9a4 4 0 0 0 0 8h8"/></svg>
+            <span>Patronen</span>
+          </button>
+        </nav>
+      </div>
     </header>
 
-    <div class="main-content-wrapper mt-6">
-      <main class="bg-white p-6 md:p-8 rounded-lg shadow-lg" id="tab-spot">
-        <div class="ns-planner-block mb-8 rounded-lg">
-            <h1 class="text-2xl font-bold text-slate-800 mb-4">Analyseer je spot</h1>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div>
-                    <label for="whatsappMessage" class="block text-sm font-semibold text-slate-700 mb-2">Plak je WhatsApp bericht hier:</label>
-                    <textarea id="whatsappMessage" class="form-input w-full h-36 border rounded-lg p-3 shadow-sm" placeholder="Bijv. 13:07 Bh ri Asd RFO 193 150 met keteltrein"></textarea>
+    <main class="container main-content">
+      <section class="card tab-panel" id="tab-spot" role="tabpanel" aria-labelledby="tab-spot">
+        <div class="planner">
+          <h1 class="panel-title">Analyseer je spot</h1>
+          <div class="grid-2">
+            <div class="field">
+              <div class="field-header">
+                <label for="whatsappMessage">Plak je WhatsApp-bericht:</label>
+                <div class="field-actions">
+                  <button id="paste-btn" class="btn btn-small" type="button" title="Plak vanaf klembord">📋 Plak</button>
+                  <button id="example-btn" class="btn btn-small btn-ghost" type="button">Voorbeeld</button>
                 </div>
-                <div>
-                    <label for="targetStationSelect" class="block text-sm font-semibold text-slate-700 mb-2">Doelstation (voor extra context):</label>
-                    <select id="targetStationSelect" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white"></select>
-                </div>
+              </div>
+              <textarea id="whatsappMessage" class="input textarea" placeholder="Bijv. 13:07 Bh ri Asd RFO 193 150 met keteltrein" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
             </div>
-        </div>
-
-        <div id="journey-output" class="min-h-[100px]">
-            <p class="text-slate-500">Plak een spotbericht om het reisoverzicht te genereren.</p>
-        </div>
-        <div class="mt-8">
-          <div class="flex justify-between items-center mb-2">
-            <h2 class="text-xl font-bold text-slate-800">Geparsede Data (voor analyse)</h2>
-            <button id="toggle-data-btn" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition">(Toon)</button>
+            <div class="field">
+              <label for="targetStationSelect">Doelstation (optioneel, voor doorkomsttijd):</label>
+              <select id="targetStationSelect" class="input"></select>
+              <p class="field-hint">Je keuze wordt onthouden op dit apparaat.</p>
+            </div>
           </div>
-          <pre id="parsed-data-output" class="p-4 bg-slate-800 text-white text-xs rounded-lg overflow-x-auto" style="display: none;"></pre>
         </div>
-      </main>
 
-      <main class="bg-white p-6 md:p-8 rounded-lg shadow-lg hidden" id="tab-zoeker">
-        <h2 class="text-2xl font-bold text-slate-800 mb-4">Zoek Station</h2>
-        <input type="text" id="stationSearchInput" class="form-input w-full max-w-lg mx-auto block border rounded-lg p-3 shadow-sm" placeholder="Zoek op afkorting of naam...">
-        <div id="stationSearchResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6"></div>
-      </main>
-      
-      <main class="bg-white p-6 md:p-8 rounded-lg shadow-lg hidden" id="tab-heatmap">
-        <h2 class="text-2xl font-bold text-slate-800 mb-4">Heatmap: Drukte per station</h2>
-        <div class="grid md:grid-cols-2 gap-6 mb-6">
-            <div>
-                <label for="heatmapstation" class="block text-sm font-semibold text-slate-700 mb-2">Kies een station:</label>
-                <select id="heatmapstation" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white"></select>
-            </div>
-            <div>
-                <label for="heatmapday" class="block text-sm font-semibold text-slate-700 mb-2">Kies een dag:</label>
-                <select id="heatmapday" class="form-input w-full border rounded-lg p-3 shadow-sm bg-white"></select>
-            </div>
+        <div id="journey-output" class="journey-output" aria-live="polite">
+          <p class="muted">Plak een spotbericht om het reisoverzicht te genereren.</p>
         </div>
-        <div id="heatmap-output" class="overflow-x-auto"></div>
-      </main>
 
-      <main class="bg-white p-6 md:p-8 rounded-lg shadow-lg hidden" id="tab-patronen">
-        <h2 class="text-2xl font-bold text-slate-800 mb-4">Bekende Treinpatronen</h2>
-        <div id="patronen-output" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-      </main>
+        <div class="debug-block">
+          <div class="debug-header">
+            <h2>Geparsede data (voor analyse)</h2>
+            <button id="toggle-data-btn" class="btn btn-small btn-ghost" type="button">(Toon)</button>
+          </div>
+          <pre id="parsed-data-output" class="debug-output" style="display: none;"></pre>
+        </div>
+      </section>
 
-      <footer class="text-center text-sm text-slate-500 py-6">
-          <p>Versie 4.0.0</p>
-          <p>Copyright &copy; 2025 Mark Eijbaard. MIT licentie.</p>
-          <p><a href="https://github.com/meijbaard/SpotConverter/issues" target="_blank" class="text-cyan-600 hover:underline">Meld een probleem of wens</a></p>
+      <section class="card tab-panel hidden" id="tab-zoeker" role="tabpanel">
+        <h2 class="panel-title">Zoek station</h2>
+        <input type="text" id="stationSearchInput" class="input search-input" placeholder="Zoek op afkorting of naam..." autocomplete="off" />
+        <div id="stationSearchResults" class="grid-3 search-results"></div>
+      </section>
+
+      <section class="card tab-panel hidden" id="tab-heatmap" role="tabpanel">
+        <h2 class="panel-title">Heatmap: drukte per station</h2>
+        <div class="grid-2">
+          <div class="field">
+            <label for="heatmapstation">Kies een station:</label>
+            <select id="heatmapstation" class="input"></select>
+          </div>
+          <div class="field">
+            <label for="heatmapday">Kies een dag:</label>
+            <select id="heatmapday" class="input"></select>
+          </div>
+        </div>
+        <div id="heatmap-output" class="heatmap-output"></div>
+      </section>
+
+      <section class="card tab-panel hidden" id="tab-patronen" role="tabpanel">
+        <h2 class="panel-title">Bekende treinpatronen</h2>
+        <div id="patronen-output" class="grid-2"></div>
+      </section>
+
+      <footer class="site-footer">
+        <p>Versie 4.1.0 · Copyright &copy; 2025–2026 Mark Eijbaard · MIT-licentie</p>
+        <p><a href="https://github.com/meijbaard/SpotConverter/issues" target="_blank" rel="noopener">Meld een probleem of wens</a></p>
       </footer>
-    </div>
+    </main>
+
     <script type="module" src="assets/js/app.js" defer></script>
   </body>
 </html>

@@ -6,7 +6,7 @@ import { getState, getStationByCode } from './state.js';
  * Werkt zowel voor directe trajecten als complexe routes via knooppunt Amersfoort.
  */
 export function findFullTrajectory(routeCodes) {
-    if (routeCodes.length < 2) return null; 
+    if (routeCodes.length < 2) return null;
 
     const startCode = routeCodes[0];
     const endCode = routeCodes[routeCodes.length - 1];
@@ -27,25 +27,25 @@ export function findFullTrajectory(routeCodes) {
         }
     }
 
-    // 2. Complexe routeherkenning via knooppunt Amersfoort (Over twee trajecten heen)
+    // 2. Complexe routeherkenning via knooppunt Amersfoort (over twee trajecten heen)
     const hub = "AMF";
     let startTrajInfo = null, endTrajInfo = null;
-    
+
     for (const name in trajectories) {
         if (trajectories[name].includes(startCode) && trajectories[name].includes(hub)) startTrajInfo = { name, stations: trajectories[name] };
         if (trajectories[name].includes(endCode) && trajectories[name].includes(hub)) endTrajInfo = { name, stations: trajectories[name] };
     }
-    
+
     if (startTrajInfo && endTrajInfo && startTrajInfo.name !== endTrajInfo.name) {
         let firstLeg, secondLeg, finalDirection, startName = startTrajInfo.name, endName = endTrajInfo.name;
-        
+
         if (startTrajInfo.stations.indexOf(startCode) < startTrajInfo.stations.indexOf(hub)) {
             firstLeg = startTrajInfo.stations.slice(startTrajInfo.stations.indexOf(startCode), startTrajInfo.stations.indexOf(hub) + 1);
         } else {
             const reversed = [...startTrajInfo.stations].reverse();
             firstLeg = reversed.slice(reversed.indexOf(startCode), reversed.indexOf(hub) + 1);
         }
-        
+
         if (endTrajInfo.stations.indexOf(hub) < endTrajInfo.stations.indexOf(endCode)) {
             secondLeg = endTrajInfo.stations.slice(endTrajInfo.stations.indexOf(hub) + 1, endTrajInfo.stations.indexOf(endCode) + 1);
             finalDirection = 'forward';
@@ -56,8 +56,22 @@ export function findFullTrajectory(routeCodes) {
         }
         return { name: `${startName} -> ${endName}`, direction: finalDirection, stations: [...firstLeg, ...secondLeg] };
     }
-    
+
     return null;
+}
+
+/**
+ * Evalueert één extrapolatieregel uit extrapolatie.json tegen het bericht.
+ * Een regel matcht als één van de aanwezige condities waar is:
+ * - anyOf: minstens één term komt voor in het bericht
+ * - allOf: uit élke groep komt minstens één term voor
+ * - cargoAnyOf: de herkende ladingcategorie zit in de lijst
+ */
+function matchesRule(rule, msg, cargo) {
+    if (rule.anyOf && rule.anyOf.some(term => msg.includes(term))) return true;
+    if (rule.cargoAnyOf && cargo && rule.cargoAnyOf.includes(cargo)) return true;
+    if (rule.allOf && rule.allOf.every(group => group.some(term => msg.includes(term)))) return true;
+    return false;
 }
 
 /**
@@ -67,84 +81,43 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
     if (!parsedData.routeCodes.length || !parsedData.timestamp) {
         return { journey: null, parsedMessage: parsedData };
     }
-    
-    const { distanceMatrix, pathData, stationCoords } = getState();
+
+    const { distanceMatrix, pathData, stationCoords, extrapolationRules } = getState();
     let routeCodes = [...parsedData.routeCodes];
 
-    // --- FASE 4 & 5: Route Voorspelling ---
+    // --- Route-extrapolatie op basis van regels in extrapolatie.json ---
     const isCargoTrain = parsedData.cargo !== null;
-    const shouldExtrapolate = parsedData.extrapolate || isCargoTrain;
+    const shouldExtrapolate = (parsedData.extrapolate || isCargoTrain) && extrapolationRules;
 
     if (shouldExtrapolate && routeCodes.length >= 2) {
         const startCode = routeCodes[0];
         const endCode = routeCodes[routeCodes.length - 1];
         const msg = parsedData.originalMessage.toLowerCase();
-        
+
         const startCoord = stationCoords[startCode];
         const endCoord = stationCoords[endCode];
-        
+
         if (startCoord && endCoord && startCoord.lon !== undefined && endCoord.lon !== undefined) {
-            // OOSTWAARTS
             if (Number(endCoord.lon) > Number(startCoord.lon)) {
-                if (!routeCodes.includes('BH')) routeCodes.push('BH');
-            } 
-            // WESTWAARTS (Vanuit Bentheim of oost-Nederland naar de bestemming)
-            else {
-                let destination = null;
-
-                // 1. Pon autotrein
-                if (msg.includes('pon') || msg.includes('auto')) {
-                    destination = 'AMF'; 
+                // OOSTWAARTS
+                const eastDest = extrapolationRules.east?.append;
+                if (eastDest && !routeCodes.includes(eastDest)) routeCodes.push(eastDest);
+            } else {
+                // WESTWAARTS: eerste regel die matcht bepaalt de bestemming
+                const rule = (extrapolationRules.west || []).find(r => matchesRule(r, msg, parsedData.cargo));
+                if (rule) {
+                    (rule.via || []).forEach(code => {
+                        if (!routeCodes.includes(code)) routeCodes.push(code);
+                    });
+                    if (rule.dest && !routeCodes.includes(rule.dest)) routeCodes.push(rule.dest);
                 }
-                // 2. CD Cargo Staaltrein / Schroot naar Amsterdam Westhaven (AWH)
-                else if ((msg.includes('staal') && msg.includes('cd cargo')) || msg.includes('schroot') || msg.includes('cd-cargo')) {
-                    destination = 'AWH'; 
-                }
-                // 3. Reguliere Staaltrein / Shimmens naar Beverwijk Hoogovens
-                else if (msg.includes('staal') || msg.includes('shimmens')) {
-                    destination = 'BVHC';
-                }
-                // 4. Kąty shuttle naar Moerdijk (MDK)
-                else if (msg.includes('kąty') || msg.includes('katy') || msg.includes('clip')) {
-                    destination = 'MDK'; 
-                }
-                // 5. KLK Kolb naar Delden
-                else if (msg.includes('klk') || msg.includes('servo')) {
-                    destination = 'DDN';
-                }
-                // 6. Malmö shuttle naar Coevorden
-                else if (msg.includes('malmö') || msg.includes('malmo')) {
-                    destination = 'COV';
-                }
-                // 7. Tilburg Shuttles (Rzepin, Chengdu, Nanjing)
-                else if (msg.includes('rzepin') || msg.includes('chengdu') || msg.includes('nanjing') || msg.includes('tilburg')) {
-                    destination = 'TB';
-                }
-                // 8. Sloehaven (Nosta/Nostra, Kolen, Erts)
-                else if (msg.includes('kolen') || msg.includes('erts') || msg.includes('nosta') || msg.includes('nostra') || msg.includes('sloe')) {
-                    if (!routeCodes.includes('TB')) routeCodes.push('TB');
-                    destination = 'SLOE'; 
-                }
-                // 9. Europoort / Maasvlakte Shuttles
-                else if (msg.includes('lovosice') || msg.includes('poznań') || msg.includes('poznan')) {
-                    destination = 'ERP'; 
-                }
-                else if (msg.includes('magdeburg') || msg.includes('pcc')) {
-                    destination = 'MVT'; 
-                }
-                // 10. Overige vloeistoffen en containers -> Kijfhoek
-                else if (msg.includes('zonnebloem') || msg.includes('biodiesel') || msg.includes('lotos') || msg.includes('brwinów') || msg.includes('brwinow') || msg.includes('brinow') || parsedData.cargo === 'container' || parsedData.cargo === 'trailer') {
-                    destination = 'KFH'; 
-                }
-
-                if (destination && !routeCodes.includes(destination)) routeCodes.push(destination);
             }
         }
     }
 
     let trajectoryInfo = findFullTrajectory(routeCodes);
-    
-    // --- DE VEILIGHEIDS-FALLBACK (Geruisloze terugval als de traject-lijn mist) ---
+
+    // --- Veiligheids-fallback: geruisloze terugval als de traject-lijn mist ---
     if (!trajectoryInfo && routeCodes.length > parsedData.routeCodes.length) {
         routeCodes = [...parsedData.routeCodes];
         trajectoryInfo = findFullTrajectory(routeCodes);
@@ -153,16 +126,16 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
     if (!trajectoryInfo) {
         return { journey: null, parsedMessage: parsedData };
     }
-    
+
     const { name, direction, stations: journeyStations } = trajectoryInfo;
     const [startHours, startMinutes] = parsedData.timestamp.split(':').map(Number);
     const startDate = new Date();
     startDate.setHours(startHours, startMinutes, 0, 0);
 
-    let directionKey = 'WEST'; 
+    let directionKey = 'WEST';
     const finalStartCoord = stationCoords[journeyStations[0]];
     const finalEndCoord = stationCoords[journeyStations[journeyStations.length - 1]];
-    
+
     if (finalStartCoord && finalEndCoord && finalStartCoord.lon !== undefined && finalEndCoord.lon !== undefined) {
         directionKey = (Number(finalEndCoord.lon) > Number(finalStartCoord.lon)) ? 'OOST' : 'WEST';
     } else {
@@ -176,38 +149,39 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
     let journey = [];
     let lastTime = new Date(startDate.getTime());
     let lastStationCode = journeyStations[0];
-    
+
     for (let i = 0; i < journeyStations.length; i++) {
         const stationCode = journeyStations[i];
         let idealTime = new Date(lastTime.getTime());
-        
+
         if (i > 0) {
             const distance = distanceMatrix[lastStationCode]?.[stationCode] || 0;
-            const travelMinutes = distance ? Math.round((distance / 80) * 60) : 5; 
+            const travelMinutes = distance ? Math.round((distance / 80) * 60) : 5;
             idealTime.setMinutes(idealTime.getMinutes() + travelMinutes);
         }
-        
+
         journey.push({
             code: stationCode,
             name: getStationByCode(stationCode)?.name_long || stationCode,
             idealTime: idealTime,
             finalTime: idealTime,
-            waitTime: 0
+            waitTime: 0,
+            viaPad: false // wordt true als de tijd op een goederenpad is uitgelijnd
         });
-        
+
         lastTime = idealTime;
         lastStationCode = stationCode;
     }
 
     const targetStation = journey.find(s => s.code === targetStationCode);
     let totalDelay = 0;
-    
+
     if (targetStation) {
         const pathInfo = pathData[targetStation.code]?.[directionKey];
         if (pathInfo?.length) {
             const idealMinutes = targetStation.idealTime.getMinutes();
             let targetMinute = pathInfo.sort((a, b) => a - b).find(m => m >= idealMinutes) ?? (pathInfo[0] + 60);
-            
+
             const targetTime = new Date(targetStation.idealTime.getTime());
             if (targetMinute >= 60) {
                 targetTime.setHours(targetTime.getHours() + 1);
@@ -215,9 +189,10 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
             }
             targetTime.setMinutes(targetMinute, 0, 0);
             totalDelay = Math.round((targetTime - targetStation.idealTime) / 60000);
+            targetStation.viaPad = true; // tijd uitgelijnd op goederenpaden.csv
         }
     }
-    
+
     if (totalDelay > 0) {
         const waitStationCode = directionKey === 'WEST' ? 'AMF' : 'STO';
         const waitStationIndex = journey.findIndex(s => s.code === waitStationCode);
@@ -229,7 +204,7 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
             }
         }
     }
-    
+
     const finalJourney = journey.map(s => ({
         ...s,
         time: s.finalTime.toTimeString().substring(0, 5)

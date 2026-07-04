@@ -7,6 +7,7 @@ const state = {
     heatmapData: {},
     trainPatterns: {},
     stationCoords: {},
+    extrapolationRules: null,
     materieelDatabase: {
         exact: {},
         types: {},

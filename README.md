@@ -4,7 +4,7 @@
 
 SpotConverter Pro is een webapplicatie voor treinspotters. Plak een WhatsApp-spotbericht en de tool analyseert automatisch de route, berekent geschatte doorkomsttijden, toont het materieel en linkt direct door naar externe bronnen zoals treinposities.nl.
 
-Live: **https://spotconverter.markeijbaard.nl** · Versie: **4.0.0** · Licentie: **MIT**
+Live: **https://spotconverter.markeijbaard.nl** · Versie: **4.1.0** · Licentie: **MIT**
 
 ---
 
@@ -33,6 +33,9 @@ Live: **https://spotconverter.markeijbaard.nl** · Versie: **4.0.0** · Licentie
 - **Automatische route-extrapolatie** — Detecteert het type lading of shuttlenaam en voorspelt de eindbestemming, ook als de spotter geen `e.v.` heeft vermeld.
 - **Goederenpadberekening** — Schat doorkomsttijden op basis van vaste goederenpaden, inclusief wachttijden op Amersfoort en Stroe.
 - **Materieelvisualisatie** — Toont een afbeelding van de locomotief en wagons op basis van het herkende materieel.
+- **Groepsbericht-generator** — Genereert een spotbericht volgens de "Gouden Formule" (tijd, station, richting, vervoerder, tractie, lading), inclusief `llt`, `badl/ladl` en "tractie onbekend". Optioneel met verwachte doorkomst en wachttijd volgens het berekende goederenpad. Kopieer met één tik of deel direct via WhatsApp.
+- **Betrouwbaarheidsindicatie** — Elke tijd in de tijdlijn toont of deze is uitgelijnd op vaste goederenpaden (✓ pad) of een ruwe schatting is (± schatting).
+- **Offline & installeerbaar** — Service worker cachet de app en data; werkt ook langs het spoor met slecht bereik.
 - **Station Zoeker** — Zoek stations op naam of afkorting.
 - **Heatmap** — Visualiseer de drukte per station en per dag op basis van historische passages.
 - **Treinpatronen** — Bekijk bekende, terugkerende treinroutes.
@@ -145,6 +148,7 @@ python3 -m http.server 8000
 ```text
 /
 ├── index.html
+├── sw.js                   # service worker (offline & caching)
 ├── assets/
 │   ├── css/
 │   │   └── spotconverter.css
@@ -154,7 +158,9 @@ python3 -m http.server 8000
 │       ├── api.js          # data laden (CSV/JSON)
 │       ├── parser.js       # berichtparser
 │       ├── routing.js      # routeanalyse & ETA-berekening
+│       ├── message.js      # WhatsApp-groepsbericht generator
 │       └── ui.js           # rendering
+├── extrapolatie.json
 ├── stations.csv
 ├── afstanden.csv
 ├── goederenpaden.csv
@@ -179,6 +185,9 @@ python3 -m http.server 8000
 | `treinpatronen.json` | Bekende terugkerende treinroutes |
 | `trajecten.json` | Definities van spoortrajecten als stationscodelijsten |
 | `materieel.json` | Koppeling van vervoerders/loctypen aan afbeeldingen |
+| `extrapolatie.json` | Regels voor automatische route-extrapolatie (lading/shuttle → bestemming) |
+
+Wil je een nieuwe extrapolatieregel toevoegen (bijv. een nieuwe shuttle)? Voeg een entry toe aan de `west`-lijst in `extrapolatie.json`; de eerste regel die matcht wint. Geen code-aanpassing nodig.
 
 Wil je een nieuw traject toevoegen? Voeg een entry toe aan `trajecten.json` met een geordende lijst van stationscodes. De routeherkenning pikt dit automatisch op.
 
@@ -260,6 +269,35 @@ MIT © 2025 Mark Eijbaard
 ---
 
 ## Changelog
+
+### v4.1.0 — Groepsbericht-generator, offline support & grote UX/SEO-revisie
+
+**Nieuw: bericht voor de groep**
+- Generator die van elke geanalyseerde spot een groepsregel-conform WhatsApp-bericht maakt volgens de Gouden Formule: `[Tijd] [Station] [ri Richting] [Vervoerder] [Tractie] [Lading]`
+- Herkent `llt` (losse lok) en `badl`/`ladl` (belading containertreinen); toont "tractie onbekend" als er geen loc herkend is
+- Specifieke shuttlenamen (Kąty, Lovosice, …) worden in het bericht gebruikt in plaats van generiek "shuttle"
+- Optionele tweede regel met verwachte doorkomst en wachttijd: `Verwacht BRN ±15:21, na ±12 min wachttijd AMF (pad via spotconverter.markeijbaard.nl)`
+- Kopieerknop en directe deelknop naar WhatsApp (native share sheet op mobiel)
+
+**Mobiele UX**
+- Plak-knop: klembord inlezen met één tik (geen long-press meer nodig)
+- Navigatie onderin het scherm op mobiel (app-gevoel, duimbereik); tabs pasten voorheen niet op een telefoonscherm
+- Doelstation is nu echt optioneel ("Geen doelstation") en wordt onthouden op het apparaat
+- Voorbeeld-knop voor nieuwe gebruikers
+
+**Betrouwbaarheid & data**
+- Betrouwbaarheidsbadges in de tijdlijn: ✓ pad (goederenpaden.csv) versus ± schatting (afstand/snelheid)
+- Extrapolatieregels verplaatst van code naar `extrapolatie.json` — nieuwe shuttles toevoegen zonder programmeren
+- Parserfix: locnummers als `189 024` en `186 012` worden nu volledig herkend (de serie 18 "kaapte" 186/189)
+
+**Techniek, performance & SEO**
+- Tailwind CDN (~300 KB render-blocking) vervangen door een eigen stylesheet van ~10 KB
+- Service worker: app-shell en data offline beschikbaar, network-first voor databestanden (cache buster overbodig)
+- Heatmap heeft nu echte kleurniveaus en de patronen-kaarten zijn gestyled (ontbrekende CSS hersteld)
+- Bugfix: dubbele URL-decode van de `?q=`-parameter brak berichten met `%`-tekens (iOS Shortcut)
+- Meta description, Open Graph/Twitter cards (link previews in WhatsApp!), canonical, favicon en JSON-LD toegevoegd
+- Toegankelijkheid: ARIA-tabs, focus-states, één `<main>` met sections, `aria-live` op de resultaten
+- Dead code verwijderd (oude `spotconverter.js`, 370 regels)
 
 ### v4.0.0 — Nieuwe huisstijl & treinposities.nl-integratie
 

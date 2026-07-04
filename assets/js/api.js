@@ -15,7 +15,8 @@ export async function initializeData() {
             loadPatterns(),
             loadTrajectories(),
             loadMaterieel(),
-            loadCoords() 
+            loadCoords(),
+            loadExtrapolationRules()
         ]);
         return true;
     } catch (error) {
@@ -105,9 +106,18 @@ async function loadPatterns() {
 }
 
 async function loadTrajectories() {
-    // Cache Buster toegevoegd: dwingt de browser altijd de échte, verse versie op te halen
-    const data = await fetchJSON(`${BASE_URL}/trajecten.json?t=${new Date().getTime()}`);
+    // Versheid wordt afgehandeld door de service worker (network-first voor data)
+    const data = await fetchJSON(`${BASE_URL}/trajecten.json`);
     updateState('trajectories', data);
+}
+
+async function loadExtrapolationRules() {
+    try {
+        const data = await fetchJSON(`${BASE_URL}/extrapolatie.json`);
+        updateState('extrapolationRules', data);
+    } catch (error) {
+        console.warn("Kon extrapolatie.json niet laden; route-extrapolatie staat uit.", error);
+    }
 }
 
 async function loadMaterieel() {
