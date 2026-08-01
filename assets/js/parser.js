@@ -88,11 +88,13 @@ export function parseMessage(message) {
 
     stations.forEach(station => {
         if (!station.code) return;
+        // Metatekens escapen: codes als 'HRIJ (HRY)' mogen geen regex-syntax worden
+        const safeCode = station.code.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         let regex;
         if (commonWords.includes(station.code.toLowerCase())) {
-            regex = new RegExp(`\\b(${station.code}|${station.code.charAt(0).toUpperCase() + station.code.slice(1).toLowerCase()})\\b`, 'g');
+            regex = new RegExp(`\\b(${safeCode}|${safeCode.charAt(0).toUpperCase() + safeCode.slice(1).toLowerCase()})\\b`, 'g');
         } else {
-            regex = new RegExp(`\\b(${station.code})\\b`, 'gi');
+            regex = new RegExp(`\\b(${safeCode})\\b`, 'gi');
         }
         let match;
         while ((match = regex.exec(message)) !== null) {
@@ -103,12 +105,22 @@ export function parseMessage(message) {
     foundMatches.sort((a, b) => a.index - b.index);
 
     if (foundMatches.length > 0) {
+        // Spottersafkortingen en pseudo-codes naar de interne code uit trajecten.json.
+        // 'RH' is officieel Rheden, maar wordt in de groep voor Rheine gebruikt;
+        // Rheden ligt op geen enkel traject, dus dit botst in de praktijk niet.
+        const codeAliases = {
+            'RH': 'RHEINE',
+            'SALZBERGEN': 'SBG',
+            'HSAL': 'SBG',
+            'HBTH': 'BH'
+        };
         const uniqueRouteCodes = [];
         let lastCode = null;
         foundMatches.forEach(m => {
-            if (m.station.code !== lastCode) {
-                uniqueRouteCodes.push(m.station.code);
-                lastCode = m.station.code;
+            const code = codeAliases[m.station.code] || m.station.code;
+            if (code !== lastCode) {
+                uniqueRouteCodes.push(code);
+                lastCode = code;
             }
         });
         parsed.spotLocation = foundMatches[0].station;

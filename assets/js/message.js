@@ -10,6 +10,10 @@
 
 const SITE = 'spotconverter.markeijbaard.nl';
 
+// Interne pseudo-codes worden in het bericht als spottersafkorting getoond
+const DISPLAY_ALIASES = { 'RHEINE': 'RH', 'SALZBERGEN': 'SBG', 'HSAL': 'SBG', 'HBTH': 'BH' };
+const shortCode = code => DISPLAY_ALIASES[code] || code;
+
 /**
  * Bouwt het spotbericht. `includeEta` voegt een tweede regel toe met de
  * verwachte doorkomst volgens het berekende goederenpad.
@@ -20,8 +24,8 @@ export function buildGroupMessage(analysis, { includeEta = true, targetCode = nu
 
     const parts = [];
     if (p.timestamp) parts.push(p.timestamp);
-    if (p.spotLocation?.code) parts.push(p.spotLocation.code);
-    if (p.routeCodes.length > 1) parts.push(`ri ${p.routeCodes[1]}`);
+    if (p.spotLocation?.code) parts.push(shortCode(p.spotLocation.code));
+    if (p.routeCodes.length > 1) parts.push(`ri ${shortCode(p.routeCodes[1])}`);
     if (p.carrier) parts.push(p.carrier);
     parts.push(p.locomotive || 'tractie onbekend');
 
@@ -41,10 +45,10 @@ export function buildGroupMessage(analysis, { includeEta = true, targetCode = nu
             || journey[journey.length - 1];
 
         if (target && target.code !== journey[0].code) {
-            let etaLine = `Verwacht ${target.code} ±${target.time}`;
+            let etaLine = `Verwacht ${shortCode(target.code)} ±${target.time}`;
             const waitStation = journey.find(s => s.waitTime > 0);
             if (waitStation) {
-                etaLine += `, na ±${waitStation.waitTime} min wachttijd ${waitStation.code}`;
+                etaLine += `, na ±${waitStation.waitTime} min wachttijd ${shortCode(waitStation.code)}`;
             }
             etaLine += ` (pad via ${SITE})`;
             message += `\n${etaLine}`;

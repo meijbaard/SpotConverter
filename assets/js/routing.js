@@ -27,34 +27,38 @@ export function findFullTrajectory(routeCodes) {
         }
     }
 
-    // 2. Complexe routeherkenning via knooppunt Amersfoort (over twee trajecten heen)
-    const hub = "AMF";
-    let startTrajInfo = null, endTrajInfo = null;
+    // 2. Complexe routeherkenning via een knooppunt (over twee trajecten heen).
+    // De knooppunten komen uit knooppunten.json; volgorde bepaalt de voorkeur.
+    const hubs = getState().hubs;
 
-    for (const name in trajectories) {
-        if (trajectories[name].includes(startCode) && trajectories[name].includes(hub)) startTrajInfo = { name, stations: trajectories[name] };
-        if (trajectories[name].includes(endCode) && trajectories[name].includes(hub)) endTrajInfo = { name, stations: trajectories[name] };
-    }
+    for (const hub of hubs) {
+        let startTrajInfo = null, endTrajInfo = null;
 
-    if (startTrajInfo && endTrajInfo && startTrajInfo.name !== endTrajInfo.name) {
-        let firstLeg, secondLeg, finalDirection, startName = startTrajInfo.name, endName = endTrajInfo.name;
-
-        if (startTrajInfo.stations.indexOf(startCode) < startTrajInfo.stations.indexOf(hub)) {
-            firstLeg = startTrajInfo.stations.slice(startTrajInfo.stations.indexOf(startCode), startTrajInfo.stations.indexOf(hub) + 1);
-        } else {
-            const reversed = [...startTrajInfo.stations].reverse();
-            firstLeg = reversed.slice(reversed.indexOf(startCode), reversed.indexOf(hub) + 1);
+        for (const name in trajectories) {
+            if (trajectories[name].includes(startCode) && trajectories[name].includes(hub)) startTrajInfo = { name, stations: trajectories[name] };
+            if (trajectories[name].includes(endCode) && trajectories[name].includes(hub)) endTrajInfo = { name, stations: trajectories[name] };
         }
 
-        if (endTrajInfo.stations.indexOf(hub) < endTrajInfo.stations.indexOf(endCode)) {
-            secondLeg = endTrajInfo.stations.slice(endTrajInfo.stations.indexOf(hub) + 1, endTrajInfo.stations.indexOf(endCode) + 1);
-            finalDirection = 'forward';
-        } else {
-            const reversed = [...endTrajInfo.stations].reverse();
-            secondLeg = reversed.slice(reversed.indexOf(hub) + 1, reversed.indexOf(endCode) + 1);
-            finalDirection = 'backward';
+        if (startTrajInfo && endTrajInfo && startTrajInfo.name !== endTrajInfo.name) {
+            let firstLeg, secondLeg, finalDirection, startName = startTrajInfo.name, endName = endTrajInfo.name;
+
+            if (startTrajInfo.stations.indexOf(startCode) < startTrajInfo.stations.indexOf(hub)) {
+                firstLeg = startTrajInfo.stations.slice(startTrajInfo.stations.indexOf(startCode), startTrajInfo.stations.indexOf(hub) + 1);
+            } else {
+                const reversed = [...startTrajInfo.stations].reverse();
+                firstLeg = reversed.slice(reversed.indexOf(startCode), reversed.indexOf(hub) + 1);
+            }
+
+            if (endTrajInfo.stations.indexOf(hub) < endTrajInfo.stations.indexOf(endCode)) {
+                secondLeg = endTrajInfo.stations.slice(endTrajInfo.stations.indexOf(hub) + 1, endTrajInfo.stations.indexOf(endCode) + 1);
+                finalDirection = 'forward';
+            } else {
+                const reversed = [...endTrajInfo.stations].reverse();
+                secondLeg = reversed.slice(reversed.indexOf(hub) + 1, reversed.indexOf(endCode) + 1);
+                finalDirection = 'backward';
+            }
+            return { name: `${startName} -> ${endName}`, direction: finalDirection, stations: [...firstLeg, ...secondLeg] };
         }
-        return { name: `${startName} -> ${endName}`, direction: finalDirection, stations: [...firstLeg, ...secondLeg] };
     }
 
     return null;

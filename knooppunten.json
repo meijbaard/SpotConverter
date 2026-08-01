@@ -1,0 +1,8 @@
+{
+	"uitleg": "Stations waar trajecten uit trajecten.json op elkaar aansluiten. De converter probeert deze knooppunten in volgorde als een bericht niet op één traject past. Voeg hier een code toe om een nieuw knooppunt te activeren.",
+	"knooppunten": [
+		"AMF",
+		"BLOA",
+		"DVGE"
+	]
+}

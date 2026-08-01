@@ -14,6 +14,7 @@ export async function initializeData() {
             loadHeatmap(),
             loadPatterns(),
             loadTrajectories(),
+            loadKnooppunten(),
             loadMaterieel(),
             loadCoords(),
             loadExtrapolationRules()
@@ -120,9 +121,20 @@ async function loadExtrapolationRules() {
     }
 }
 
+async function loadKnooppunten() {
+    try {
+        const data = await fetchJSON(`${BASE_URL}/knooppunten.json`);
+        if (Array.isArray(data.knooppunten) && data.knooppunten.length) {
+            updateState('hubs', data.knooppunten);
+        }
+    } catch (error) {
+        console.warn("Kon knooppunten.json niet laden; alleen AMF wordt als knooppunt gebruikt.", error);
+    }
+}
+
 async function loadMaterieel() {
     try {
-        const data = await fetchJSON(`materieel.json`);
+        const data = await fetchJSON(`${BASE_URL}/materieel.json`);
         updateState('materieelDatabase', data);
     } catch (error) {
         console.warn("Kon materieel.json niet laden. Er wordt teruggevallen op de lege database.", error);
