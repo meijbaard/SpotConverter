@@ -274,5 +274,9 @@
 		"GZ",
 		"BD",
 		"MDK"
+	],
+	"Spoorwegmuseum-route": [
+		"UTM",
+		"BLOA"
 	]
 }
