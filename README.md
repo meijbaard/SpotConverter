@@ -114,7 +114,8 @@ bericht ─→ parser.js ─→ routing.js ─→ ui.js
 ├── index.html
 ├── sw.js                   # service worker (offline & caching)
 ├── assets/
-│   ├── css/spotconverter.css
+│   ├── css/spotconverter.css   # huisstijl "Perron" (flessengroen + crème)
+│   ├── fonts/              # Bricolage Grotesque + Figtree (zelf gehost, woff2)
 │   └── js/
 │       ├── app.js          # initialisatie & event handling
 │       ├── state.js        # centrale state
@@ -122,9 +123,10 @@ bericht ─→ parser.js ─→ routing.js ─→ ui.js
 │       ├── parser.js       # berichtparser (incl. spottersaliassen zoals RH → Rheine)
 │       ├── routing.js      # routeanalyse & ETA-berekening
 │       ├── message.js      # groepsbericht-generator
-│       └── ui.js           # rendering
+│       └── ui.js           # rendering (incl. somda-doorkomststaat)
 ├── afstanden_check/        # datascripts (coördinaten, afstanden, validatie)
 ├── tests/                  # node --test suite (parser & routering)
+├── .github/workflows/      # deploy naar Pages + CI (tests & datavalidatie)
 ├── *.csv / *.json          # datasets (zie hieronder)
 ├── CNAME                   # spotconverter.markeijbaard.nl
 └── .nojekyll
