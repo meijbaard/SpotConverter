@@ -47,6 +47,16 @@ function registerServiceWorker() {
         navigator.serviceWorker.register('sw.js').catch(err => {
             console.warn('Service worker registratie mislukt:', err);
         });
+
+        // Na een release serveert de oude service worker nog één keer de oude
+        // app-shell. Zodra de nieuwe SW het overneemt, laden we de pagina één
+        // keer opnieuw zodat iedereen direct op de nieuwste versie zit.
+        // Bij een allereerste bezoek (nog geen controller) herladen we niet.
+        let hadController = !!navigator.serviceWorker.controller;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (!hadController) { hadController = true; return; }
+            window.location.reload();
+        });
     }
 }
 

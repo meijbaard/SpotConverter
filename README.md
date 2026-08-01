@@ -4,7 +4,7 @@
 
 Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de route, geschatte doorkomsttijden, materieelinfo en een deelbaar groepsbericht terug.
 
-**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 4.2.0 · **Licentie:** MIT
+**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 4.2.1 · **Licentie:** MIT
 
 ```
 13:07 Bh ri Asd RFO 193 150 met keteltrein
@@ -218,6 +218,10 @@ MIT © 2025–2026 Mark Eijbaard
 ---
 
 ## Changelog
+
+### v4.2.1 — Directe update na release
+
+- Na een release herlaadt de app automatisch éénmalig zodra de nieuwe service worker actief is; bezoekers zitten daardoor direct op de nieuwste versie in plaats van na een tweede handmatige verversing
 
 ### v4.2.0 — Knooppunten, Spoorwegmuseum-route & afstanden-generator
 
