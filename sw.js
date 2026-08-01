@@ -5,7 +5,7 @@
 //   beschikbaar blijft maar online altijd vers is.
 // Verhoog VERSION bij elke release om oude caches op te ruimen.
 
-const VERSION = 'v4.2.3';
+const VERSION = 'v5.0.0';
 const STATIC_CACHE = `spotconverter-static-${VERSION}`;
 const DATA_CACHE = `spotconverter-data-${VERSION}`;
 

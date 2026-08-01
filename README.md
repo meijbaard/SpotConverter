@@ -4,7 +4,7 @@
 
 Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de route, geschatte doorkomsttijden, materieelinfo en een deelbaar groepsbericht terug.
 
-**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 4.2.3 · **Licentie:** MIT
+**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.0.0 · **Licentie:** MIT
 
 ```
 13:07 Bh ri Asd RFO 193 150 met keteltrein
@@ -34,7 +34,7 @@ Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de rout
 ## Wat kan de tool
 
 - 🔍 **Spot-analyse** — herkent tijd, station, richting, vervoerder, locnummer(s), lading, `llt`, `badl/ladl` en `(opz)` in vrije berichttekst
-- 🛤️ **Routeherkenning** — vindt het traject, ook over meerdere trajecten heen via knooppunten (bijv. Bad Bentheim → Rotterdam via Amersfoort, of Spoorwegmuseum → Amersfoort/Utrecht via Blauwkapel)
+- 🛤️ **Landelijke routeherkenning** — de trajecten vormen samen een spoorweggraaf die heel Nederland dekt (70 baanvakken, van Roodeschool tot Vlissingen). Benoemde goederencorridors winnen waar ze de rit dekken; daarbuiten zoekt een kortste-padalgoritme de route over willekeurig veel trajecten (bijv. Leeuwarden → Den Haag)
 - ⏱️ **Doorkomsttijden** — berekend uit afstanden (80 km/u) en waar beschikbaar uitgelijnd op vaste goederenpaden, inclusief wachttijden; elke tijd toont ✓ pad of ± schatting
 - 🧭 **Route-extrapolatie** — voorspelt de eindbestemming uit lading of shuttlenaam, ook zonder `e.v.` in het bericht
 - 💬 **Groepsbericht-generator** — bouwt een bericht volgens de Gouden Formule, optioneel met verwachte doorkomst; kopieer met één tik of deel direct via WhatsApp
@@ -102,10 +102,10 @@ Open daarna http://localhost:8000.
 bericht ─→ parser.js ─→ routing.js ─→ ui.js
              │              │            │
        stations.csv   trajecten.json   materieel.json
-       (codeherkenning) knooppunten.json (visualisatie)
-                        afstanden.csv
-                        goederenpaden.csv
-                        extrapolatie.json
+       (tokenizer +   (spoorweggraaf)  (visualisatie)
+        opzoektabel)  afstanden.csv
+                      goederenpaden.csv
+                      extrapolatie.json
 ```
 
 ```text
@@ -122,13 +122,14 @@ bericht ─→ parser.js ─→ routing.js ─→ ui.js
 │       ├── routing.js      # routeanalyse & ETA-berekening
 │       ├── message.js      # groepsbericht-generator
 │       └── ui.js           # rendering
-├── afstanden_check/        # datascripts (OSM-coördinaten, afstanden-generator)
+├── afstanden_check/        # datascripts (coördinaten, afstanden, validatie)
+├── tests/                  # node --test suite (parser & routering)
 ├── *.csv / *.json          # datasets (zie hieronder)
 ├── CNAME                   # spotconverter.markeijbaard.nl
 └── .nojekyll
 ```
 
-Vaste volgorde in de analyse: de parser haalt alle stationscodes uit het bericht → de routering zoekt een traject dat eerste en laatste code bevat (of stitcht twee trajecten via een knooppunt) → tijden worden berekend uit de afstandsmatrix en uitgelijnd op goederenpaden waar die bestaan.
+Vaste volgorde in de analyse: de parser tokenizet het bericht en zoekt stationscodes op (alle herkende codes tellen als via-punt) → de routering bouwt uit de trajecten een spoorweggraaf en kiest per segment: één benoemd traject als dat kan, anders twee trajecten met gedeeld overstapstation (km-gescoord), anders het kortste pad → tijden worden berekend uit de afstandsmatrix en uitgelijnd op goederenpaden waar die bestaan.
 
 ---
 
@@ -139,8 +140,8 @@ Alle kennis zit in data, niet in code:
 | Bestand | Inhoud |
 |---|---|
 | `stations.csv` | Stationscodes en namen (NL + DE), incl. aansluitingen en emplacementen |
-| `trajecten.json` | Spoortrajecten als geordende stationscodelijsten |
-| `knooppunten.json` | Stations waar trajecten op elkaar aansluiten (AMF, BLOA, DVGE); volgorde bepaalt voorkeur |
+| `trajecten.json` | Baanvakken/corridors als geordende stationscodelijsten — samen de landelijke spoorweggraaf; elk gedeeld station is automatisch een knooppunt |
+| `overgangen.json` | Verboden doorrijverbindingen (vervallen bogen/aansluitingen), bijv. Blauwkapel → Hollandsche Rading vanaf de museumlijn |
 | `afstanden.csv` | Afstandsmatrix in km — grotendeels gegenereerd, zie [Datascripts](#datascripts) |
 | `goederenpaden.csv` | Vaste passage-minuten per station en rijrichting (nu: Gooilijn) |
 | `extrapolatie.json` | Regels lading/shuttle → voorspelde bestemming |
@@ -150,9 +151,9 @@ Alle kennis zit in data, niet in code:
 
 **Nieuw traject toevoegen — drie stappen, geen code:**
 
-1. Voeg de stationscodelijst toe aan `trajecten.json`
-2. Sluit het traject aan op het bestaande netwerk? Zet het gedeelde station in `knooppunten.json`
-3. Draai de afstanden-generator (hieronder) om `afstanden.csv` en de coördinaten bij te werken
+1. Voeg de stationscodelijst toe aan `trajecten.json` (deelt het een station met een bestaand traject, dan is het automatisch aangesloten op het netwerk)
+2. Draai `python3 afstanden_check/haal_coords.py` (coördinaten voor nieuwe stations) en `python3 afstanden_check/genereer_afstanden.py` (afstanden)
+3. Controleer met `python3 afstanden_check/valideer_data.py` en `npm test`
 
 **Nieuwe extrapolatieregel (bijv. een nieuwe shuttle):** voeg een entry toe aan de `west`-lijst in `extrapolatie.json`; de eerste regel die matcht wint.
 
@@ -160,7 +161,11 @@ Alle kennis zit in data, niet in code:
 
 ## Datascripts
 
-In `afstanden_check/`:
+In `afstanden_check/` (allemaal zonder externe dependencies, tenzij vermeld):
+
+**`valideer_data.py`** — controleert de samenhang van alle databestanden: bestaan alle trajectcodes, zijn er coördinaten en afstanden, is de JSON geldig. Draait ook in CI bij elke push (`.github/workflows/test.yml`), samen met `npm test`.
+
+**`haal_coords.py`** — zoekt coördinaten op voor trajectstations die nog geen coördinaten hebben (Nominatim, met rate limit). Schrijft naar `out_osm/osm_stations_found.csv` en de coords-JSON.
 
 **`genereer_afstanden.py`** — geen dependencies, geen netwerk. Vult ontbrekende afstanden tussen opeenvolgende trajectstations aan (hemelsbreed × 1,2 spoorfactor; handmatig ingevulde waarden blijven altijd staan) en schrijft samengevoegde coördinaten terug naar `out_osm/osm_stations_coords.json` voor de webapp.
 
@@ -218,6 +223,27 @@ MIT © 2025–2026 Mark Eijbaard
 ---
 
 ## Changelog
+
+### v5.0.0 — Landelijke dekking & netwerkroutering
+
+**Routering als spoorweggraaf**
+- De trajecten vormen nu één netwerk: knopen = stations, kanten = opeenvolgende stations met hun afstand. Elk gedeeld station is automatisch een knooppunt; `knooppunten.json` is vervallen
+- Routekeuze per segment: één benoemd traject als dat kan (corridors + goederenpaden blijven leidend), anders twee trajecten met gedeeld overstapstation op kilometers gescoord, anders kortste pad (Dijkstra) over willekeurig veel trajecten
+- Nieuw `overgangen.json`: vervallen verbindingsbogen als data — de routering rijdt er niet meer doorheen (bijv. museumlijn Blauwkapel → richting Hollandsche Rading: UTM naar Hilversum gaat via Amersfoort, naar Baarn via de Soestlijn)
+- Alle herkende stationscodes in een bericht tellen als via-punt, niet alleen de eerste en laatste; kopmaak-routes volgen automatisch uit de graaf
+
+**Heel Nederland**
+- 60 baanvakken toegevoegd: het complete reizigersnet van Roodeschool tot Vlissingen en van Den Helder tot Kerkrade (70 trajecten totaal, ± 380 stations), alle codes gevalideerd tegen stations.csv, coördinaten en afstanden automatisch aangevuld
+- Routes als "Lw ri Gvc" of "Zl ri Gn" werken nu gewoon
+
+**Parser schaalbaar**
+- Tokenizer + opzoektabel vervangt ~1700 regexes per bericht; codes die ook een Nederlands woord zijn (EN, OP, NA, WAS, ALS, AF, G, O) matchen alleen exact geschreven — nodig nu élk station meetelt als via-punt
+- "Oss" wordt herkend (de officiële code is de losse letter O)
+
+**Fundament**
+- Testsuite (`npm test`): 27 tests met echte spotberichten voor parser en routering
+- CI-workflow draait tests + datavalidatie bij elke push
+- Nieuwe datascripts: `valideer_data.py` (samenhang databestanden) en `haal_coords.py` (coördinaten voor nieuwe stations, zonder dependencies)
 
 ### v4.2.3 — Spoorwegmuseum-route doorgetrokken naar Amersfoort & Mat '24
 

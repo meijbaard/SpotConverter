@@ -143,7 +143,7 @@
 		"ERP",
 		"MVT"
 	],
-		"Gooilijn-Kijfhoek (noord)": [
+	"Gooilijn-Kijfhoek (noord)": [
 		"AMF",
 		"AMFGA",
 		"BRNA",
@@ -287,5 +287,518 @@
 		"UTO",
 		"UTOA",
 		"UT"
+	],
+	"Amsterdam - Utrecht": [
+		"ASD",
+		"ASA",
+		"DVD",
+		"ASB",
+		"ASHD",
+		"AC",
+		"BKL",
+		"MAS",
+		"UTZL",
+		"UT"
+	],
+	"Schiphollijn (Amsterdam - Leiden)": [
+		"ASD",
+		"ASS",
+		"ASDL",
+		"SHL",
+		"HFD",
+		"NVP",
+		"SSH",
+		"LEDN"
+	],
+	"Zuidtak (Schiphol - Weesp)": [
+		"SHL",
+		"ASDZ",
+		"RAI",
+		"DVD",
+		"WP"
+	],
+	"Oude Lijn (Haarlem - Leiden)": [
+		"HLM",
+		"HAD",
+		"HIL",
+		"VH",
+		"LEDN"
+	],
+	"Leiden - Den Haag Centraal": [
+		"LEDN",
+		"DVNK",
+		"VST",
+		"GVM",
+		"LAA",
+		"GVC"
+	],
+	"Leiden - Rotterdam": [
+		"LEDN",
+		"DVNK",
+		"VST",
+		"GVM",
+		"LAA",
+		"GV",
+		"GVMW",
+		"RSW",
+		"DT",
+		"DTCP",
+		"SDM",
+		"RTD"
+	],
+	"Den Haag Centraal - Gouda": [
+		"GVC",
+		"VB",
+		"ZTM",
+		"ZTMO",
+		"GD"
+	],
+	"Gouda - Utrecht": [
+		"GD",
+		"GDG",
+		"WD",
+		"VTN",
+		"UTT",
+		"UTLR",
+		"UT"
+	],
+	"Leiden - Woerden": [
+		"LEDN",
+		"LDL",
+		"APN",
+		"BDG",
+		"WD"
+	],
+	"Gouda - Alphen aan den Rijn": [
+		"GD",
+		"WAD",
+		"BSK",
+		"APN"
+	],
+	"Haarlem - Zandvoort": [
+		"HLM",
+		"OVN",
+		"ZVT"
+	],
+	"Rotterdam - Dordrecht": [
+		"RTD",
+		"RTB",
+		"RTZ",
+		"RLB",
+		"BRD",
+		"ZWD",
+		"DDR"
+	],
+	"Dordrecht - Roosendaal": [
+		"DDR",
+		"DDZD",
+		"ZLW",
+		"ZVB",
+		"ODB",
+		"RSD"
+	],
+	"Dordrecht - Breda": [
+		"DDR",
+		"DDZD",
+		"ZLW",
+		"BDPB",
+		"BD"
+	],
+	"Zeeuwse lijn (Roosendaal - Vlissingen)": [
+		"RSD",
+		"BGN",
+		"RB",
+		"KBD",
+		"KRG",
+		"BZL",
+		"GS",
+		"ARN",
+		"MDB",
+		"VSS",
+		"VS"
+	],
+	"Dordrecht - Geldermalsen (MerwedeLingelijn)": [
+		"DDR",
+		"SDT",
+		"GR",
+		"LDM",
+		"GDM"
+	],
+	"Utrecht - Arnhem": [
+		"UT",
+		"BNK",
+		"DB",
+		"MRN",
+		"KLP",
+		"ED",
+		"WF",
+		"OTB",
+		"AH"
+	],
+	"Maarn - Rhenen": [
+		"MRN",
+		"VNDW",
+		"VNDC",
+		"RHN"
+	],
+	"Arnhem - Nijmegen": [
+		"AH",
+		"AHZ",
+		"EST",
+		"NML",
+		"NM"
+	],
+	"Geldermalsen - Elst (Tiellijn)": [
+		"GDM",
+		"TPSW",
+		"TL",
+		"KTR",
+		"ZA",
+		"EST"
+	],
+	"Den Bosch - Eindhoven": [
+		"HT",
+		"VG",
+		"BTL",
+		"BET",
+		"EHB",
+		"EHV"
+	],
+	"Tilburg - Eindhoven": [
+		"TB",
+		"OT",
+		"BTL"
+	],
+	"Nijmegen - Den Bosch": [
+		"NM",
+		"NMD",
+		"WC",
+		"RVS",
+		"O",
+		"OW",
+		"RS",
+		"HTO",
+		"HT"
+	],
+	"Hilversum - Utrecht": [
+		"HVS",
+		"HVSP",
+		"HOR",
+		"UTO",
+		"UT"
+	],
+	"Den Dolder - Baarn (Stichtse lijn)": [
+		"DLD",
+		"STZ",
+		"ST",
+		"SD",
+		"BRN"
+	],
+	"Valleilijn (Barneveld aansluiting - Ede)": [
+		"BNVA",
+		"BNN",
+		"BNC",
+		"BNZ",
+		"LTN",
+		"EDC",
+		"ED"
+	],
+	"IJssellijn (Deventer - Arnhem)": [
+		"DV",
+		"ZP",
+		"BMN",
+		"DR",
+		"RH",
+		"VP",
+		"AHP",
+		"AH"
+	],
+	"Apeldoorn - Zutphen": [
+		"APD",
+		"KBK",
+		"ZP"
+	],
+	"Zutphen - Hengelo": [
+		"ZP",
+		"LC",
+		"GO",
+		"DDN",
+		"HGL"
+	],
+	"Zutphen - Winterswijk": [
+		"ZP",
+		"VD",
+		"RL",
+		"LTV",
+		"WW"
+	],
+	"Arnhem - Winterswijk": [
+		"AH",
+		"AHPR",
+		"WTV",
+		"DVN",
+		"ZV",
+		"DID",
+		"WL",
+		"DTC",
+		"GDR",
+		"TBG",
+		"VSV",
+		"ATN",
+		"WW"
+	],
+	"Hengelo - Enschede": [
+		"HGL",
+		"HGLO",
+		"ESK",
+		"ES"
+	],
+	"Zwolle - Almelo": [
+		"ZL",
+		"HNO",
+		"RAT",
+		"NVD",
+		"WDN"
+	],
+	"Zwolle - Deventer": [
+		"ZL",
+		"WH",
+		"OST",
+		"DV"
+	],
+	"Zwolle - Emmen": [
+		"ZL",
+		"DL",
+		"OMN",
+		"MRB",
+		"HDB",
+		"GBG",
+		"CO",
+		"DLN",
+		"NA",
+		"EMNZ",
+		"EMN"
+	],
+	"Zwolle - Kampen": [
+		"ZL",
+		"KPN"
+	],
+	"Amersfoort - Zwolle": [
+		"AMF",
+		"AMFS",
+		"NKK",
+		"PT",
+		"EML",
+		"HD",
+		"NS",
+		"HDE",
+		"WZ",
+		"ZL"
+	],
+	"Hanzelijn (Lelystad - Zwolle)": [
+		"LLS",
+		"DRON",
+		"ZLSH",
+		"ZL"
+	],
+	"Flevolijn (Weesp - Lelystad)": [
+		"WP",
+		"ALMP",
+		"ALM",
+		"ALMM",
+		"AMPO",
+		"ALMB",
+		"ALMO",
+		"LLS"
+	],
+	"Zwolle - Groningen": [
+		"ZL",
+		"MP",
+		"HGV",
+		"BL",
+		"ASN",
+		"HRN",
+		"GERP",
+		"GN"
+	],
+	"Zwolle - Leeuwarden": [
+		"ZL",
+		"MP",
+		"SWK",
+		"WV",
+		"HR",
+		"AKM",
+		"GW",
+		"LW"
+	],
+	"Groningen - Leeuwarden": [
+		"GN",
+		"ZH",
+		"GK",
+		"BP",
+		"VWD",
+		"HDG",
+		"LW"
+	],
+	"Groningen - Delfzijl": [
+		"GN",
+		"GNN",
+		"SWD",
+		"BDM",
+		"STM",
+		"LP",
+		"APG",
+		"DZ"
+	],
+	"Groningen - Roodeschool": [
+		"GN",
+		"GNN",
+		"SWD",
+		"WSM",
+		"BF",
+		"UST",
+		"RD"
+	],
+	"Groningen - Bad Nieuweschans": [
+		"GN",
+		"GERP",
+		"KW",
+		"MTH",
+		"HGZ",
+		"SPM",
+		"ZB",
+		"SDA",
+		"WS",
+		"NSCH"
+	],
+	"Zuidbroek - Veendam": [
+		"ZB",
+		"VDM"
+	],
+	"Leeuwarden - Harlingen": [
+		"LW",
+		"DEI",
+		"DRP",
+		"FN",
+		"HLG",
+		"HLGH"
+	],
+	"Leeuwarden - Stavoren": [
+		"LW",
+		"MG",
+		"SK",
+		"IJT",
+		"WK",
+		"HNP",
+		"STV"
+	],
+	"Zaanlijn (Amsterdam - Alkmaar)": [
+		"ASS",
+		"ZD",
+		"KZ",
+		"ZZS",
+		"WM",
+		"KMA",
+		"UTG",
+		"CAS",
+		"HLO",
+		"AMR"
+	],
+	"Alkmaar - Den Helder": [
+		"AMR",
+		"AMRN",
+		"HWD",
+		"SGN",
+		"ANA",
+		"HDRZ",
+		"HDR"
+	],
+	"Heerhugowaard - Hoorn": [
+		"HWD",
+		"OBD",
+		"HN"
+	],
+	"Uitgeest - Haarlem": [
+		"UTG",
+		"HK",
+		"BV"
+	],
+	"Zaandam - Enkhuizen": [
+		"ZD",
+		"PMW",
+		"PMR",
+		"PMO",
+		"HN",
+		"HNK",
+		"HKS",
+		"BKG",
+		"BKF",
+		"EKZ"
+	],
+	"Eindhoven - Maastricht": [
+		"EHV",
+		"GP",
+		"HZE",
+		"MZ",
+		"WT",
+		"RM",
+		"EC",
+		"SRN",
+		"STD",
+		"LUT",
+		"BK",
+		"BDE",
+		"MTN",
+		"MT"
+	],
+	"Sittard - Heerlen": [
+		"STD",
+		"GLN",
+		"SBK",
+		"SN",
+		"NH",
+		"HRLW",
+		"HRL"
+	],
+	"Maastricht - Heerlen": [
+		"MT",
+		"MES",
+		"VK",
+		"KMR",
+		"HRL"
+	],
+	"Heerlen - Kerkrade": [
+		"HRL",
+		"LG",
+		"EGHM",
+		"CVM",
+		"KRD"
+	],
+	"Maaslijn (Nijmegen - Venlo)": [
+		"NM",
+		"NMH",
+		"MMLH",
+		"CK",
+		"BMR",
+		"VLB",
+		"VRY",
+		"BR",
+		"VL"
+	],
+	"Venlo - Eindhoven": [
+		"VL",
+		"BR",
+		"HRT",
+		"DN",
+		"HM",
+		"HMBV",
+		"EHV"
+	],
+	"Venlo - Roermond": [
+		"VL",
+		"TG",
+		"RV",
+		"SM",
+		"RM"
 	]
 }

@@ -313,6 +313,8 @@ export function displayResults(analysis) {
         const markerClass = (index === 0 || index === analysis.journey.length - 1) ? 'start-end' : 'intermediate';
         const waitTimeHtml = station.waitTime > 0 && (station.code === 'AMF' || station.code === 'STO')
             ? `<div class="timeline-wait">verwachte wachttijd ${station.waitTime} min</div>` : '';
+        const kopmakenHtml = station.kopmaken
+            ? '<div class="timeline-wait">maakt hier kop</div>' : '';
         const isSpot = index === 0;
         const badge = isSpot
             ? '<span class="badge badge-pad">gespot</span>'
@@ -328,7 +330,7 @@ export function displayResults(analysis) {
                 </div>
                 <div class="timeline-station-name-col">
                     <span>${station.name}</span>${badge}
-                    ${waitTimeHtml}
+                    ${waitTimeHtml}${kopmakenHtml}
                 </div>
             </div>`;
     });

@@ -14,7 +14,7 @@ export async function initializeData() {
             loadHeatmap(),
             loadPatterns(),
             loadTrajectories(),
-            loadKnooppunten(),
+            loadOvergangen(),
             loadMaterieel(),
             loadCoords(),
             loadExtrapolationRules()
@@ -121,14 +121,13 @@ async function loadExtrapolationRules() {
     }
 }
 
-async function loadKnooppunten() {
+async function loadOvergangen() {
     try {
-        const data = await fetchJSON(`${BASE_URL}/knooppunten.json`);
-        if (Array.isArray(data.knooppunten) && data.knooppunten.length) {
-            updateState('hubs', data.knooppunten);
-        }
+        const data = await fetchJSON(`${BASE_URL}/overgangen.json`);
+        if (Array.isArray(data.verboden)) updateState('bannedTurns', data.verboden);
+        if (Array.isArray(data.kopmaken)) updateState('reversalTurns', data.kopmaken);
     } catch (error) {
-        console.warn("Kon knooppunten.json niet laden; alleen AMF wordt als knooppunt gebruikt.", error);
+        console.warn("Kon overgangen.json niet laden; alle overgangen worden toegestaan.", error);
     }
 }
 

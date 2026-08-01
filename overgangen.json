@@ -1,0 +1,9 @@
+{
+	"uitleg": "verboden: een route mag deze drie stations niet in deze volgorde (of omgekeerd) passeren — voor vervallen verbindingsbogen. kopmaken: deze doorgang kan wel, maar de trein moet op het middelste station kopmaken (keert van rijrichting); de tijdlijn toont dit en rekent extra tijd.",
+	"verboden": [
+		["BLOA", "UTO", "HOR"]
+	],
+	"kopmaken": [
+		["UTM", "BLOA", "UTO"]
+	]
+}

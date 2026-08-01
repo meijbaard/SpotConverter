@@ -1,6 +1,25 @@
 // parser.js
 import { getState } from './state.js';
 
+// Opzoektabel code -> station, éénmalig opgebouwd per stations-lijst.
+// Vervangt het per-bericht compileren van ~1700 regexes; dezelfde
+// voorrangsregel als getStationByCode (eerste match in de gesorteerde lijst).
+let lookupCache = null;
+let lookupSource = null;
+
+function getStationLookup(stations) {
+    if (lookupCache && lookupSource === stations) return lookupCache;
+    const map = new Map();
+    for (const station of stations) {
+        if (!station.code) continue;
+        const key = station.code.toLowerCase();
+        if (!map.has(key)) map.set(key, station);
+    }
+    lookupCache = map;
+    lookupSource = stations;
+    return map;
+}
+
 export function parseMessage(message) {
     const parsed = {
         originalMessage: message,
@@ -104,22 +123,36 @@ export function parseMessage(message) {
 
     let foundMatches = [];
     const stations = getState().stations;
-    const commonWords = ['en', 'in', 'op', 'te', 'de', 'het', 'een', 'met', 'van', 'tot'];
+    // Codes die ook een gewoon Nederlands woord zijn, matchen alleen als ze
+    // exact als code geschreven staan (EN of En, niet 'en' in lopende tekst)
+    const commonWords = ['en', 'in', 'op', 'te', 'de', 'het', 'een', 'met', 'van', 'tot', 'na', 'was', 'als', 'af', 'g', 'o'];
+    const lookup = getStationLookup(stations);
 
-    stations.forEach(station => {
-        if (!station.code) return;
-        // Metatekens escapen: codes als 'HRIJ (HRY)' mogen geen regex-syntax worden
-        const safeCode = station.code.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        let regex;
-        if (commonWords.includes(station.code.toLowerCase())) {
-            regex = new RegExp(`\\b(${safeCode}|${safeCode.charAt(0).toUpperCase() + safeCode.slice(1).toLowerCase()})\\b`, 'g');
-        } else {
-            regex = new RegExp(`\\b(${safeCode})\\b`, 'gi');
+    // Voluit getypte namen voor stations met een onbruikbaar korte code
+    const tokenAliases = { 'oss': 'O' };
+
+    const probeer = (text, index) => {
+        const alias = tokenAliases[text.toLowerCase()];
+        const station = lookup.get((alias || text).toLowerCase());
+        if (!station) return;
+        if (!alias && commonWords.includes(station.code.toLowerCase())) {
+            const cap = station.code.charAt(0).toUpperCase() + station.code.slice(1).toLowerCase();
+            if (text !== station.code && text !== cap) return;
         }
-        let match;
-        while ((match = regex.exec(message)) !== null) {
-            foundMatches.push({ station, index: match.index });
-        }
+        foundMatches.push({ station, index });
+    };
+
+    // Bericht in tokens knippen; codes met een spatie erin (zoals 'BLP BNK')
+    // worden als tokenpaar geprobeerd
+    const tokenRegex = /[A-Za-z0-9À-ÿ]+/g;
+    const tokens = [];
+    let tokenMatch;
+    while ((tokenMatch = tokenRegex.exec(message)) !== null) {
+        tokens.push({ text: tokenMatch[0], index: tokenMatch.index });
+    }
+    tokens.forEach((token, i) => {
+        probeer(token.text, token.index);
+        if (i + 1 < tokens.length) probeer(`${token.text} ${tokens[i + 1].text}`, token.index);
     });
 
     foundMatches.sort((a, b) => a.index - b.index);

@@ -1,0 +1,10 @@
+{
+  "name": "spotconverter",
+  "version": "5.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Webapp voor treinspotters: analyseer WhatsApp-spotberichten en bereken doorkomsttijden.",
+  "scripts": {
+    "test": "node --test tests/parser.test.mjs tests/routing.test.mjs"
+  }
+}

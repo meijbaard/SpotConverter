@@ -1,67 +1,221 @@
 // routing.js
 import { getState, getStationByCode } from './state.js';
 
+// --- Spoorweggraaf -----------------------------------------------------------
+// De trajecten in trajecten.json worden bij het eerste gebruik omgezet naar een
+// netwerk: knopen = stations, kanten = opeenvolgende stations met hun afstand.
+// Elk gedeeld station is daardoor automatisch een knooppunt en routes over
+// willekeurig veel trajecten worden met een kortste-padzoektocht gevonden.
+
+let graphCache = null;
+let graphSource = null;
+
+const FALLBACK_EDGE_KM = 4; // aanname als de afstand van een baanvak ontbreekt
+
+function buildGraph() {
+    const { trajectories, distanceMatrix } = getState();
+    if (graphCache && graphSource === trajectories) return graphCache;
+
+    const adj = new Map();        // code -> Map(buurcode -> km)
+    const edgeTraject = new Map(); // "A|B" -> trajectnaam (voor weergave)
+
+    for (const name in trajectories) {
+        const route = trajectories[name];
+        for (let i = 0; i < route.length - 1; i++) {
+            const a = route[i], b = route[i + 1];
+            if (a === b) continue;
+            const km = distanceMatrix[a]?.[b] || distanceMatrix[b]?.[a] || 0;
+            const gewicht = km > 0 ? km : FALLBACK_EDGE_KM;
+            if (!adj.has(a)) adj.set(a, new Map());
+            if (!adj.has(b)) adj.set(b, new Map());
+            if (!adj.get(a).has(b)) adj.get(a).set(b, gewicht);
+            if (!adj.get(b).has(a)) adj.get(b).set(a, gewicht);
+            if (!edgeTraject.has(`${a}|${b}`)) edgeTraject.set(`${a}|${b}`, name);
+            if (!edgeTraject.has(`${b}|${a}`)) edgeTraject.set(`${b}|${a}`, name);
+        }
+    }
+
+    graphCache = { adj, edgeTraject };
+    graphSource = trajectories;
+    return graphCache;
+}
+
 /**
- * Zoekt het volledige traject op basis van een lijst met stationscodes.
- * Werkt zowel voor directe trajecten als complexe routes via knooppunt Amersfoort.
+ * Verboden doorrijverbindingen uit overgangen.json (bijv. de vervallen
+ * verbindingsboog bij Blauwkapel): de drie stations mogen niet in deze
+ * volgorde — of omgekeerd — na elkaar gepasseerd worden.
+ */
+function verbodenSet() {
+    const set = new Set();
+    for (const [a, b, c] of getState().bannedTurns || []) {
+        set.add(`${a}|${b}|${c}`);
+        set.add(`${c}|${b}|${a}`);
+    }
+    return set;
+}
+
+function heeftVerbodenOvergang(stations, verboden) {
+    for (let i = 0; i < stations.length - 2; i++) {
+        if (verboden.has(`${stations[i]}|${stations[i + 1]}|${stations[i + 2]}`)) return true;
+    }
+    return false;
+}
+
+/** Dijkstra: kortste pad (in km) tussen twee stationscodes, of null. */
+function shortestPath(adj, from, to) {
+    if (from === to) return [from];
+    const verboden = verbodenSet();
+    const dist = new Map([[from, 0]]);
+    const prev = new Map();
+    const todo = new Set([from]);
+    const done = new Set();
+
+    while (todo.size) {
+        let current = null, best = Infinity;
+        for (const node of todo) {
+            const d = dist.get(node);
+            if (d < best) { best = d; current = node; }
+        }
+        todo.delete(current);
+        if (current === to) break;
+        done.add(current);
+
+        for (const [buur, w] of adj.get(current) || []) {
+            if (done.has(buur)) continue;
+            const vorige = prev.get(current);
+            if (vorige && verboden.has(`${vorige}|${current}|${buur}`)) continue;
+            const d = dist.get(current) + w;
+            if (d < (dist.get(buur) ?? Infinity)) {
+                dist.set(buur, d);
+                prev.set(buur, current);
+                todo.add(buur);
+            }
+        }
+    }
+
+    if (!prev.has(to)) return null;
+    const pad = [to];
+    while (pad[0] !== from) pad.unshift(prev.get(pad[0]));
+    return pad;
+}
+
+/**
+ * Segment langs één benoemd traject (eerste traject dat beide codes bevat).
+ * Benoemde corridors zijn de domeinwaarheid — daar horen de goederenpaden
+ * bij — dus die winnen van het kortste pad zolang ze het segment dekken.
+ */
+function trajectSlice(a, b) {
+    const trajectories = getState().trajectories;
+    const verboden = verbodenSet();
+    for (const name in trajectories) {
+        const route = trajectories[name];
+        const ia = route.indexOf(a);
+        const ib = route.indexOf(b);
+        if (ia !== -1 && ib !== -1 && ia !== ib) {
+            const stations = ia < ib
+                ? route.slice(ia, ib + 1)
+                : route.slice(ib, ia + 1).reverse();
+            if (heeftVerbodenOvergang(stations, verboden)) continue;
+            return { stations, name };
+        }
+    }
+    return null;
+}
+
+function padKm(stations) {
+    const { distanceMatrix } = getState();
+    let km = 0;
+    for (let i = 0; i < stations.length - 1; i++) {
+        km += distanceMatrix[stations[i]]?.[stations[i + 1]]
+            || distanceMatrix[stations[i + 1]]?.[stations[i]]
+            || FALLBACK_EDGE_KM;
+    }
+    return km;
+}
+
+function sliceBinnen(route, a, b) {
+    const ia = route.indexOf(a);
+    const ib = route.indexOf(b);
+    return ia < ib ? route.slice(ia, ib + 1) : route.slice(ib, ia + 1).reverse();
+}
+
+/**
+ * Route over precies twee benoemde trajecten met een gedeeld overstapstation.
+ * Alle kandidaat-knooppunten worden op totale kilometers gescoord, zodat bijv.
+ * Bad Bentheim -> Amsterdam netjes de Bentheimroute + Gooilijn volgt en een
+ * museumrit naar Hilversum de fysiek kortere lijn via Hollandsche Rading kiest.
+ */
+function tweeTrajectRoute(a, b) {
+    const trajectories = getState().trajectories;
+    const verboden = verbodenSet();
+    let beste = null;
+
+    for (const n1 in trajectories) {
+        const r1 = trajectories[n1];
+        if (!r1.includes(a)) continue;
+        for (const n2 in trajectories) {
+            if (n2 === n1) continue;
+            const r2 = trajectories[n2];
+            if (!r2.includes(b)) continue;
+            for (const hub of r1) {
+                if (hub === a || hub === b || !r2.includes(hub)) continue;
+                const stations = [...sliceBinnen(r1, a, hub), ...sliceBinnen(r2, hub, b).slice(1)];
+                if (heeftVerbodenOvergang(stations, verboden)) continue;
+                // Geen station twee keer aandoen: dat zou een keer-/kopmaakroute zijn
+                if (new Set(stations).size !== stations.length) continue;
+                const km = padKm(stations);
+                if (!beste || km < beste.km) beste = { stations, km, namen: [n1, n2] };
+            }
+        }
+    }
+    return beste;
+}
+
+/**
+ * Zoekt de route op basis van de herkende stationscodes.
+ * Alle herkende codes doen mee als via-punt (in berichtvolgorde); codes die
+ * niet in het netwerk liggen worden overgeslagen. Per segment geldt: eerst
+ * een benoemd traject proberen, anders het kortste pad door het netwerk.
+ * Het resultaat behoudt de vorm { name, direction, stations }.
  */
 export function findFullTrajectory(routeCodes) {
     if (routeCodes.length < 2) return null;
 
-    const startCode = routeCodes[0];
-    const endCode = routeCodes[routeCodes.length - 1];
-    const trajectories = getState().trajectories;
+    const { adj, edgeTraject } = buildGraph();
+    const punten = routeCodes.filter(code => adj.has(code));
+    if (punten.length < 2) return null;
 
-    // 1. Zoeken op één enkel traject (checkt of ze op dezelfde lijn liggen)
-    for (const name in trajectories) {
-        const traject = trajectories[name];
-        const startIndex = traject.indexOf(startCode);
-        const endIndex = traject.indexOf(endCode);
+    let stations = [punten[0]];
+    const namen = [];
+    for (let i = 0; i < punten.length - 1; i++) {
+        // Voorkeursvolgorde: één benoemd traject, dan twee trajecten met
+        // gedeeld overstapstation (km-gescoord), dan kortste pad door de graaf
+        const slice = trajectSlice(punten[i], punten[i + 1]);
+        let segment, segmentNamen;
+        if (slice) {
+            segment = slice.stations;
+            segmentNamen = [slice.name];
+        } else {
+            const twee = tweeTrajectRoute(punten[i], punten[i + 1]);
+            segment = twee ? twee.stations : shortestPath(adj, punten[i], punten[i + 1]);
+            segmentNamen = twee ? twee.namen : [];
+        }
+        if (!segment) return null;
+        for (const naam of segmentNamen) {
+            if (namen[namen.length - 1] !== naam) namen.push(naam);
+        }
+        stations = stations.concat(segment.slice(1));
+    }
 
-        if (startIndex !== -1 && endIndex !== -1) {
-            if (startIndex < endIndex) {
-                return { name, direction: 'forward', stations: traject.slice(startIndex, endIndex + 1) };
-            } else if (startIndex > endIndex) {
-                return { name, direction: 'backward', stations: traject.slice(endIndex, startIndex + 1).reverse() };
-            }
+    // Trajectnamen van kortste-padsegmenten aanvullen voor de weergave
+    if (!namen.length) {
+        for (let i = 0; i < stations.length - 1; i++) {
+            const naam = edgeTraject.get(`${stations[i]}|${stations[i + 1]}`);
+            if (naam && namen[namen.length - 1] !== naam) namen.push(naam);
         }
     }
 
-    // 2. Complexe routeherkenning via een knooppunt (over twee trajecten heen).
-    // De knooppunten komen uit knooppunten.json; volgorde bepaalt de voorkeur.
-    const hubs = getState().hubs;
-
-    for (const hub of hubs) {
-        let startTrajInfo = null, endTrajInfo = null;
-
-        for (const name in trajectories) {
-            if (trajectories[name].includes(startCode) && trajectories[name].includes(hub)) startTrajInfo = { name, stations: trajectories[name] };
-            if (trajectories[name].includes(endCode) && trajectories[name].includes(hub)) endTrajInfo = { name, stations: trajectories[name] };
-        }
-
-        if (startTrajInfo && endTrajInfo && startTrajInfo.name !== endTrajInfo.name) {
-            let firstLeg, secondLeg, finalDirection, startName = startTrajInfo.name, endName = endTrajInfo.name;
-
-            if (startTrajInfo.stations.indexOf(startCode) < startTrajInfo.stations.indexOf(hub)) {
-                firstLeg = startTrajInfo.stations.slice(startTrajInfo.stations.indexOf(startCode), startTrajInfo.stations.indexOf(hub) + 1);
-            } else {
-                const reversed = [...startTrajInfo.stations].reverse();
-                firstLeg = reversed.slice(reversed.indexOf(startCode), reversed.indexOf(hub) + 1);
-            }
-
-            if (endTrajInfo.stations.indexOf(hub) < endTrajInfo.stations.indexOf(endCode)) {
-                secondLeg = endTrajInfo.stations.slice(endTrajInfo.stations.indexOf(hub) + 1, endTrajInfo.stations.indexOf(endCode) + 1);
-                finalDirection = 'forward';
-            } else {
-                const reversed = [...endTrajInfo.stations].reverse();
-                secondLeg = reversed.slice(reversed.indexOf(hub) + 1, reversed.indexOf(endCode) + 1);
-                finalDirection = 'backward';
-            }
-            return { name: `${startName} -> ${endName}`, direction: finalDirection, stations: [...firstLeg, ...secondLeg] };
-        }
-    }
-
-    return null;
+    return { name: namen.join(' -> ') || 'route', direction: 'forward', stations };
 }
 
 /**
@@ -150,6 +304,15 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         }
     }
 
+    // Kopmaak-stations op deze route (uit overgangen.json): daar keert de
+    // trein van rijrichting, wat extra tijd kost en in de tijdlijn zichtbaar is
+    const KOPMAAK_MINUTEN = 5;
+    const reversals = new Set();
+    for (const [a, b, c] of getState().reversalTurns || []) {
+        reversals.add(`${a}|${b}|${c}`);
+        reversals.add(`${c}|${b}|${a}`);
+    }
+
     let journey = [];
     let lastTime = new Date(startDate.getTime());
     let lastStationCode = journeyStations[0];
@@ -159,10 +322,14 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         let idealTime = new Date(lastTime.getTime());
 
         if (i > 0) {
-            const distance = distanceMatrix[lastStationCode]?.[stationCode] || 0;
+            const distance = distanceMatrix[lastStationCode]?.[stationCode]
+                || distanceMatrix[stationCode]?.[lastStationCode] || 0;
             const travelMinutes = distance ? Math.round((distance / 80) * 60) : 5;
             idealTime.setMinutes(idealTime.getMinutes() + travelMinutes);
         }
+
+        const maaktKop = i > 0 && i < journeyStations.length - 1
+            && reversals.has(`${journeyStations[i - 1]}|${stationCode}|${journeyStations[i + 1]}`);
 
         journey.push({
             code: stationCode,
@@ -170,10 +337,12 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
             idealTime: idealTime,
             finalTime: idealTime,
             waitTime: 0,
+            kopmaken: maaktKop,
             viaPad: false // wordt true als de tijd op een goederenpad is uitgelijnd
         });
 
-        lastTime = idealTime;
+        lastTime = new Date(idealTime.getTime());
+        if (maaktKop) lastTime.setMinutes(lastTime.getMinutes() + KOPMAAK_MINUTEN);
         lastStationCode = stationCode;
     }
 

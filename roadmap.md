@@ -8,23 +8,22 @@ Legenda: ✅ gereed · 🔧 in uitvoering · 📋 gepland · 🧊 bewust geparke
 
 ---
 
-## Huidige stand (v4.2.0)
+## Huidige stand (v5.0.0)
 
-De basis staat en is data-gedreven: trajecten, knooppunten, afstanden en extrapolatieregels zijn allemaal configuratie, geen code.
+De basis staat en is data-gedreven: trajecten, afstanden en extrapolatieregels zijn configuratie, geen code. Sinds v5.0.0 vormen de trajecten samen een **landelijke spoorweggraaf**.
 
-- ✅ Parser voor de "Gouden Formule" (tijd, station, richting, vervoerder, tractie, lading, `llt`, `badl/ladl`, `(opz)`)
-- ✅ Routeherkenning over meerdere trajecten via configureerbare knooppunten (`knooppunten.json`: AMF, BLOA, DVGE)
-- ✅ Doorkomsttijden op basis van afstanden + vaste goederenpaden (Gooilijn), met betrouwbaarheidsbadges (✓ pad / ± schatting)
-- ✅ Groepsbericht-generator met kopieer/deel-knop
-- ✅ PWA: offline, installeerbaar, iOS Shortcut-integratie (`?q=`)
-- ✅ Afstanden-generator (`afstanden_check/genereer_afstanden.py`): ontbrekende afstanden automatisch uit OSM-coördinaten
+- ✅ Parser voor de "Gouden Formule", als tokenizer + opzoektabel (schaalbaar tot alle NL-stations)
+- ✅ Netwerkroutering: corridors leidend, kortste pad als vangnet, via-punten uit het bericht
+- ✅ Landelijke dekking: 70 trajecten, ± 380 stations (Roodeschool ↔ Vlissingen, Den Helder ↔ Kerkrade)
+- ✅ Doorkomsttijden op basis van afstanden + vaste goederenpaden (Gooilijn), met betrouwbaarheidsbadges
+- ✅ Groepsbericht-generator; museummaterieel met tekeningen en Arthur-links
+- ✅ PWA: offline, installeerbaar, iOS Shortcut-integratie (`?q=`), automatische update na release
+- ✅ Datapipeline: coördinaten ophalen, afstanden genereren, samenhang valideren — plus testsuite en CI
 
-**Bekende beperkingen die de fasen hieronder oplossen:**
-- Trajecten zijn handmatige, lineaire lijsten; dekking is beperkt tot ± 8 corridors
-- Routes met méér dan één overstap op knooppunten worden niet gevonden (max. 2 trajecten per route)
-- `kopmaken` wordt herkend door de parser, maar de routering doet er nog niets mee
-- Doelstation kiezen = scrollen door 1600+ opties; het groepsbericht staat onderaan een soms lange tijdlijn
-- Geen geautomatiseerde tests; regressies worden nu handmatig gevonden
+**Bekende beperkingen:**
+- Doelstation kiezen = scrollen door 1600+ opties; het groepsbericht staat onderaan een soms lange tijdlijn (fase 1)
+- Goederenpaden dekken alleen de Gooilijn; alle andere corridors tonen "± schatting" (🧊 geparkeerd)
+- Spottersaliassen (RH → Rheine, Oss → O) staan nog in code in plaats van in data
 
 ---
 
@@ -40,9 +39,9 @@ De basis staat en is data-gedreven: trajecten, knooppunten, afstanden en extrapo
 - 📋 **Tijdlijn-filter**: technische punten (aansluitingen, overloopwissels) standaard inklappen achter "toon alle punten"
 - 📋 **Donkere modus** (spotters staan er vaak in de schemering)
 
-### Fundament (voorwaarde voor fase 2)
-- 📋 **Testsuite** voor parser en routering (`node --test`, echte spotberichten als fixtures) — vóór de router op de schop gaat
-- 📋 **CI-datavalidatie** in GitHub Actions: JSON/CSV-syntax, elk trajectstation heeft coördinaten en afstanden, `genereer_afstanden.py --dry-run` is schoon
+### Fundament
+- ✅ **Testsuite** voor parser en routering (`npm test`, echte spotberichten als fixtures) — gebouwd vóór de router-verbouwing van v5.0.0
+- ✅ **CI-datavalidatie** in GitHub Actions (`valideer_data.py` + testsuite bij elke push)
 - 📋 **Onzekerheid in tijd** herkennen ("vertrek niet afgewacht") en tonen in de betrouwbaarheidsindicatie
 
 ---
@@ -52,19 +51,26 @@ De basis staat en is data-gedreven: trajecten, knooppunten, afstanden en extrapo
 *Doel: van lineaire lijsten naar een spoorweggraaf, en die graaf meteen landelijk vullen. De architectuurstap en de dekking horen bij elkaar: zodra de routering een netwerk is, is landelijke dekking een dataprobleem, geen codeprobleem.*
 
 ### Routering als graaf
-- 📋 **Graafmodel**: bouw bij het laden een adjacency-graaf uit de opeenvolgende paren in `trajecten.json` (knopen = stations, kanten = afstanden uit `afstanden.csv`)
-- 📋 **Kortste-padroutering** (Dijkstra) vervangt de huidige "eerste traject dat matcht"-logica én de twee-benen-knooppuntlogica. `knooppunten.json` wordt daarmee overbodig — elk gedeeld station is automatisch een knooppunt, en routes over 3+ trajecten werken vanzelf
-- 📋 **Tussenstations benutten**: alle herkende codes in het bericht (niet alleen eerste/laatste) als via-punten meenemen — lost ambiguïteit op bij vertakkingen
-- 📋 **Kopmaken**: de geparste `kopmaken`-vlag gebruiken om de rijrichting om te draaien op het gemelde station (bijv. Deventer Goederen)
+- ✅ **Graafmodel**: adjacency-graaf uit de opeenvolgende paren in `trajecten.json` (knopen = stations, kanten = afstanden uit `afstanden.csv`)
+- ✅ **Kortste-padroutering** (Dijkstra), met corridorvoorkeur: één benoemd traject wint, dan twee trajecten met gedeeld overstapstation (km-gescoord), dan kortste pad. `knooppunten.json` is vervallen — elk gedeeld station is automatisch een knooppunt
+- ✅ **Tussenstations benutten**: alle herkende codes tellen als via-punt
+- ✅ **Kopmaken**: volgt automatisch uit de graaf — een route Dvge → Zp keert vanzelf; de aparte richtingslogica is niet meer nodig
 - 📋 **Terugrekenen**: vanaf een spot ook eerdere stations op de route tonen ("waar kwam hij vandaan / waar was hij om 12:40?")
 - 📋 **Betrouwbaarheidsscore**: bij meerdere plausibele routes de alternatieven tonen in plaats van er stilzwijgend één te kiezen
 
 ### Landelijke dekking
-- 📋 **Netwerk genereren uit open data**: het spoornetwerk (baanvakken + stations) automatisch opbouwen uit ProRail open data en/of OpenStreetMap (`railway=rail`), als build-script naast `genereer_afstanden.py`. `trajecten.json` blijft bestaan voor benoemde corridors (weergave, goederenpaden), maar is niet langer de bron van het netwerk
-- 📋 **Parser schaalbaar maken**: de huidige 1600-regexes-per-bericht aanpak vervangen door tokenizen + opzoektabel, met contextregels (na "ri", na tijdstip) en bescherming tegen valse treffers van korte codes (G, O, AT, …)
-- 📋 **Stationsdata consolideren**: één bron voor code → naam → coördinaten → type (station/aansluiting/emplacement), inclusief spottersaliassen (zoals RH → Rheine) als dataveld in plaats van code
-- 📋 **Goederenpaden per corridor uitbreiden** zodra er waarnemingen zijn (community-input; formaat krijgt een `wachtstation`-kolom zodat de hard-gecodeerde AMF/STO-logica verdwijnt)
-- 📋 **Heatmap-dekking vergroten** met dezelfde community-waarnemingen
+- ✅ **Landelijk netwerk**: 60 baanvakken van het complete reizigersnet toegevoegd, codes gevalideerd tegen stations.csv, coördinaten (Nominatim) en afstanden automatisch aangevuld. Gekozen voor gevalideerde baanvak-lijsten in `trajecten.json` in plaats van generatie uit ProRail/OSM-brondata: zelfde resultaat, veel beter controleerbaar
+- ✅ **Parser schaalbaar**: tokenizer + opzoektabel; woord-codes (EN, OP, NA, G, O, …) matchen alleen exact geschreven
+- 📋 **Stationsdata consolideren**: één bron voor code → naam → coördinaten → type, inclusief spottersaliassen (RH → Rheine, Oss → O) als dataveld in plaats van code
+- 🧊 **Goederenpaden per corridor uitbreiden** zodra er waarnemingen zijn (geparkeerd; formaat krijgt dan een `wachtstation`-kolom zodat de hard-gecodeerde AMF/STO-logica verdwijnt)
+- 📋 **Heatmap-dekking vergroten** met community-waarnemingen
+
+---
+
+## Tussenstap — v5.1 & v5.2
+
+- 📋 **v5.1 — Restyling**: rustige, formele huisstijl (donkergroen met crème, subtiel en netjes), samen met de fase-1-UX-punten (groepsbericht prominenter, doelstation-zoekveld, tijdlijn-filter)
+- 📋 **v5.2 — Conflictdetectie met somda.nl-kennis**: onderzoeken of de dienstregelings-/treinnummerkennis van somda.nl bruikbaar is om te signaleren of het berekende pad botst met een andere passerende trein (haalbaarheid: welke data is er, is er een API of export, wat staan de gebruiksvoorwaarden toe)
 
 ---
 
