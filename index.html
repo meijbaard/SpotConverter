@@ -90,23 +90,17 @@
       <section class="tab-panel panel-naakt" id="tab-spot" role="tabpanel" aria-labelledby="tab-spot">
         <div class="segment segment-groen planner">
           <h1 class="panel-title">Analyseer je spot</h1>
-          <div class="grid-2">
-            <div class="field">
-              <div class="field-header">
-                <label for="whatsappMessage">Plak je WhatsApp-bericht:</label>
-                <div class="field-actions">
-                  <button id="paste-btn" class="btn btn-small" type="button" title="Plak vanaf klembord">📋 Plak</button>
-                  <button id="example-btn" class="btn btn-small btn-ghost" type="button">Voorbeeld</button>
-                </div>
-              </div>
-              <textarea id="whatsappMessage" class="input textarea" placeholder="Bijv. 13:07 Bh ri Asd RFO 193 150 met keteltrein" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
-            </div>
-            <div class="field">
-              <label for="targetStationSelect">Doelstation (optioneel, voor doorkomsttijd):</label>
-              <select id="targetStationSelect" class="input"></select>
-              <p class="field-hint">Je keuze wordt onthouden op dit apparaat.</p>
+          <label class="veldlabel" for="whatsappMessage">Plak je WhatsApp-bericht</label>
+          <textarea id="whatsappMessage" class="input textarea" placeholder="Bijv. 13:07 Bh ri Asd RFO 193 150 met keteltrein" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+          <div class="planner-acties">
+            <button id="paste-btn" class="btn" type="button" title="Plak vanaf klembord">📋 Plak</button>
+            <button id="example-btn" class="btn btn-ghost" type="button">Voorbeeld</button>
+            <div class="doel-keuze">
+              <label for="targetStationSelect">Doelstation</label>
+              <select id="targetStationSelect" class="input select-pill" title="Optioneel, voor de doorkomsttijd. Je keuze wordt onthouden op dit apparaat."></select>
             </div>
           </div>
+          <p class="field-hint">Doelstation is optioneel (voor de doorkomsttijd) en wordt onthouden op dit apparaat.</p>
         </div>
 
         <div id="journey-output" class="journey-output" aria-live="polite">
@@ -149,7 +143,7 @@
       </section>
 
       <footer class="site-footer">
-        <p>Versie 5.1.0 · Copyright &copy; 2025–2026 Mark Eijbaard · MIT-licentie</p>
+        <p>Versie 5.1.1 · Copyright &copy; 2025–2026 Mark Eijbaard · MIT-licentie</p>
         <p><a href="https://github.com/meijbaard/SpotConverter/issues" target="_blank" rel="noopener">Meld een probleem of wens</a></p>
       </footer>
     </main>
