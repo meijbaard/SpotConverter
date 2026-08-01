@@ -27,7 +27,7 @@ export function buildGroupMessage(analysis, { includeEta = true, targetCode = nu
     if (p.spotLocation?.code) parts.push(shortCode(p.spotLocation.code));
     if (p.routeCodes.length > 1) parts.push(`ri ${shortCode(p.routeCodes[1])}`);
     if (p.carrier) parts.push(p.carrier);
-    parts.push(p.locomotive || 'tractie onbekend');
+    parts.push(p.locomotive || p.stock || 'tractie onbekend');
 
     if (p.llt) {
         parts.push('llt');

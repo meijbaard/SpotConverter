@@ -13,14 +13,41 @@
     "193": "193_.png",
     "10100": "10100_.png"
   },
+  "namen": {
+    "plan v": "planv.png",
+    "mat '64": "planv.png",
+    "mat '54": "mat54.png",
+    "hondekop": "mat54.png"
+  },
   "wagons": {
     "ketel": "ketel.png",
     "container": "container.png",
     "trailer": "trailer.png",
-	"auto": "trailer.png",
+    "auto": "trailer.png",
     "dicht": "dicht.png",
-	"staal": "dicht.png",
-	"graan": "bulk.png"
+    "staal": "dicht.png",
+    "graan": "bulk.png"
   },
-  "default": "default-loc.png"
+  "default": "default-loc.png",
+  "arthur": {
+    "base": "https://www.arthurstreinenpagina.nl/",
+    "series": {
+      "186": "Locs/Elektrische%20locomotieven/menu.html",
+      "189": "Locs/Elektrische%20locomotieven/menu.html",
+      "193": "Locs/Elektrische%20locomotieven/menu.html",
+      "18": "Locs/Elektrische%20locomotieven/menu.html",
+      "10100": "Locs/Elektrische%20locomotieven/menu.html",
+      "64": "Locs/Diesel%20locomotieven/menu.html",
+      "2454": "Locs/Diesel%20locomotieven/menu.html",
+      "4402": "Locs/Diesel%20locomotieven/menu.html",
+      "9902": "Locs/Diesel%20locomotieven/menu.html",
+      "9904": "Locs/Diesel%20locomotieven/menu.html"
+    },
+    "materieel": {
+      "plan v": "Treinstellen/Elektrische%20treinstellen/Mat%20%2764/Plan%20V7-V13/menu.html",
+      "mat '64": "Treinstellen/Elektrische%20treinstellen/Mat%20%2764/Plan%20V7-V13/menu.html",
+      "mat '54": "Treinstellen/Elektrische%20treinstellen/Mat%20%2754/Plan%20Q2-Q3%2C%20ELD2/menu.html",
+      "hondekop": "Treinstellen/Elektrische%20treinstellen/Mat%20%2754/Plan%20Q2-Q3%2C%20ELD2/menu.html"
+    }
+  }
 }

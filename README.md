@@ -4,7 +4,7 @@
 
 Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de route, geschatte doorkomsttijden, materieelinfo en een deelbaar groepsbericht terug.
 
-**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 4.2.1 · **Licentie:** MIT
+**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 4.2.2 · **Licentie:** MIT
 
 ```
 13:07 Bh ri Asd RFO 193 150 met keteltrein
@@ -218,6 +218,13 @@ MIT © 2025–2026 Mark Eijbaard
 ---
 
 ## Changelog
+
+### v4.2.2 — Museummaterieel & links naar Arthur's treinenpagina
+
+- Parser herkent treinstel-/museummaterieel: **Plan V**, **Mat '64**, **Mat '54** en **Hondekop** ("Mat '64" wordt niet langer als loc-serie 6400 gelezen); het groepsbericht neemt de materieelnaam mee als tractie
+- Eigen tekening voor Plan V en Mat '54 in de materieelvisualisatie (kleine versies, lokaal conform de [gebruiksregels van Arthur's treinenpagina](https://www.arthurstreinenpagina.nl/info/regelsgebruik.html): niet-commercieel, max. 20 tekeningen, geen hotlinks)
+- Nieuwe deep-link **"Tekening (Arthur's treinenpagina)"** bij herkend materieel en herkende loc-series (naar de betreffende cataloguspagina — afbeeldingen direct laden staat de site niet toe)
+- Service worker: precache omzeilt nu de HTTP-cache van de browser (`cache: 'reload'`) en data wordt bij de server gevalideerd (`no-cache`) — voorkomt dat een release met verouderde bestanden wordt geprecachet
 
 ### v4.2.1 — Directe update na release
 

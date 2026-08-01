@@ -12,6 +12,7 @@ export function parseMessage(message) {
         cargo: null,
         cargoRaw: null,            // het letterlijk herkende ladingwoord (voor berichtgeneratie)
         llt: false,                // losse lok
+        stock: null,               // herkend treinstel/museummaterieel (Plan V, Mat '54, ...)
         belading: null,            // badl / ladl (containertreinen)
         hasDirectionMarker: false,
         extrapolate: false,
@@ -26,9 +27,26 @@ export function parseMessage(message) {
     const carrierMatch = message.match(carrierRegex);
     if (carrierMatch) parsed.carrier = carrierMatch[0].toUpperCase();
 
+    // Treinstel-/museummaterieel eerst herkennen en uit de tekst halen,
+    // anders leest de loc-detectie "Mat '64" als serie 6400
+    const stockPatterns = [
+        [/\bplan\s*v\b/i, 'Plan V'],
+        [/\bmat\s*['’]?\s*64\b/i, "Mat '64"],
+        [/\bmat\s*['’]?\s*54\b/i, "Mat '54"],
+        [/\bhondekop\b/i, 'Hondekop']
+    ];
+    let messageVoorLoco = message;
+    for (const [regex, naam] of stockPatterns) {
+        if (regex.test(message)) {
+            parsed.stock = naam;
+            messageVoorLoco = messageVoorLoco.replace(regex, '');
+            break;
+        }
+    }
+
     // Langste typenummers eerst, anders 'kaapt' 18 de series 186/189 (bug: '189 024' werd '189')
     const locoRegex = /(\b(10100|9902|9904|4402|2454|186|189|193|64|18)[\s-]?\d*\b)/gi;
-    const locoMatch = message.match(locoRegex);
+    const locoMatch = messageVoorLoco.match(locoRegex);
     if (locoMatch) {
         parsed.locomotive = [...new Set(locoMatch)].join(' + ');
         if (/\b(opz|opzending)\b/i.test(message)) {

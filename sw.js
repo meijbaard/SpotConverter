@@ -5,7 +5,7 @@
 //   beschikbaar blijft maar online altijd vers is.
 // Verhoog VERSION bij elke release om oude caches op te ruimen.
 
-const VERSION = 'v4.2.1';
+const VERSION = 'v4.2.2';
 const STATIC_CACHE = `spotconverter-static-${VERSION}`;
 const DATA_CACHE = `spotconverter-data-${VERSION}`;
 
@@ -31,7 +31,9 @@ const DATA_EXTENSIONS = /\.(csv|json)$/;
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
-      .then(cache => cache.addAll(PRECACHE_URLS))
+      // cache: 'reload' omzeilt de HTTP-cache van de browser, anders kan de
+      // precache gevuld worden met verouderde bestanden van vóór de release
+      .then(cache => cache.addAll(PRECACHE_URLS.map(url => new Request(url, { cache: 'reload' }))))
       .then(() => self.skipWaiting())
   );
 });
@@ -57,7 +59,8 @@ self.addEventListener('fetch', event => {
   // Databestanden: network-first, fallback naar cache (offline in het veld)
   if (DATA_EXTENSIONS.test(url.pathname) && url.pathname !== '/manifest.json') {
     event.respondWith(
-      fetch(request)
+      // no-cache: altijd bij de server valideren zodat data echt vers is
+      fetch(request, { cache: 'no-cache' })
         .then(response => {
           const copy = response.clone();
           caches.open(DATA_CACHE).then(cache => cache.put(request, copy));

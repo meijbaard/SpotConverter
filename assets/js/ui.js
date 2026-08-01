@@ -165,6 +165,12 @@ function getTrainInfoImages(parsedMessage) {
     let images = [];
     const sortedTypes = Object.keys(db.types || {}).sort((a, b) => b.length - a.length);
 
+    // Treinstel/museummaterieel (Plan V, Mat '54, ...) heeft eigen tekening en geen wagons
+    if (parsedMessage.stock) {
+        const stockImage = db.namen?.[parsedMessage.stock.toLowerCase()];
+        if (stockImage) return [{ src: `assets/images/${stockImage}` }];
+    }
+
     if (parsedMessage.locomotive) {
         const locoClean = parsedMessage.locomotive.replace(/[\s-]/g, '');
         let locoImageFile = db.exact?.[locoClean];
@@ -247,7 +253,9 @@ export function displayResults(analysis) {
     const imagesHtml = images.map(img => `<img src="${img.src}" alt="" onerror="this.style.display='none'" />`).join('');
 
     let cargoText = "goederentrein";
-    if (analysis.parsedMessage.llt) {
+    if (analysis.parsedMessage.stock) {
+        cargoText = "treinstel";
+    } else if (analysis.parsedMessage.llt) {
         cargoText = "losse lok (llt)";
     } else if (analysis.parsedMessage.cargo) {
         cargoText = analysis.parsedMessage.cargo.charAt(0).toUpperCase() + analysis.parsedMessage.cargo.slice(1) + 'trein';
@@ -266,8 +274,25 @@ export function displayResults(analysis) {
         ? `<a href="https://treinposities.nl/?q=${encodeURIComponent(firstLoco)}" target="_blank" rel="noopener">Zoek Locnummer</a>`
         : '';
 
-    const externalLinksHtml = (carrierLinkHtml || locoLinkHtml)
-        ? `<p class="external-links">${carrierLinkHtml}${locoLinkHtml}</p>`
+    // Deep-link naar de tekeningenpagina op Arthur's treinenpagina
+    // (afbeeldingen hotlinken mag niet volgens de gebruiksregels; linken naar de pagina wel)
+    const arthur = getState().materieelDatabase.arthur;
+    let arthurPath = null;
+    if (arthur) {
+        if (analysis.parsedMessage.stock) {
+            arthurPath = arthur.materieel?.[analysis.parsedMessage.stock.toLowerCase()];
+        } else if (firstLoco) {
+            const serieKeys = Object.keys(arthur.series || {}).sort((a, b) => b.length - a.length);
+            const serie = serieKeys.find(s => firstLoco.startsWith(s));
+            if (serie) arthurPath = arthur.series[serie];
+        }
+    }
+    const arthurLinkHtml = arthurPath
+        ? `<a href="${arthur.base}${arthurPath}" target="_blank" rel="noopener">Tekening (Arthur's treinenpagina)</a>`
+        : '';
+
+    const externalLinksHtml = (carrierLinkHtml || locoLinkHtml || arthurLinkHtml)
+        ? `<p class="external-links">${carrierLinkHtml}${locoLinkHtml}${arthurLinkHtml}</p>`
         : '';
 
     const headerHtml = `
@@ -275,8 +300,8 @@ export function displayResults(analysis) {
         <div class="train-info-container">
             <div class="train-visualization">${imagesHtml}</div>
             <div class="train-details">
-                <p><strong>${carrier || 'Onbekende'} ${cargoText}</strong></p>
-                <p>Locomotief: <strong>${locomotive || "Onbekend"}</strong> | Richting ${analysis.journey[analysis.journey.length - 1].name}</p>
+                <p><strong>${carrier ? `${carrier} ${cargoText}` : (analysis.parsedMessage.stock ? 'Treinstel' : `Onbekende ${cargoText}`)}</strong></p>
+                <p>${analysis.parsedMessage.stock ? 'Materieel' : 'Locomotief'}: <strong>${locomotive || analysis.parsedMessage.stock || "Onbekend"}</strong> | Richting ${analysis.journey[analysis.journey.length - 1].name}</p>
                 ${externalLinksHtml}
             </div>
         </div>
