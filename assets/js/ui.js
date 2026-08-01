@@ -296,21 +296,30 @@ export function displayResults(analysis) {
         : '';
 
     const headerHtml = `
-      <div class="journey-header">
+      <div class="segment segment-wit journey-header">
         <div class="train-info-container">
             <div class="train-visualization">${imagesHtml}</div>
             <div class="train-details">
                 <p><strong>${carrier ? `${carrier} ${cargoText}` : (analysis.parsedMessage.stock ? 'Treinstel' : `Onbekende ${cargoText}`)}</strong></p>
-                <p>${analysis.parsedMessage.stock ? 'Materieel' : 'Locomotief'}: <strong>${locomotive || analysis.parsedMessage.stock || "Onbekend"}</strong> | Richting ${analysis.journey[analysis.journey.length - 1].name}</p>
+                <p>${analysis.parsedMessage.stock ? 'Materieel' : 'Locomotief'}: <strong>${locomotive || analysis.parsedMessage.stock || "Onbekend"}</strong> · richting ${analysis.journey[analysis.journey.length - 1].name}</p>
                 ${externalLinksHtml}
             </div>
         </div>
       </div>
     `;
 
-    let timelineHtml = '<div class="journey-timeline">';
+    // Kernmomenten blijven altijd zichtbaar; overige tussenstations klappen in
+    const targetCode = document.getElementById('targetStationSelect')?.value || null;
+    const laatste = analysis.journey.length - 1;
+    const isKern = (station, index) =>
+        index === 0 || index === laatste || station.code === targetCode
+        || station.waitTime > 0 || station.kopmaken;
+    const aantalTussen = analysis.journey.filter((s, i) => !isKern(s, i)).length;
+    const inklappen = aantalTussen >= 4;
+
+    let timelineHtml = `<div class="journey-timeline${inklappen ? ' ingeklapt' : ''}" id="journey-timeline">`;
     analysis.journey.forEach((station, index) => {
-        const markerClass = (index === 0 || index === analysis.journey.length - 1) ? 'start-end' : 'intermediate';
+        const markerClass = (index === 0 || index === laatste) ? 'start-end' : 'intermediate';
         const waitTimeHtml = station.waitTime > 0 && (station.code === 'AMF' || station.code === 'STO')
             ? `<div class="timeline-wait">verwachte wachttijd ${station.waitTime} min</div>` : '';
         const kopmakenHtml = station.kopmaken
@@ -320,10 +329,11 @@ export function displayResults(analysis) {
             ? '<span class="badge badge-pad">gespot</span>'
             : (station.viaPad
                 ? '<span class="badge badge-pad">✓ pad</span>'
-                : '<span class="badge badge-schatting">± schatting</span>');
+                : '<span class="badge badge-schatting">±</span>');
+        const tussenClass = (inklappen && !isKern(station, index)) ? ' timeline-tussen' : '';
 
         timelineHtml += `
-            <div class="timeline-station">
+            <div class="timeline-station${tussenClass}">
                 <div class="timeline-time-col">${station.time || '--:--'}</div>
                 <div class="timeline-marker-col">
                     <div class="timeline-marker ${markerClass}"></div>
@@ -335,10 +345,21 @@ export function displayResults(analysis) {
             </div>`;
     });
     timelineHtml += '</div>';
-    timelineHtml += '<p class="reliability-legend"><span class="badge badge-pad">✓ pad</span> = uitgelijnd op vaste goederenpaden · <span class="badge badge-schatting">± schatting</span> = berekend op afstand/snelheid</p>';
+    if (inklappen) {
+        timelineHtml += `<div class="timeline-toggle"><button id="timeline-toggle-btn" type="button">▾ toon ${aantalTussen} tussenstations</button></div>`;
+    }
+    const timelineSegment = `
+      <div class="segment segment-wit">
+        <h2 class="segment-titel">Verwachte doorkomst</h2>
+        ${timelineHtml}
+        <p class="reliability-legend"><span class="badge badge-pad">✓ pad</span> = uitgelijnd op vaste goederenpaden · <span class="badge badge-schatting">±</span> = berekend op afstand/snelheid</p>
+      </div>
+    `;
+
+    const somdaHtml = buildSomdaBlock(analysis, targetCode);
 
     const waBlockHtml = `
-      <div class="wa-block">
+      <div class="segment segment-groen wa-block">
         <h3>Bericht voor de groep</h3>
         <label class="wa-option">
           <input type="checkbox" id="wa-include-eta" checked />
@@ -352,8 +373,48 @@ export function displayResults(analysis) {
       </div>
     `;
 
-    journeyOutput.innerHTML = headerHtml + timelineHtml + waBlockHtml;
+    journeyOutput.innerHTML = headerHtml + timelineSegment + somdaHtml + waBlockHtml;
     setupWhatsAppBlock(analysis);
+    setupTimelineToggle(aantalTussen);
+}
+
+/**
+ * Somda-doorkomststaat rond de verwachte doorkomst op het doelstation
+ * (of anders het eindstation). Gebruikt de officiële embedbare
+ * afbeeldingsfeed van somda.nl; dagnummer: 1 = maandag ... 7 = zondag.
+ */
+function buildSomdaBlock(analysis, targetCode) {
+    const journey = analysis.journey;
+    const station = (targetCode && journey.find((s, i) => i > 0 && s.code === targetCode))
+        || journey[journey.length - 1];
+    if (!station || !station.finalTime) return '';
+
+    const start = new Date(station.finalTime.getTime() - 10 * 60000);
+    const dag = ((start.getDay() + 6) % 7) + 1;
+    const tijd = `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`;
+    const code = station.code.toLowerCase();
+    const url = `https://somda.nl/feeds/image/${encodeURIComponent(code)}/${dag}/${tijd}/?limit=8&fg-color=22302a&bg-color=ffffff`;
+
+    return `
+      <div class="segment segment-groen somda-block">
+        <h2 class="segment-titel">Rond jouw doorkomst in ${station.name}</h2>
+        <div class="somda-img-wrap">
+          <img src="${url}" alt="Doorkomststaat ${station.name} rond ${station.time} (bron: somda.nl)"
+               loading="lazy" onerror="this.closest('.somda-block').style.display='none'" />
+        </div>
+        <p class="somda-bron">Dienstregeling rond ±${station.time} · bron: <a href="https://somda.nl/doorkomststaat/" target="_blank" rel="noopener">somda.nl</a></p>
+      </div>
+    `;
+}
+
+function setupTimelineToggle(aantalTussen) {
+    const btn = document.getElementById('timeline-toggle-btn');
+    const timeline = document.getElementById('journey-timeline');
+    if (!btn || !timeline) return;
+    btn.addEventListener('click', () => {
+        const ingeklapt = timeline.classList.toggle('ingeklapt');
+        btn.textContent = ingeklapt ? `▾ toon ${aantalTussen} tussenstations` : '▴ verberg tussenstations';
+    });
 }
 
 export function toggleLoader(show) {

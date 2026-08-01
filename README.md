@@ -4,7 +4,7 @@
 
 Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de route, geschatte doorkomsttijden, materieelinfo en een deelbaar groepsbericht terug.
 
-**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.0.0 · **Licentie:** MIT
+**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.1.0 · **Licentie:** MIT
 
 ```
 13:07 Bh ri Asd RFO 193 150 met keteltrein
@@ -39,6 +39,7 @@ Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de rout
 - 🧭 **Route-extrapolatie** — voorspelt de eindbestemming uit lading of shuttlenaam, ook zonder `e.v.` in het bericht
 - 💬 **Groepsbericht-generator** — bouwt een bericht volgens de Gouden Formule, optioneel met verwachte doorkomst; kopieer met één tik of deel direct via WhatsApp
 - 🚂 **Materieelvisualisatie** — loc- en wagonafbeeldingen op basis van het herkende materieel, met directe links naar treinposities.nl
+- 🕐 **Somda-doorkomststaat** — bij elke analyse de dienstregeling rond jouw verwachte doorkomst op het doelstation, via de officiële embedbare feed van [somda.nl](https://somda.nl/feeds/)
 - 📊 **Extra's** — stationszoeker, drukte-heatmap en bekende treinpatronen
 - 📱 **Offline & installeerbaar** — PWA met service worker; werkt ook langs het spoor met slecht bereik. Volledig client-side: geen account, geen backend, geen tracking
 
@@ -223,6 +224,17 @@ MIT © 2025–2026 Mark Eijbaard
 ---
 
 ## Changelog
+
+### v5.1.0 — Huisstijl "Perron" & somda-doorkomststaat
+
+**Nieuwe huisstijl**
+- Volledig nieuw ontwerp: flessengroen met warm crème, duidelijk gescheiden afgeronde segmenten, pill-knoppen en een zwevende ronde tabbar op mobiel
+- Typografie: Bricolage Grotesque (koppen) + Figtree (interface), zelf gehost als variabele fonts (~97 KB, offline in de precache); Inter en de Google Fonts-koppeling zijn vervallen
+- Tijdlijn toont standaard de kernmomenten (spot, wachttijden, kopmaken, doelstation, eindpunt); tussenstations klappen uit met één tik
+
+**Somda-integratie (v5.2-idee, eerste stap)**
+- Nieuw segment "Rond jouw doorkomst in …": de doorkomststaat van somda.nl rond de verwachte passagetijd op het doelstation, via hun officiële embedbare afbeeldingsfeed (dagnummer 1 = maandag … 7 = zondag, starttijd 10 min vóór de verwachte doorkomst)
+- Volledig client-side, geen login of API-sleutel nodig; bij een onbekend station verdwijnt het blok vanzelf
 
 ### v5.0.0 — Landelijke dekking & netwerkroutering
 

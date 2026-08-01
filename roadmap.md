@@ -69,8 +69,9 @@ De basis staat en is data-gedreven: trajecten, afstanden en extrapolatieregels z
 
 ## Tussenstap — v5.1 & v5.2
 
-- 📋 **v5.1 — Restyling**: rustige, formele huisstijl (donkergroen met crème, subtiel en netjes), samen met de fase-1-UX-punten (groepsbericht prominenter, doelstation-zoekveld, tijdlijn-filter)
-- 📋 **v5.2 — Conflictdetectie met somda.nl-kennis**: onderzoeken of de dienstregelings-/treinnummerkennis van somda.nl bruikbaar is om te signaleren of het berekende pad botst met een andere passerende trein (haalbaarheid: welke data is er, is er een API of export, wat staan de gebruiksvoorwaarden toe)
+- ✅ **v5.1 — Huisstijl "Perron"**: flessengroen met crème, afgeronde segmenten, pill-knoppen, zwevende tabbar; tijdlijn-filter (tussenstations inklapbaar) meegenomen
+- ✅ **v5.2 (eerste stap) — Somda-doorkomststaat**: de officiële embedbare afbeeldingsfeed van somda.nl toont de dienstregeling rond de verwachte doorkomst op het doelstation. 📋 Vervolg: échte conflictdetectie vergt machine-leesbare data — daarvoor de somda-beheerder benaderen over een datafeed
+- 📋 **Resterende fase-1-UX-punten**: doelstation als zoekveld, parser-chips, betere foutmelding met suggestie, donkere modus
 
 ---
 

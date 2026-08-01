@@ -28,11 +28,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="SpotConverter" />
-    <meta name="theme-color" content="#1976c8" />
+    <meta name="theme-color" content="#2b5c45" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preload" href="assets/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="assets/css/spotconverter.css" />
 
     <script type="application/ld+json">
@@ -58,10 +57,12 @@
     <header class="top-bar">
       <div class="container top-bar-inner">
         <a class="brand" href="/" aria-label="SpotConverter home">
-          <svg class="brand-logo" viewBox="0 0 100 35" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M 5 15 C 5 5, 15 5, 25 15 S 45 35, 55 25 C 65 15, 75 15, 85 25" stroke="currentColor" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M 75 15 C 75 5, 85 5, 95 15" stroke="currentColor" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <span class="logo-dot">
+            <svg class="brand-logo" viewBox="0 0 100 35" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M 5 15 C 5 5, 15 5, 25 15 S 45 35, 55 25 C 65 15, 75 15, 85 25" stroke="currentColor" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M 75 15 C 75 5, 85 5, 95 15" stroke="currentColor" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
           <span class="brand-name">SpotConverter</span>
         </a>
         <nav id="tab-container" role="tablist" aria-label="Onderdelen">
@@ -86,8 +87,8 @@
     </header>
 
     <main class="container main-content">
-      <section class="card tab-panel" id="tab-spot" role="tabpanel" aria-labelledby="tab-spot">
-        <div class="planner">
+      <section class="tab-panel panel-naakt" id="tab-spot" role="tabpanel" aria-labelledby="tab-spot">
+        <div class="segment segment-groen planner">
           <h1 class="panel-title">Analyseer je spot</h1>
           <div class="grid-2">
             <div class="field">
@@ -148,7 +149,7 @@
       </section>
 
       <footer class="site-footer">
-        <p>Versie 5.0.0 · Copyright &copy; 2025–2026 Mark Eijbaard · MIT-licentie</p>
+        <p>Versie 5.1.0 · Copyright &copy; 2025–2026 Mark Eijbaard · MIT-licentie</p>
         <p><a href="https://github.com/meijbaard/SpotConverter/issues" target="_blank" rel="noopener">Meld een probleem of wens</a></p>
       </footer>
     </main>
