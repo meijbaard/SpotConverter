@@ -33,7 +33,9 @@ export function parseMessage(message) {
         [/\bplan\s*v\b/i, 'Plan V'],
         [/\bmat\s*['’]?\s*64\b/i, "Mat '64"],
         [/\bmat\s*['’]?\s*54\b/i, "Mat '54"],
-        [/\bhondekop\b/i, 'Hondekop']
+        [/\bmat\s*['’]?\s*24\b/i, "Mat '24"],
+        [/\bhondekop\b/i, 'Hondekop'],
+        [/\bblokkendoos\b/i, "Mat '24"]
     ];
     let messageVoorLoco = message;
     for (const [regex, naam] of stockPatterns) {

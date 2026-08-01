@@ -272,8 +272,20 @@
 		"BD",
 		"MDK"
 	],
-	"Spoorwegmuseum-route": [
+	"Spoorwegmuseum-route (Amersfoort)": [
 		"UTM",
-		"BLOA"
+		"BLOA",
+		"BHV",
+		"DLD",
+		"SDN",
+		"AMFVA",
+		"AMF"
+	],
+	"Spoorwegmuseum-route (Utrecht)": [
+		"UTM",
+		"BLOA",
+		"UTO",
+		"UTOA",
+		"UT"
 	]
 }

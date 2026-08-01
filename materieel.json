@@ -17,7 +17,8 @@
     "plan v": "planv.png",
     "mat '64": "planv.png",
     "mat '54": "mat54.png",
-    "hondekop": "mat54.png"
+    "hondekop": "mat54.png",
+    "mat '24": "mat24.png"
   },
   "wagons": {
     "ketel": "ketel.png",
@@ -47,7 +48,8 @@
       "plan v": "Treinstellen/Elektrische%20treinstellen/Mat%20%2764/Plan%20V7-V13/menu.html",
       "mat '64": "Treinstellen/Elektrische%20treinstellen/Mat%20%2764/Plan%20V7-V13/menu.html",
       "mat '54": "Treinstellen/Elektrische%20treinstellen/Mat%20%2754/Plan%20Q2-Q3%2C%20ELD2/menu.html",
-      "hondekop": "Treinstellen/Elektrische%20treinstellen/Mat%20%2754/Plan%20Q2-Q3%2C%20ELD2/menu.html"
+      "hondekop": "Treinstellen/Elektrische%20treinstellen/Mat%20%2754/Plan%20Q2-Q3%2C%20ELD2/menu.html",
+      "mat '24": "Treinstellen/Elektrische%20treinstellen/Mat%20%2724/ABecm-BCm-Aecm-ABm/menu.html"
     }
   }
 }

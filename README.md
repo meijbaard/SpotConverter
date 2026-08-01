@@ -4,7 +4,7 @@
 
 Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de route, geschatte doorkomsttijden, materieelinfo en een deelbaar groepsbericht terug.
 
-**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 4.2.2 · **Licentie:** MIT
+**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 4.2.3 · **Licentie:** MIT
 
 ```
 13:07 Bh ri Asd RFO 193 150 met keteltrein
@@ -218,6 +218,11 @@ MIT © 2025–2026 Mark Eijbaard
 ---
 
 ## Changelog
+
+### v4.2.3 — Spoorwegmuseum-route doorgetrokken naar Amersfoort & Mat '24
+
+- Spoorwegmuseum-route gesplitst in twee doorgetrokken takken: UTM → Amersfoort en UTM → Utrecht Centraal. Daardoor werken ook routes als UTM → Apeldoorn (via knooppunt AMF naar de Bentheimroute) en UTM → Gooilijn; de routering kan per rit maar één knooppunt aan, dus drie-trajectroutes hebben zulke doorgetrokken lijnen nodig totdat het graafmodel er is (zie roadmap fase 2)
+- Parser herkent ook **Mat '24** / **Blokkendoos**, met tekening en Arthur-link
 
 ### v4.2.2 — Museummaterieel & links naar Arthur's treinenpagina
 
