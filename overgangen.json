@@ -1,9 +1,26 @@
 {
-	"uitleg": "verboden: een route mag deze drie stations niet in deze volgorde (of omgekeerd) passeren — voor vervallen verbindingsbogen. kopmaken: deze doorgang kan wel, maar de trein moet op het middelste station kopmaken (keert van rijrichting); de tijdlijn toont dit en rekent extra tijd.",
+	"uitleg": "verboden: een route mag deze drie stations niet in deze volgorde (of omgekeerd) passeren — voor vervallen verbindingsbogen. kopmaken: deze doorgang kan wel, maar de trein moet op het middelste station kopmaken; de tijdlijn toont dit en rekent extra tijd. mijden: trajectnamen die doorgaand verkeer vermijdt (diesel-/regionaallijnen zonder goederenpad) — spots op de lijn zelf blijven gewoon werken.",
 	"verboden": [
 		["BLOA", "UTO", "HOR"]
 	],
 	"kopmaken": [
 		["UTM", "BLOA", "UTO"]
+	],
+	"mijden": [
+		"Zwolle - Almelo",
+		"Zwolle - Emmen",
+		"Maaslijn (Nijmegen - Venlo)",
+		"Arnhem - Winterswijk",
+		"Zutphen - Winterswijk",
+		"Zutphen - Hengelo",
+		"Dordrecht - Geldermalsen (MerwedeLingelijn)",
+		"Valleilijn (Barneveld aansluiting - Ede)",
+		"Groningen - Delfzijl",
+		"Groningen - Roodeschool",
+		"Groningen - Bad Nieuweschans",
+		"Zuidbroek - Veendam",
+		"Leeuwarden - Harlingen",
+		"Leeuwarden - Stavoren",
+		"Heerlen - Kerkrade"
 	]
 }

@@ -4,7 +4,7 @@
 
 Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de route, geschatte doorkomsttijden, materieelinfo en een deelbaar groepsbericht terug.
 
-**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.1.1 · **Licentie:** MIT
+**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.1.2 · **Licentie:** MIT
 
 ```
 13:07 Bh ri Asd RFO 193 150 met keteltrein
@@ -226,6 +226,11 @@ MIT © 2025–2026 Mark Eijbaard
 ---
 
 ## Changelog
+
+### v5.1.2 — Goederenverkeer mijdt diesel-/regionaallijnen
+
+- Nieuw in `overgangen.json`: een `mijden`-lijst met diesel- en regionaallijnen (Zwolle–Almelo via Raalte, Maaslijn, Achterhoek, noordelijke nevenlijnen, …). Doorgaand goederenverkeer krijgt daar een kilometerstraffactor en kiest de echte goederenroute — Hengelo → Zwolle loopt nu via Deventer goederenemplacement in plaats van via Raalte
+- Spots óp zo'n lijn blijven gewoon werken, en **museumritten** (herkend materieel zoals Mat '54 of Plan V) mogen wél de kortste route nemen
 
 ### v5.1.1 — Rustiger invoerblok
 

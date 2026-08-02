@@ -7,37 +7,55 @@ import { getState, getStationByCode } from './state.js';
 // Elk gedeeld station is daardoor automatisch een knooppunt en routes over
 // willekeurig veel trajecten worden met een kortste-padzoektocht gevonden.
 
-let graphCache = null;
+const graphCaches = { met: null, zonder: null };
 let graphSource = null;
+let graphAvoidSource = null;
 
 const FALLBACK_EDGE_KM = 4; // aanname als de afstand van een baanvak ontbreekt
 
-function buildGraph() {
-    const { trajectories, distanceMatrix } = getState();
-    if (graphCache && graphSource === trajectories) return graphCache;
+// Trajecten in de mijden-lijst (overgangen.json) tellen zwaarder mee, zodat
+// doorgaand goederenverkeer diesel-/regionaallijnen links laat liggen. Spots
+// op zo'n lijn zelf blijven werken (enkel-trajectmatch gaat vóór de graaf),
+// en museumritten (herkend materieel) mogen wél de kortste route nemen.
+const MIJDEN_FACTOR = 3;
 
-    const adj = new Map();        // code -> Map(buurcode -> km)
+function buildGraph(mijdenActief = true) {
+    const { trajectories, distanceMatrix, avoidTrajecten } = getState();
+    if (graphSource !== trajectories || graphAvoidSource !== avoidTrajecten) {
+        graphCaches.met = null;
+        graphCaches.zonder = null;
+    }
+    const cacheKey = mijdenActief ? 'met' : 'zonder';
+    if (graphCaches[cacheKey]) return graphCaches[cacheKey];
+
+    const mijden = new Set(mijdenActief ? (avoidTrajecten || []) : []);
+    const adj = new Map();        // code -> Map(buurcode -> gewogen km)
     const edgeTraject = new Map(); // "A|B" -> trajectnaam (voor weergave)
 
     for (const name in trajectories) {
         const route = trajectories[name];
+        const factor = mijden.has(name) ? MIJDEN_FACTOR : 1;
         for (let i = 0; i < route.length - 1; i++) {
             const a = route[i], b = route[i + 1];
             if (a === b) continue;
             const km = distanceMatrix[a]?.[b] || distanceMatrix[b]?.[a] || 0;
-            const gewicht = km > 0 ? km : FALLBACK_EDGE_KM;
+            const gewicht = (km > 0 ? km : FALLBACK_EDGE_KM) * factor;
             if (!adj.has(a)) adj.set(a, new Map());
             if (!adj.has(b)) adj.set(b, new Map());
-            if (!adj.get(a).has(b)) adj.get(a).set(b, gewicht);
-            if (!adj.get(b).has(a)) adj.get(b).set(a, gewicht);
-            if (!edgeTraject.has(`${a}|${b}`)) edgeTraject.set(`${a}|${b}`, name);
-            if (!edgeTraject.has(`${b}|${a}`)) edgeTraject.set(`${b}|${a}`, name);
+            // gedeelde randen krijgen het gunstigste gewicht (niet-gemeden traject wint)
+            if (gewicht < (adj.get(a).get(b) ?? Infinity)) {
+                adj.get(a).set(b, gewicht);
+                adj.get(b).set(a, gewicht);
+                edgeTraject.set(`${a}|${b}`, name);
+                edgeTraject.set(`${b}|${a}`, name);
+            }
         }
     }
 
-    graphCache = { adj, edgeTraject };
+    graphCaches[cacheKey] = { adj, edgeTraject };
     graphSource = trajectories;
-    return graphCache;
+    graphAvoidSource = avoidTrajecten;
+    return graphCaches[cacheKey];
 }
 
 /**
@@ -145,25 +163,30 @@ function sliceBinnen(route, a, b) {
  * Bad Bentheim -> Amsterdam netjes de Bentheimroute + Gooilijn volgt en een
  * museumrit naar Hilversum de fysiek kortere lijn via Hollandsche Rading kiest.
  */
-function tweeTrajectRoute(a, b) {
-    const trajectories = getState().trajectories;
+function tweeTrajectRoute(a, b, mijdenActief = true) {
+    const { trajectories, avoidTrajecten } = getState();
     const verboden = verbodenSet();
+    const mijden = new Set(mijdenActief ? (avoidTrajecten || []) : []);
     let beste = null;
 
     for (const n1 in trajectories) {
         const r1 = trajectories[n1];
         if (!r1.includes(a)) continue;
+        const factor1 = mijden.has(n1) ? MIJDEN_FACTOR : 1;
         for (const n2 in trajectories) {
             if (n2 === n1) continue;
             const r2 = trajectories[n2];
             if (!r2.includes(b)) continue;
+            const factor2 = mijden.has(n2) ? MIJDEN_FACTOR : 1;
             for (const hub of r1) {
                 if (hub === a || hub === b || !r2.includes(hub)) continue;
-                const stations = [...sliceBinnen(r1, a, hub), ...sliceBinnen(r2, hub, b).slice(1)];
+                const been1 = sliceBinnen(r1, a, hub);
+                const been2 = sliceBinnen(r2, hub, b);
+                const stations = [...been1, ...been2.slice(1)];
                 if (heeftVerbodenOvergang(stations, verboden)) continue;
                 // Geen station twee keer aandoen: dat zou een keer-/kopmaakroute zijn
                 if (new Set(stations).size !== stations.length) continue;
-                const km = padKm(stations);
+                const km = padKm(been1) * factor1 + padKm(been2) * factor2;
                 if (!beste || km < beste.km) beste = { stations, km, namen: [n1, n2] };
             }
         }
@@ -178,10 +201,11 @@ function tweeTrajectRoute(a, b) {
  * een benoemd traject proberen, anders het kortste pad door het netwerk.
  * Het resultaat behoudt de vorm { name, direction, stations }.
  */
-export function findFullTrajectory(routeCodes) {
+export function findFullTrajectory(routeCodes, { negeerMijden = false } = {}) {
     if (routeCodes.length < 2) return null;
 
-    const { adj, edgeTraject } = buildGraph();
+    const mijdenActief = !negeerMijden;
+    const { adj, edgeTraject } = buildGraph(mijdenActief);
     const punten = routeCodes.filter(code => adj.has(code));
     if (punten.length < 2) return null;
 
@@ -196,7 +220,7 @@ export function findFullTrajectory(routeCodes) {
             segment = slice.stations;
             segmentNamen = [slice.name];
         } else {
-            const twee = tweeTrajectRoute(punten[i], punten[i + 1]);
+            const twee = tweeTrajectRoute(punten[i], punten[i + 1], mijdenActief);
             segment = twee ? twee.stations : shortestPath(adj, punten[i], punten[i + 1]);
             segmentNamen = twee ? twee.namen : [];
         }
@@ -273,12 +297,15 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         }
     }
 
-    let trajectoryInfo = findFullTrajectory(routeCodes);
+    // Museumritten (herkend materieel) mogen de kortste route nemen;
+    // de mijden-lijst geldt alleen voor doorgaand goederenverkeer
+    const routeOpties = { negeerMijden: !!parsedData.stock };
+    let trajectoryInfo = findFullTrajectory(routeCodes, routeOpties);
 
     // --- Veiligheids-fallback: geruisloze terugval als de traject-lijn mist ---
     if (!trajectoryInfo && routeCodes.length > parsedData.routeCodes.length) {
         routeCodes = [...parsedData.routeCodes];
-        trajectoryInfo = findFullTrajectory(routeCodes);
+        trajectoryInfo = findFullTrajectory(routeCodes, routeOpties);
     }
 
     if (!trajectoryInfo) {

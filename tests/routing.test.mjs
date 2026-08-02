@@ -120,6 +120,26 @@ test('richting Utrecht-corridor zuidwaarts: Amf naar Den Bosch', () => {
     assert.ok(codes.includes('UT'), 'via Utrecht');
 });
 
+test('doorgaand goederenverkeer mijdt de diesellijn via Raalte (via Deventer/Dvge)', () => {
+    const codes = route('13:00 Hgl ri Zl 189 024');
+    assert.ok(codes);
+    assert.ok(!codes.includes('RAT'), 'niet via Raalte');
+    assert.ok(codes.includes('DVGE'), 'via Deventer goederenemplacement');
+    assert.equal(codes.at(-1), 'ZL');
+});
+
+test('spot op de Raalte-lijn zelf blijft gewoon werken', () => {
+    const codes = route('13:00 Rat ri Zl');
+    assert.deepEqual(codes, ['RAT', 'HNO', 'ZL']);
+});
+
+test('museumrit mag wel de kortste route via Raalte nemen', () => {
+    const codes = route("13:00 Hgl ri Zl Mat '54");
+    assert.ok(codes);
+    assert.ok(codes.includes('RAT'), 'via Raalte (kortste route)');
+    assert.equal(codes.at(-1), 'ZL');
+});
+
 test('onzin levert geen route op', () => {
     assert.equal(route('hallo dit is geen spotbericht'), null);
 });

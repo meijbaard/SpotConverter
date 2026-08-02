@@ -9,6 +9,7 @@ const state = {
     stationCoords: {},
     bannedTurns: [],
     reversalTurns: [],
+    avoidTrajecten: [],
     extrapolationRules: null,
     materieelDatabase: {
         exact: {},

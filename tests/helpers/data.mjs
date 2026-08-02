@@ -49,4 +49,5 @@ export function laadTestData() {
     const overgangen = JSON.parse(readFileSync(join(root, 'overgangen.json'), 'utf8'));
     updateState('bannedTurns', overgangen.verboden || []);
     updateState('reversalTurns', overgangen.kopmaken || []);
+    updateState('avoidTrajecten', overgangen.mijden || []);
 }

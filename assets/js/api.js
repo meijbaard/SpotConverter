@@ -126,6 +126,7 @@ async function loadOvergangen() {
         const data = await fetchJSON(`${BASE_URL}/overgangen.json`);
         if (Array.isArray(data.verboden)) updateState('bannedTurns', data.verboden);
         if (Array.isArray(data.kopmaken)) updateState('reversalTurns', data.kopmaken);
+        if (Array.isArray(data.mijden)) updateState('avoidTrajecten', data.mijden);
     } catch (error) {
         console.warn("Kon overgangen.json niet laden; alle overgangen worden toegestaan.", error);
     }
