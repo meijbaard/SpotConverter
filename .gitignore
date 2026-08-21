@@ -2,3 +2,5 @@
 .DS_Store
 .venv/
 out_osm/
+
+graphify-out/
