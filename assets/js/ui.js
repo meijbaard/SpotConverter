@@ -1,6 +1,8 @@
 // ui.js
 import { getState, getStationByCode } from './state.js';
 import { buildGroupMessage } from './message.js';
+import { buildDienstregeling, dienstregelingTekst } from './dienstregeling.js';
+import { downloadDienstregelingPdf } from './pdfstaat.js';
 
 const CARRIER_SLUGS = {
     'RFO':  'RFO',
@@ -358,6 +360,32 @@ export function displayResults(analysis) {
 
     const somdaHtml = buildSomdaBlock(analysis, targetCode);
 
+    // Dienstregeling in doorkomststaat-stijl (Courier, kader, logo erboven)
+    const staat = buildDienstregeling(analysis);
+    const staatHtml = staat ? `
+      <div class="segment segment-wit staat-block">
+        <h2 class="segment-titel">Dienstregeling</h2>
+        <div class="staat-kader-wrap">
+          <div class="staat-vel">
+            <div class="staat-merk">
+              <span class="logo-dot">
+                <svg class="brand-logo" viewBox="0 0 100 35" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M 5 15 C 5 5, 15 5, 25 15 S 45 35, 55 25 C 65 15, 75 15, 85 25" stroke="currentColor" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M 75 15 C 75 5, 85 5, 95 15" stroke="currentColor" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="staat-merknaam">SpotConverter</span>
+            </div>
+            <div class="staat-titel">DIENSTREGELING</div>
+            <pre id="staat-pre" class="staat-kader"></pre>
+          </div>
+        </div>
+        <div class="staat-acties">
+          <button id="staat-pdf-btn" class="btn" type="button">Download als PDF</button>
+        </div>
+      </div>
+    ` : '';
+
     const waBlockHtml = `
       <div class="segment segment-groen wa-block">
         <h3>Bericht voor de groep</h3>
@@ -373,9 +401,19 @@ export function displayResults(analysis) {
       </div>
     `;
 
-    journeyOutput.innerHTML = headerHtml + timelineSegment + somdaHtml + waBlockHtml;
+    journeyOutput.innerHTML = headerHtml + timelineSegment + staatHtml + somdaHtml + waBlockHtml;
     setupWhatsAppBlock(analysis);
+    setupDienstregelingBlock(staat);
     setupTimelineToggle(aantalTussen);
+}
+
+/** Vult het dienstregeling-voorbeeld en koppelt de PDF-download. */
+function setupDienstregelingBlock(staat) {
+    if (!staat) return;
+    const pre = document.getElementById('staat-pre');
+    if (pre) pre.textContent = dienstregelingTekst(staat);
+    const btn = document.getElementById('staat-pdf-btn');
+    if (btn) btn.addEventListener('click', () => downloadDienstregelingPdf(staat));
 }
 
 /**

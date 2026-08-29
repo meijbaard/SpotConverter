@@ -4,7 +4,7 @@
 
 Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de route, geschatte doorkomsttijden, materieelinfo en een deelbaar groepsbericht terug.
 
-**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.1.2 · **Licentie:** MIT
+**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.2.0 · **Licentie:** MIT
 
 ```
 13:07 Bh ri Asd RFO 193 150 met keteltrein
@@ -40,6 +40,7 @@ Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de rout
 - 💬 **Groepsbericht-generator** — bouwt een bericht volgens de Gouden Formule, optioneel met verwachte doorkomst; kopieer met één tik of deel direct via WhatsApp
 - 🚂 **Materieelvisualisatie** — loc- en wagonafbeeldingen op basis van het herkende materieel, met directe links naar treinposities.nl
 - 🕐 **Somda-doorkomststaat** — bij elke analyse de dienstregeling rond jouw verwachte doorkomst op het doelstation, via de officiële embedbare feed van [somda.nl](https://somda.nl/feeds/)
+- 📄 **Dienstregeling als PDF** — elke analyse levert ook een doorkomststaat in klassieke stijl (Courier, kader, V/D/A per station, materieel en rijsnelheid), te downloaden als PDF — gegenereerd in de browser, zonder externe bibliotheken
 - 📊 **Extra's** — stationszoeker, drukte-heatmap en bekende treinpatronen
 - 📱 **Offline & installeerbaar** — PWA met service worker; werkt ook langs het spoor met slecht bereik. Volledig client-side: geen account, geen backend, geen tracking
 
@@ -123,9 +124,11 @@ bericht ─→ parser.js ─→ routing.js ─→ ui.js
 │       ├── parser.js       # berichtparser (incl. spottersaliassen zoals RH → Rheine)
 │       ├── routing.js      # routeanalyse & ETA-berekening
 │       ├── message.js      # groepsbericht-generator
+│       ├── dienstregeling.js # doorkomststaat (V/D/A-rijen, materieel, snelheid)
+│       ├── pdfstaat.js     # PDF-generator (Courier, kader, logo; geen dependencies)
 │       └── ui.js           # rendering (incl. somda-doorkomststaat)
 ├── afstanden_check/        # datascripts (coördinaten, afstanden, validatie)
-├── tests/                  # node --test suite (parser & routering)
+├── tests/                  # node --test suite (parser, routering & dienstregeling)
 ├── .github/workflows/      # deploy naar Pages + CI (tests & datavalidatie)
 ├── *.csv / *.json          # datasets (zie hieronder)
 ├── CNAME                   # spotconverter.markeijbaard.nl
@@ -226,6 +229,12 @@ MIT © 2025–2026 Mark Eijbaard
 ---
 
 ## Changelog
+
+### v5.2.0 — Dienstregeling als PDF
+
+- Nieuw segment **Dienstregeling** bij elke analyse: een doorkomststaat in klassieke stijl — Courier-lettertype, kader, het SpotConverter-logo erboven en per station de afkorting, de voluit geschreven naam en **V** (vertrek) / **D** (doorkomst) / **A** (aankomst) met tijd. Wachttijd- en kopmaakstations krijgen een aankomst- én vertrekregel
+- De kop toont datum, het traject in één regel, het **materieel als tekst** en de **verwachte rijsnelheid**
+- **Download als PDF**: de staat wordt volledig in de browser als PDF opgebouwd (`pdfstaat.js`, ~180 regels, geen externe bibliotheken — Courier is een standaard PDF-font en het logo wordt met dezelfde beziercurven getekend als het merk-SVG); lange routes lopen door op vervolgpagina's
 
 ### v5.1.2 — Goederenverkeer mijdt diesel-/regionaallijnen
 

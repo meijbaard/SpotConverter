@@ -12,7 +12,7 @@ const SITE = 'spotconverter.markeijbaard.nl';
 
 // Interne pseudo-codes worden in het bericht als spottersafkorting getoond
 const DISPLAY_ALIASES = { 'RHEINE': 'RH', 'SALZBERGEN': 'SBG', 'HSAL': 'SBG', 'HBTH': 'BH' };
-const shortCode = code => DISPLAY_ALIASES[code] || code;
+export const shortCode = code => DISPLAY_ALIASES[code] || code;
 
 /**
  * Bouwt het spotbericht. `includeEta` voegt een tweede regel toe met de

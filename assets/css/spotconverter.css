@@ -298,6 +298,41 @@ select.input { appearance: auto; }
 .reliability-legend { font-size: 0.75rem; color: var(--gedimd); margin-top: 0.85rem; }
 
 /* --------------------------------------------------------------------------
+   Dienstregeling (doorkomststaat in Courier, met kader en logo erboven)
+   -------------------------------------------------------------------------- */
+.staat-kader-wrap { overflow-x: auto; }
+.staat-vel {
+  background: var(--wit);
+  min-width: max-content;
+  padding: 0.25rem 0.25rem 0.5rem;
+}
+.staat-merk { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.9rem; }
+.staat-merk .logo-dot { width: 42px; height: 42px; }
+.staat-merknaam {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700; font-size: 1.15rem;
+  color: var(--inkt);
+}
+.staat-titel {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700; font-size: 0.85rem;
+  color: var(--inkt);
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.06em;
+}
+.staat-kader {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.78rem; line-height: 1.55;
+  color: var(--inkt);
+  border: 1.5px solid var(--inkt);
+  padding: 0.9rem 1.1rem;
+  margin: 0;
+  white-space: pre;
+  min-width: max-content;
+}
+.staat-acties { margin-top: 0.85rem; }
+
+/* --------------------------------------------------------------------------
    Somda-doorkomststaat
    -------------------------------------------------------------------------- */
 .somda-img-wrap {

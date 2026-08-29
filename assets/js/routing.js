@@ -13,6 +13,10 @@ let graphAvoidSource = null;
 
 const FALLBACK_EDGE_KM = 4; // aanname als de afstand van een baanvak ontbreekt
 
+// Rekensnelheid en kopmaaktijd; ook gebruikt door de dienstregeling-weergave
+export const REKEN_SNELHEID_KMU = 80;
+export const KOPMAAK_MINUTEN = 5;
+
 // Trajecten in de mijden-lijst (overgangen.json) tellen zwaarder mee, zodat
 // doorgaand goederenverkeer diesel-/regionaallijnen links laat liggen. Spots
 // op zo'n lijn zelf blijven werken (enkel-trajectmatch gaat vóór de graaf),
@@ -333,7 +337,6 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
 
     // Kopmaak-stations op deze route (uit overgangen.json): daar keert de
     // trein van rijrichting, wat extra tijd kost en in de tijdlijn zichtbaar is
-    const KOPMAAK_MINUTEN = 5;
     const reversals = new Set();
     for (const [a, b, c] of getState().reversalTurns || []) {
         reversals.add(`${a}|${b}|${c}`);
@@ -351,7 +354,7 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         if (i > 0) {
             const distance = distanceMatrix[lastStationCode]?.[stationCode]
                 || distanceMatrix[stationCode]?.[lastStationCode] || 0;
-            const travelMinutes = distance ? Math.round((distance / 80) * 60) : 5;
+            const travelMinutes = distance ? Math.round((distance / REKEN_SNELHEID_KMU) * 60) : 5;
             idealTime.setMinutes(idealTime.getMinutes() + travelMinutes);
         }
 
