@@ -5,7 +5,7 @@
 //   beschikbaar blijft maar online altijd vers is.
 // Verhoog VERSION bij elke release om oude caches op te ruimen.
 
-const VERSION = 'v5.2.0';
+const VERSION = 'v5.3.0';
 const STATIC_CACHE = `spotconverter-static-${VERSION}`;
 const DATA_CACHE = `spotconverter-data-${VERSION}`;
 
@@ -21,6 +21,7 @@ const PRECACHE_URLS = [
   'assets/js/parser.js',
   'assets/js/routing.js',
   'assets/js/message.js',
+  'assets/js/radar.js',
   'assets/js/dienstregeling.js',
   'assets/js/pdfstaat.js',
   'assets/js/ui.js',

@@ -11,6 +11,7 @@ const state = {
     reversalTurns: [],
     avoidTrajecten: [],
     extrapolationRules: null,
+    speedProfile: null,
     materieelDatabase: {
         exact: {},
         types: {},

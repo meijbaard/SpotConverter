@@ -4,7 +4,7 @@
 
 Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de route, geschatte doorkomsttijden, materieelinfo en een deelbaar groepsbericht terug.
 
-**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.2.0 · **Licentie:** MIT
+**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.3.0 · **Licentie:** MIT
 
 ```
 13:07 Bh ri Asd RFO 193 150 met keteltrein
@@ -33,7 +33,10 @@ Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de rout
 
 ## Wat kan de tool
 
-- 🔍 **Spot-analyse** — herkent tijd, station, richting, vervoerder, locnummer(s), lading, `llt`, `badl/ladl` en `(opz)` in vrije berichttekst
+- 🔍 **Spot-analyse** — herkent tijd, station, richting, vervoerder, locnummer(s), lading, `llt`, `badl/ladl` en `(opz)` in vrije berichttekst; incl. NVR-prefixen (`6193 190`), onbekende nummers (`193 xxx`), vrije-veldlocaties (`Nieuwedijk (Hon - Dvc)`) en voluit geschreven richtingen
+- 📡 **Groepsradar** — plak een stuk groepschat (meerdere berichten): de radar herkent welke meldingen bij dezelfde trein horen, toont per trein de laatste positie, de komende doorkomsten met aftelklok en de afwijking t.o.v. het model
+- 🏃 **"Haal ik hem nog?"** — bij een trein die nu onderweg is: per komend station een aftelklok, en met één tik op je locatie de haalbaarheid per fiets of auto (volledig op het apparaat)
+- 📋 **Verwachtingsbord** — welke vaste systemen (Katy, PCC, Volvo, Lovosice, …) rijden vandaag doorgaans, met tijdvenster — afgeleid uit 14 maanden groepsspots
 - 🛤️ **Landelijke routeherkenning** — de trajecten vormen samen een spoorweggraaf die heel Nederland dekt (70 baanvakken, van Roodeschool tot Vlissingen). Benoemde goederencorridors winnen waar ze de rit dekken; daarbuiten zoekt een kortste-padalgoritme de route over willekeurig veel trajecten (bijv. Leeuwarden → Den Haag)
 - ⏱️ **Doorkomsttijden** — berekend uit afstanden (80 km/u) en waar beschikbaar uitgelijnd op vaste goederenpaden, inclusief wachttijden; elke tijd toont ✓ pad of ± schatting
 - 🧭 **Route-extrapolatie** — voorspelt de eindbestemming uit lading of shuttlenaam, ook zonder `e.v.` in het bericht
@@ -124,10 +127,12 @@ bericht ─→ parser.js ─→ routing.js ─→ ui.js
 │       ├── parser.js       # berichtparser (incl. spottersaliassen zoals RH → Rheine)
 │       ├── routing.js      # routeanalyse & ETA-berekening
 │       ├── message.js      # groepsbericht-generator
+│       ├── radar.js        # groepsradar (meerdere berichten -> actieve treinen)
 │       ├── dienstregeling.js # doorkomststaat (V/D/A-rijen, materieel, snelheid)
 │       ├── pdfstaat.js     # PDF-generator (Courier, kader, logo; geen dependencies)
 │       └── ui.js           # rendering (incl. somda-doorkomststaat)
 ├── afstanden_check/        # datascripts (coördinaten, afstanden, validatie)
+├── chatmining/             # chatdump -> kandidaat-data-updates (output in .gitignore)
 ├── tests/                  # node --test suite (parser, routering & dienstregeling)
 ├── .github/workflows/      # deploy naar Pages + CI (tests & datavalidatie)
 ├── *.csv / *.json          # datasets (zie hieronder)
@@ -149,10 +154,11 @@ Alle kennis zit in data, niet in code:
 | `trajecten.json` | Baanvakken/corridors als geordende stationscodelijsten — samen de landelijke spoorweggraaf; elk gedeeld station is automatisch een knooppunt |
 | `overgangen.json` | Verboden doorrijverbindingen (vervallen bogen/aansluitingen), bijv. Blauwkapel → Hollandsche Rading vanaf de museumlijn |
 | `afstanden.csv` | Afstandsmatrix in km — grotendeels gegenereerd, zie [Datascripts](#datascripts) |
-| `goederenpaden.csv` | Vaste passage-minuten per station en rijrichting (nu: Gooilijn) |
+| `goederenpaden.csv` | Vaste passage-minuten per station en rijrichting (Gooilijn + hele Bentheimroute, afgeleid uit 14 maanden groepsspots) |
+| `snelheden.json` | Rekensnelheid per traject (Bentheimroute 60 km/u) en grensoponthoud (BH 15 min), gekalibreerd op de kettinganalyse |
 | `extrapolatie.json` | Regels lading/shuttle → voorspelde bestemming |
-| `heatmap_treinpassages.json` | Passages per uur per station |
-| `treinpatronen.json` | Bekende terugkerende treinroutes |
+| `heatmap_treinpassages.json` | Passages per station/dag/uur — gegenereerd uit de groepschat via `chatmining/` |
+| `treinpatronen.json` | Bekende systemen met dagen, tijdvensters en frequentie (basis voor het verwachtingsbord) |
 | `materieel.json` | Koppeling vervoerder/loctype → afbeelding |
 
 **Nieuw traject toevoegen — drie stappen, geen code:**
@@ -166,6 +172,12 @@ Alle kennis zit in data, niet in code:
 ---
 
 ## Datascripts
+
+**`chatmining/analyse_chat.py`** — leest een WhatsApp-groepsexport (`_chat.txt`) en genereert kandidaat-updates voor de datasets: een nieuwe heatmap, padminuten-suggesties voor `goederenpaden.csv`, dag-/uurstatistieken per systeem en een leesbaar rapport. Output in `chatmining/out/` (staat in `.gitignore`); de export zelf en persoonsgegevens komen nooit in de repo. Werkwijze: script draaien, diff beoordelen, gewenste data overnemen, `npm test`.
+
+```bash
+python3 chatmining/analyse_chat.py /pad/naar/_chat.txt
+```
 
 In `afstanden_check/` (allemaal zonder externe dependencies, tenzij vermeld):
 
@@ -229,6 +241,39 @@ MIT © 2025–2026 Mark Eijbaard
 ---
 
 ## Changelog
+
+### v5.3.0 — Groepsradar & datagedreven voorspellingen
+
+Gebouwd op een analyse van 14 maanden groepschat (25.000+ berichten, jul 2025 – aug 2026). Kernconclusie: shuttles rijden niet op vaste kloktijden, maar wél op vaste padminuten in het uur — en goederentreinen halen op de Twentelijnen ~50–60 km/u, geen 80.
+
+**Nieuw: Groepsradar (tabblad Radar)**
+- Plak een stuk groepschat; de radar splitst meertrein-berichten (kopregel "Dvge 11:22" + drie treinregels), herkent dat opeenvolgende meldingen bij dezelfde trein horen (locnummer, of vervoerder + lading binnen 90 min — ook als het nummer pas later gemeld wordt) en toont per trein de komende doorkomsten met aftelklok en de afwijking t.o.v. het model
+- Volledig client-side; er wordt niets verstuurd of opgeslagen
+
+**Nieuw: "Haal ik hem nog?" + aftelklok**
+- Bij een trein die nu onderweg is telt de tijdlijn per station af; één tik op 📍 vergelijkt de reistijd vanaf je eigen locatie (fiets/auto) met de tijd tot doorkomst
+
+**Nieuw: verwachtingsbord**
+- Het Patronen-tabblad opent met "Vandaag verwacht": de vaste systemen die vandaag doorgaans rijden, met tijdvenster — kansen, geen dienstregeling
+
+**Voorspellingen datagedreven**
+- `goederenpaden.csv` uitgebreid van alleen de Gooilijn naar de hele Bentheimroute (per richting, gemeten padminuten) — de ✓ pad-badge geldt nu vrijwel corridor-breed
+- Nieuw `snelheden.json`: rekensnelheid per traject (Bentheimroute 60 km/u) plus 15 min grensoponthoud Bad Bentheim; de dienstregeling toont de werkelijke gemiddelde snelheid
+- `treinpatronen.json` herijkt op gemeten dagen en tijdvensters (Lovosice = zondagstrein, Volvo di–vr avond westwaarts, Pon wo/ma-ochtend) en uitgebreid met Lovosice, Praag, graan en UC Onnen
+- `heatmap_treinpassages.json` opnieuw opgebouwd uit 23.800 echte spots (20 stations, per dag en uur)
+- Nieuwe extrapolatieregels: Praag-shuttle → Waalhaven, UC Onnen → Haren/Onnen
+- Coördinatenfix: Stroe lag door een Nominatim-misser in Engeland, waardoor de oost/west-bepaling bij Stroe-spots verkeerd uitpakte
+
+**Parser**
+- Locseries 383, 386, 185/187/182/192/194, 159, 248 en de RFO 1600/1800-serie; NVR-prefixen (`6193 190` → `193 190`); `193 xxx` en `193er`; dubbele tractie
+- Vervoerders: Metrans, ERS, ELL, Captrain, DPB/duisport, Freightliner, BLS, TXL, Ecco-Rail, RailAdventure; "RTB Cargo" is niet langer station Rotterdam Blaak
+- Tijdnotaties `19.33` / `11;45` / `11h23`; richtingswoord `ric`; voluit geschreven richtingen ("ri Hengelo"); `ri NL` vanuit Duitsland; spottersaliassen Amfge, Amfpon, Kfhz, Odzg, Almbp
+- Ladingen: graan, gas, kalk, unit cargo (met naam: UC Onnen, UC Buna Werke), militair, zand, hout
+- Vrije-veldlocaties tussen twee stations ("Nieuwedijk (Hon - Dvc)", "Bn/Hgl"): de tijdlijn start bij het eerstvolgende station in de rijrichting
+
+**Chatmining als pijplijn**
+- Nieuw `chatmining/analyse_chat.py`: van chatexport naar kandidaat-data-updates, herhaalbaar bij elke nieuwe dump; export en output blijven buiten git
+- Testsuite uitgebreid naar 65 tests (nieuwe parserformaten + radar op echte groepsberichten)
 
 ### v5.2.0 — Dienstregeling als PDF
 

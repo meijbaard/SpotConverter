@@ -4,3 +4,7 @@
 out_osm/
 
 graphify-out/
+
+# Chatmining: de WhatsApp-export en afgeleide output blijven lokaal (privacy)
+_chat*.txt
+chatmining/out/

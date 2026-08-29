@@ -17,7 +17,8 @@ export async function initializeData() {
             loadOvergangen(),
             loadMaterieel(),
             loadCoords(),
-            loadExtrapolationRules()
+            loadExtrapolationRules(),
+            loadSnelheden()
         ]);
         return true;
     } catch (error) {
@@ -118,6 +119,15 @@ async function loadExtrapolationRules() {
         updateState('extrapolationRules', data);
     } catch (error) {
         console.warn("Kon extrapolatie.json niet laden; route-extrapolatie staat uit.", error);
+    }
+}
+
+async function loadSnelheden() {
+    try {
+        const data = await fetchJSON(`${BASE_URL}/snelheden.json`);
+        updateState('speedProfile', data);
+    } catch (error) {
+        console.warn("Kon snelheden.json niet laden; de standaardsnelheid wordt gebruikt.", error);
     }
 }
 

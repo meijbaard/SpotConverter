@@ -3,6 +3,7 @@ import { initializeData } from './api.js';
 import { getState } from './state.js';
 import { parseMessage } from './parser.js';
 import { analyzeTrajectory } from './routing.js';
+import { renderRadar } from './radar.js';
 import * as UI from './ui.js';
 
 const EXAMPLE_MESSAGE = '13:07 Bh ri Asd RFO 193 150 met keteltrein';
@@ -137,6 +138,32 @@ function setupEventListeners() {
     const heatmapDay = document.getElementById('heatmapday');
     if (heatmapStation) heatmapStation.addEventListener('change', UI.updateHeatmap);
     if (heatmapDay) heatmapDay.addEventListener('change', UI.updateHeatmap);
+
+    // Groepsradar: meerdere berichten plakken en als geheel analyseren
+    const radarInput = document.getElementById('radarInput');
+    const radarBtn = document.getElementById('radar-btn');
+    const radarPasteBtn = document.getElementById('radar-paste-btn');
+    const runRadar = () => renderRadar(radarInput?.value || '');
+    if (radarBtn) radarBtn.addEventListener('click', runRadar);
+    if (radarInput) {
+        radarInput.addEventListener('input', () => {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(runRadar, 500);
+        });
+    }
+    if (radarPasteBtn && radarInput) {
+        radarPasteBtn.addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    radarInput.value = text;
+                    runRadar();
+                }
+            } catch (e) {
+                radarInput.focus();
+            }
+        });
+    }
 }
 
 function processMessage() {

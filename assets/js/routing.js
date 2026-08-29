@@ -13,9 +13,17 @@ let graphAvoidSource = null;
 
 const FALLBACK_EDGE_KM = 4; // aanname als de afstand van een baanvak ontbreekt
 
-// Rekensnelheid en kopmaaktijd; ook gebruikt door de dienstregeling-weergave
-export const REKEN_SNELHEID_KMU = 80;
+// Terugvalsnelheid en kopmaaktijd; de werkelijke rekensnelheid komt per
+// traject uit snelheden.json (gekalibreerd op 14 maanden groepsspots)
+export const REKEN_SNELHEID_KMU = 75;
 export const KOPMAAK_MINUTEN = 5;
+
+/** Rekensnelheid (km/u) voor een baanvak, op basis van het traject waar het bij hoort. */
+function snelheidVoorTraject(trajectNaam) {
+    const profiel = getState().speedProfile;
+    if (!profiel) return REKEN_SNELHEID_KMU;
+    return (trajectNaam && profiel.trajecten?.[trajectNaam]) || profiel.standaard || REKEN_SNELHEID_KMU;
+}
 
 // Trajecten in de mijden-lijst (overgangen.json) tellen zwaarder mee, zodat
 // doorgaand goederenverkeer diesel-/regionaallijnen links laat liggen. Spots
@@ -343,9 +351,14 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         reversals.add(`${c}|${b}|${a}`);
     }
 
+    // Snelheid per baanvak: zoek het traject van elke kant op in de graaf
+    const { edgeTraject } = buildGraph(!routeOpties.negeerMijden);
+    const grensoponthoud = getState().speedProfile?.grensoponthoud || {};
+
     let journey = [];
     let lastTime = new Date(startDate.getTime());
     let lastStationCode = journeyStations[0];
+    let totaalKm = 0;
 
     for (let i = 0; i < journeyStations.length; i++) {
         const stationCode = journeyStations[i];
@@ -354,19 +367,29 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         if (i > 0) {
             const distance = distanceMatrix[lastStationCode]?.[stationCode]
                 || distanceMatrix[stationCode]?.[lastStationCode] || 0;
-            const travelMinutes = distance ? Math.round((distance / REKEN_SNELHEID_KMU) * 60) : 5;
+            const trajectNaam = edgeTraject.get(`${lastStationCode}|${stationCode}`);
+            const snelheid = snelheidVoorTraject(trajectNaam);
+            const travelMinutes = distance ? Math.round((distance / snelheid) * 60) : 5;
             idealTime.setMinutes(idealTime.getMinutes() + travelMinutes);
+            totaalKm += distance;
         }
 
         const maaktKop = i > 0 && i < journeyStations.length - 1
             && reversals.has(`${journeyStations[i - 1]}|${stationCode}|${journeyStations[i + 1]}`);
+
+        // Grensoponthoud (bijv. Bad Bentheim): vaste wachttijd bij doorgaande
+        // passage; de getoonde tijd is het vertrek, de aankomst ligt ervoor
+        const grensMinuten = (i > 0 && i < journeyStations.length - 1)
+            ? (grensoponthoud[stationCode] || 0) : 0;
+        if (grensMinuten) idealTime.setMinutes(idealTime.getMinutes() + grensMinuten);
 
         journey.push({
             code: stationCode,
             name: getStationByCode(stationCode)?.name_long || stationCode,
             idealTime: idealTime,
             finalTime: idealTime,
-            waitTime: 0,
+            waitTime: grensMinuten,
+            grens: grensMinuten > 0,
             kopmaken: maaktKop,
             viaPad: false // wordt true als de tijd op een goederenpad is uitgelijnd
         });
@@ -413,5 +436,10 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         time: s.finalTime.toTimeString().substring(0, 5)
     }));
 
-    return { journey: finalJourney, parsedMessage: parsedData };
+    // Gemiddelde rijsnelheid over de hele reis (voor de dienstregeling-kop)
+    const totaalMinuten = (journey[journey.length - 1].idealTime - journey[0].idealTime) / 60000;
+    const avgSpeedKmu = (totaalKm > 0 && totaalMinuten > 0)
+        ? Math.round((totaalKm / totaalMinuten) * 60) : REKEN_SNELHEID_KMU;
+
+    return { journey: finalJourney, parsedMessage: parsedData, avgSpeedKmu };
 }

@@ -1,95 +1,127 @@
 {
+  "_comment": "Data-gedreven treinpatronen, afgeleid uit 14 maanden groepsspots (jul 2025 - aug 2026, chatmining/analyse_chat.py). frequentDays = dagen met de meeste waarnemingen; vensters = tijdvak waarin het systeem doorgaans rijdt (richting optioneel); frequency = spots per week. Shuttles rijden niet op vaste kloktijden - de padminuten per station staan in goederenpaden.csv.",
   "RFO_KATY_SHUTTLE": {
-    "name": "Katy Shuttle",
-    "description": "Containertrein van RFO tussen Nederland en Polen, vaste doorkomst Bentheimroute.",
+    "name": "Katy shuttle",
+    "description": "Containertrein van RFO tussen Rotterdam en Kąty Wrocławskie (PL), via de Bentheimroute.",
+    "carrier": "RFO",
     "commonRouteCodes": ["AMF", "STO", "APD", "DV", "HGL", "BH"],
     "commonRouteNames": ["Amersfoort Centraal", "Stroe", "Apeldoorn", "Deventer", "Hengelo", "Bad Bentheim"],
-    "avgPassTimes": {
-      "AMF": "17:38",
-      "STO": "17:10",
-      "DV": "17:37",
-      "HGL": "16:59"
-    },
-    "avgWaitTimes": {
-      "STO": 12
-    },
-    "frequentDays": ["vrijdag", "zondag"],
-    "frequency": 11,
-    "notes": "Vaste en zeer frequente shuttle. Wachttijden bij Stroe zijn structureel."
+    "frequentDays": ["zaterdag", "maandag", "vrijdag", "donderdag"],
+    "vensters": [{ "van": "09:00", "tot": "17:00" }],
+    "frequency": 9,
+    "notes": "Zeer frequente vaste shuttle, beide richtingen overdag. Wachttijden bij Stroe komen structureel voor."
+  },
+  "RTB_PCC_SHUTTLE": {
+    "name": "PCC shuttle",
+    "description": "PCC-shuttle van RTB Cargo tussen Rotterdam en Polen, via de Bentheimroute.",
+    "carrier": "RTB",
+    "commonRouteCodes": ["AMF", "STO", "APD", "DV", "AML", "HGL", "BH"],
+    "commonRouteNames": ["Amersfoort Centraal", "Stroe", "Apeldoorn", "Deventer", "Almelo", "Hengelo", "Bad Bentheim"],
+    "frequentDays": ["zaterdag", "zondag", "vrijdag", "donderdag"],
+    "vensters": [{ "van": "08:00", "tot": "16:00" }],
+    "frequency": 8,
+    "notes": "Weekendpiek; belading wisselt sterk (van vol tot 'gatenkaas')."
   },
   "LNS_VOLVO": {
-    "name": "Volvo Trein",
+    "name": "Volvo-trein",
     "description": "Lineas Volvo-shuttle (containers en schuifwandwagens) tussen Gent en Zweden.",
+    "carrier": "LNS",
     "commonRouteCodes": ["AMF", "BRN", "HVS", "AML", "HGL", "BH"],
     "commonRouteNames": ["Amersfoort Centraal", "Baarn", "Hilversum", "Almelo", "Hengelo", "Bad Bentheim"],
-    "avgPassTimes": {
-      "AMF": "07:00",
-      "HVS": "06:45",
-      "AML": "18:06"
-    },
-    "avgWaitTimes": {},
-    "frequentDays": ["maandag", "dinsdag", "woensdag"],
-    "frequency": 9,
-    "notes": "Rijdt zeer frequent, zowel met containers als met schuifwandwagens."
+    "frequentDays": ["dinsdag", "woensdag", "donderdag", "vrijdag"],
+    "vensters": [
+      { "van": "07:00", "tot": "09:00", "richting": "oost" },
+      { "van": "17:00", "tot": "21:00", "richting": "west" }
+    ],
+    "frequency": 6,
+    "notes": "Doordeweeks systeem: 's ochtends oostwaarts, 's avonds westwaarts. Op zondag vrijwel nooit."
   },
   "HSL_RZEPIN_SHUTTLE": {
-    "name": "HSL Rzepin Shuttle",
-    "description": "Intermodale trein (LKW Walter / H.Essers) van HSL tussen Tilburg en Rzepin.",
+    "name": "Rzepin shuttle",
+    "description": "Intermodale trein (LKW Walter / H.Essers) van HSL tussen Tilburg en Rzepin (PL).",
+    "carrier": "HSL",
     "commonRouteCodes": ["AMF", "STO", "APD", "DV", "HGL", "BH"],
     "commonRouteNames": ["Amersfoort Centraal", "Stroe", "Apeldoorn", "Deventer", "Hengelo", "Bad Bentheim"],
-    "avgPassTimes": {
-      "AMF": "13:16",
-      "STO": "13:34",
-      "DV": "13:45"
-    },
-    "avgWaitTimes": {
-      "STO": 18
-    },
-    "frequentDays": ["woensdag", "donderdag", "zondag"],
-    "frequency": 8,
-    "notes": "Zeer regelmatige shuttle met vaak een stop in Stroe."
+    "frequentDays": ["zondag", "zaterdag", "dinsdag", "donderdag"],
+    "vensters": [{ "van": "10:00", "tot": "16:00" }],
+    "frequency": 6,
+    "notes": "Duidelijke zondagpiek; op maandag vrijwel nooit."
   },
-  "RTBC_PCC_SHUTTLE": {
-    "name": "PCC Shuttle",
-    "description": "PCC-shuttle van RTB Cargo, tussen Rotterdam en Polen.",
-    "commonRouteCodes": ["RTD", "AMF", "DV", "AML", "HGL", "BH"],
-    "commonRouteNames": ["Rotterdam Centraal", "Amersfoort Centraal", "Deventer", "Almelo", "Hengelo", "Bad Bentheim"],
-    "avgPassTimes": {
-      "AML": "15:23",
-      "HGL": "15:30",
-      "DV": "15:21"
-    },
-    "avgWaitTimes": {},
-    "frequentDays": ["dinsdag", "woensdag", "zaterdag"],
-    "frequency": 7,
-    "notes": "Rijdt frequent, belading varieert sterk."
+  "LTE_GRAANTREIN": {
+    "name": "Graantrein",
+    "description": "Graantrein (Eridon/Rail4Ward-wagens, vaak met zeildoek) van LTE en RFO over de Bentheimroute.",
+    "carrier": "LTE",
+    "commonRouteCodes": ["AMF", "STO", "APD", "DV", "HGL", "BH"],
+    "commonRouteNames": ["Amersfoort Centraal", "Stroe", "Apeldoorn", "Deventer", "Hengelo", "Bad Bentheim"],
+    "frequentDays": ["zaterdag", "zondag", "dinsdag", "woensdag"],
+    "vensters": [{ "van": "10:00", "tot": "16:00" }],
+    "frequency": 3,
+    "notes": "Weekendpiek; rijdt in beide richtingen."
+  },
+  "DBC_UC_ONNEN": {
+    "name": "UC Onnen",
+    "description": "Unit-cargo keteltrein van DB Cargo tussen Onnen (Gn) en Duitsland, via Zwolle en de Bentheimroute.",
+    "carrier": "DBC",
+    "commonRouteCodes": ["HRN", "ZL", "DV", "HGL", "BH"],
+    "commonRouteNames": ["Haren", "Zwolle", "Deventer", "Hengelo", "Bad Bentheim"],
+    "frequentDays": ["zaterdag", "dinsdag", "vrijdag"],
+    "vensters": [{ "van": "08:00", "tot": "22:00" }],
+    "frequency": 3,
+    "notes": "Tijden wisselen sterk; herkenbaar aan de korte keteltreinsleep."
   },
   "DBC_PON_AUTOTREIN": {
-    "name": "DB Pon Autotrein",
-    "description": "Autotransporttrein van DB Cargo voor Pon, van en naar Leusden.",
-    "commonRouteCodes": ["AMF", "HDE", "BNV", "STO", "APD", "DV", "HGL", "BH"],
-    "commonRouteNames": ["Amersfoort Centraal", "Hoevelaken", "Barneveld Noord", "Stroe", "Apeldoorn", "Deventer", "Hengelo", "Bad Bentheim"],
-    "avgPassTimes": {
-      "AMF": "09:52",
-      "DV": "09:18"
-    },
-    "avgWaitTimes": {},
-    "frequentDays": ["maandag", "dinsdag", "zaterdag"],
-    "frequency": 5,
-    "notes": "Vaste aan- en afvoer voor Pon Leusden. Zowel beladen als leeg."
+    "name": "Pon autotrein",
+    "description": "Autotransporttrein van DB Cargo voor Pon, van en naar de Pon-aansluiting bij Amersfoort.",
+    "carrier": "DBC",
+    "commonRouteCodes": ["AMF", "HVL", "STO", "APD", "DV", "HGL", "BH"],
+    "commonRouteNames": ["Amersfoort Centraal", "Hoevelaken", "Stroe", "Apeldoorn", "Deventer", "Hengelo", "Bad Bentheim"],
+    "frequentDays": ["woensdag", "maandag"],
+    "vensters": [{ "van": "08:00", "tot": "12:00" }],
+    "frequency": 2,
+    "notes": "Vooral woensdag- en maandagochtend. Zowel beladen als leeg; in het weekend vrijwel nooit."
+  },
+  "MTR_PRAAG_SHUTTLE": {
+    "name": "Praag-shuttle",
+    "description": "Metrans-containershuttle tussen Rotterdam Waalhaven en Praag/Mělník (CZ).",
+    "carrier": "MTR",
+    "commonRouteCodes": ["RWHV", "AMF", "STO", "APD", "DV", "HGL", "BH"],
+    "commonRouteNames": ["Rotterdam Waalhaven", "Amersfoort Centraal", "Stroe", "Apeldoorn", "Deventer", "Hengelo", "Bad Bentheim"],
+    "frequentDays": ["donderdag", "vrijdag", "dinsdag"],
+    "vensters": [{ "van": "10:00", "tot": "19:00" }],
+    "frequency": 2,
+    "notes": "Herkenbaar aan Metrans-locs (serie 386/186)."
+  },
+  "LTE_BRWINOW_SHUTTLE": {
+    "name": "Brwinów shuttle",
+    "description": "Containershuttle van LTE tussen Nederland en Brwinów (PL).",
+    "carrier": "LTE",
+    "commonRouteCodes": ["AMF", "STO", "APD", "DV", "HGL", "BH"],
+    "commonRouteNames": ["Amersfoort Centraal", "Stroe", "Apeldoorn", "Deventer", "Hengelo", "Bad Bentheim"],
+    "frequentDays": ["vrijdag", "zaterdag", "donderdag", "woensdag"],
+    "vensters": [{ "van": "12:00", "tot": "20:00" }],
+    "frequency": 2,
+    "notes": "Vaak fraai gemengd beeld; middag en vooravond."
+  },
+  "CDC_LOVOSICE": {
+    "name": "Lovosice shuttle",
+    "description": "Intermodale trein (trailers) van ČD Cargo tussen Europoort en Lovosice (CZ).",
+    "carrier": "CDC",
+    "commonRouteCodes": ["ERP", "AMF", "STO", "APD", "DV", "HGL", "BH"],
+    "commonRouteNames": ["Europoort", "Amersfoort Centraal", "Stroe", "Apeldoorn", "Deventer", "Hengelo", "Bad Bentheim"],
+    "frequentDays": ["zondag"],
+    "vensters": [{ "van": "09:00", "tot": "13:00" }],
+    "frequency": 2,
+    "notes": "Het scherpste dagpatroon in de dataset: bijna twee derde van alle spots valt op zondag."
   },
   "LTE_POZNAN_SHUTTLE": {
-    "name": "LTE Poznan Shuttle",
-    "description": "Intermodale trein van LTE tussen Europoort en Poznan.",
-    "commonRouteCodes": ["AMF", "BRN", "HVS", "DV", "HGL", "BH"],
-    "commonRouteNames": ["Amersfoort Centraal", "Baarn", "Hilversum", "Deventer", "Hengelo", "Bad Bentheim"],
-    "avgPassTimes": {
-      "AMF": "09:10",
-      "HVS": "09:58"
-    },
-    "avgWaitTimes": {},
-    "frequentDays": ["maandag", "zaterdag"],
-    "frequency": 4,
-    "notes": "Rijdt regelmatig, vaak met trailers van P&O en ICTS."
+    "name": "Poznań shuttle",
+    "description": "Intermodale trein van LTE tussen Europoort en Poznań (PL), vaak met trailers.",
+    "carrier": "LTE",
+    "commonRouteCodes": ["ERP", "AMF", "BRN", "HVS", "DV", "HGL", "BH"],
+    "commonRouteNames": ["Europoort", "Amersfoort Centraal", "Baarn", "Hilversum", "Deventer", "Hengelo", "Bad Bentheim"],
+    "frequentDays": ["vrijdag", "zaterdag", "maandag"],
+    "vensters": [{ "van": "08:00", "tot": "16:00" }],
+    "frequency": 2,
+    "notes": "Vaak trailers van P&O en ICTS."
   }
 }

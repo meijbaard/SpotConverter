@@ -67,7 +67,7 @@ export function buildDienstregeling(analysis, datum = new Date()) {
         datumRegel: `DATUM: ${datumTekst(datum)}`,
         overzichtRegel: `(${eerste.code} V ${eerste.tijd} - ${eind.code} A ${eind.tijd})`,
         materieelRegel: `MATERIEEL   : ${materieelTekst(analysis.parsedMessage)}`,
-        snelheidRegel: `RIJSNELHEID : ±${REKEN_SNELHEID_KMU} km/u (verwacht)`,
+        snelheidRegel: `RIJSNELHEID : ±${analysis.avgSpeedKmu || REKEN_SNELHEID_KMU} km/u (verwacht)`,
         legendaRegel: 'V = vertrek · D = doorkomst · A = aankomst',
         bronRegel: 'Berekend door SpotConverter · spotconverter.markeijbaard.nl',
         rijen,

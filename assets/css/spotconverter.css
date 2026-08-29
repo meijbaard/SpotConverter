@@ -451,3 +451,39 @@ select.input { appearance: auto; }
   body { padding-bottom: 5.5rem; } /* ruimte voor de zwevende tabbar */
   .top-bar-inner { justify-content: center; }
 }
+
+/* --- Groepsradar ------------------------------------------------------------ */
+.radar-textarea { height: 12rem; }
+.radar-kaart { padding: 1rem 1.15rem; }
+.radar-titel { font-size: 1rem; color: var(--groen-donker); }
+.radar-meta { margin-top: 0.15rem; font-size: 0.82rem; color: var(--gedimd); }
+.radar-spoor { margin-top: 0.45rem; font-size: 0.85rem; color: var(--gedimd); font-variant-numeric: tabular-nums; }
+.radar-komend { list-style: none; margin: 0.65rem 0 0; padding: 0; }
+.radar-komend li { padding: 0.28rem 0; border-top: 1px solid var(--waas); font-size: 0.92rem; }
+.radar-tijd { font-weight: 600; font-variant-numeric: tabular-nums; margin-right: 0.4rem; }
+
+/* Aftelklok in tijdlijn en radar */
+.countdown {
+    display: inline-block; margin-left: 0.5rem; padding: 0.05rem 0.5rem;
+    border-radius: 999px; background: var(--waas); color: var(--groen-donker);
+    font-size: 0.72rem; font-weight: 600; font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* Onderschepping ("Haal ik hem nog?") */
+.onderschepping-block .btn { margin-top: 0.35rem; }
+.onderschepping-lijst { list-style: none; margin: 0.8rem 0 0; padding: 0; }
+.onderschepping-lijst li { padding: 0.35rem 0; border-top: 1px solid var(--waas-diep); font-size: 0.9rem; }
+
+/* Verwachtingsbord (Patronen-tab) */
+.bord-lijst { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.bord-rij {
+    display: flex; align-items: baseline; gap: 0.9rem;
+    padding: 0.45rem 0; border-bottom: 1px solid var(--waas);
+}
+.bord-venster {
+    min-width: 9.5rem; font-variant-numeric: tabular-nums;
+    font-size: 0.85rem; color: var(--gedimd);
+}
+.bord-naam { font-size: 0.95rem; }
+.bord-subkop { margin-top: 1.6rem; }

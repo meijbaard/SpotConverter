@@ -70,6 +70,10 @@
             <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="14" rx="3"/><path d="M4 11h16M8 21l2-4m6 4-2-4"/><circle cx="8.5" cy="14" r=".5"/><circle cx="15.5" cy="14" r=".5"/></svg>
             <span>Spot Analyse</span>
           </button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-radar" data-tab="radar">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12 18 6"/><circle cx="12" cy="12" r="0.5"/></svg>
+            <span>Radar</span>
+          </button>
           <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-zoeker" data-tab="zoeker">
             <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
             <span>Stations</span>
@@ -116,6 +120,22 @@
         </div>
       </section>
 
+      <section class="tab-panel panel-naakt hidden" id="tab-radar" role="tabpanel">
+        <div class="segment segment-groen planner">
+          <h2 class="panel-title">Groepsradar</h2>
+          <label class="veldlabel" for="radarInput">Plak een stuk groepschat (meerdere berichten mag)</label>
+          <textarea id="radarInput" class="input textarea radar-textarea" placeholder="Plak hier de laatste berichten uit de groep — de radar herkent welke meldingen bij dezelfde trein horen en laat zien waar elke trein nu ongeveer is." autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+          <div class="planner-acties">
+            <button id="radar-paste-btn" class="btn" type="button" title="Plak vanaf klembord">📋 Plak</button>
+            <button id="radar-btn" class="btn" type="button">Analyseer groep</button>
+          </div>
+          <p class="field-hint">Alles blijft op je eigen apparaat; er wordt niets verstuurd of opgeslagen.</p>
+        </div>
+        <div id="radar-output" class="journey-output" aria-live="polite">
+          <p class="muted">Plak een stuk groepschat (meerdere berichten mag) en tik Analyseer.</p>
+        </div>
+      </section>
+
       <section class="card tab-panel hidden" id="tab-zoeker" role="tabpanel">
         <h2 class="panel-title">Zoek station</h2>
         <input type="text" id="stationSearchInput" class="input search-input" placeholder="Zoek op afkorting of naam..." autocomplete="off" />
@@ -138,12 +158,14 @@
       </section>
 
       <section class="card tab-panel hidden" id="tab-patronen" role="tabpanel">
-        <h2 class="panel-title">Bekende treinpatronen</h2>
+        <h2 class="panel-title">Vandaag verwacht</h2>
+        <div id="verwachtingsbord-output"></div>
+        <h2 class="panel-title bord-subkop">Bekende treinpatronen</h2>
         <div id="patronen-output" class="grid-2"></div>
       </section>
 
       <footer class="site-footer">
-        <p>Versie 5.2.0 · Copyright &copy; 2025–2026 Mark Eijbaard · MIT-licentie</p>
+        <p>Versie 5.3.0 · Copyright &copy; 2025–2026 Mark Eijbaard · MIT-licentie</p>
         <p><a href="https://github.com/meijbaard/SpotConverter/issues" target="_blank" rel="noopener">Meld een probleem of wens</a></p>
       </footer>
     </main>

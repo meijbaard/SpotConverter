@@ -2,6 +2,8 @@
   "_comment": "Regels voor automatische route-extrapolatie. Regels worden in volgorde geëvalueerd; de eerste match wint. 'anyOf' = minstens één term in het bericht, 'allOf' = uit elke groep minstens één term, 'cargoAnyOf' = herkende ladingcategorie, 'via' = tussenstations die vóór de bestemming worden toegevoegd.",
   "east": { "append": "BH" },
   "west": [
+    { "label": "UC Onnen (DBC keteltrein)",        "anyOf": ["onnen"],                                                  "dest": "HRN", "via": ["ZL"] },
+    { "label": "Praag-shuttle (Metrans)",          "anyOf": ["praag", "praha", "melnik", "mělník"],                     "dest": "RWHV" },
     { "label": "Pon autotrein",                    "anyOf": ["pon", "auto"],                                            "dest": "AMF" },
     { "label": "CD Cargo staal naar Westhaven",    "allOf": [["staal"], ["cd cargo", "cd-cargo"]],                      "dest": "AWH" },
     { "label": "Schroot / CD Cargo",               "anyOf": ["schroot", "cd-cargo"],                                    "dest": "AWH" },

@@ -35,7 +35,7 @@ test('doorkomststaat: kopregels bevatten datum, materieel en rijsnelheid', () =>
     assert.equal(staat.datumRegel, 'DATUM: VRIJDAG 03 JUL 2026');
     assert.match(staat.overzichtRegel, /^\(BH V 13:07 - ASD A \d{2}:\d{2}\)$/);
     assert.match(staat.materieelRegel, /RFO 193 150 met keteltrein/);
-    assert.match(staat.snelheidRegel, /80 km\/u/);
+    assert.match(staat.snelheidRegel, /±\d+ km\/u/);
     assert.equal(staat.bestandsnaam, 'dienstregeling-bh-asd.pdf');
 });
 

@@ -44,6 +44,7 @@ export function laadTestData() {
     updateState('trajectories', JSON.parse(readFileSync(join(root, 'trajecten.json'), 'utf8')));
     updateState('stationCoords', JSON.parse(readFileSync(join(root, 'afstanden_check', 'out_osm', 'osm_stations_coords.json'), 'utf8')));
     updateState('extrapolationRules', JSON.parse(readFileSync(join(root, 'extrapolatie.json'), 'utf8')));
+    updateState('speedProfile', JSON.parse(readFileSync(join(root, 'snelheden.json'), 'utf8')));
     updateState('pathData', {});
 
     const overgangen = JSON.parse(readFileSync(join(root, 'overgangen.json'), 'utf8'));

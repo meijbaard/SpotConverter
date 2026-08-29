@@ -1,0 +1,16 @@
+{
+  "_comment": "Rekensnelheid per traject in km/u, gekalibreerd op de kettinganalyse van 14 maanden groepsspots (chatmining/analyse_chat.py): goederentreinen halen op de Twentelijnen ~50-60 km/u, niet de oude aanname van 80. 'standaard' geldt voor trajecten die hier niet staan. 'grensoponthoud' is de vaste wachttijd in minuten bij passage van een grensstation (mediaan uit de kettinganalyse).",
+  "standaard": 75,
+  "trajecten": {
+    "Bentheimroute": 60,
+    "Gooilijn-Amsterdam": 70,
+    "Gooilijn-Beverwijk": 70,
+    "Gooilijn-Rotterdam Haven (Havens in passeervolgorde)": 70,
+    "Gooilijn-Kijfhoek (noord)": 70,
+    "Spoorwegmuseum-route (Amersfoort)": 40,
+    "Spoorwegmuseum-route (Utrecht)": 40
+  },
+  "grensoponthoud": {
+    "BH": 15
+  }
+}

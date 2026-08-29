@@ -149,17 +149,55 @@ export function updateHeatmap() {
     output.innerHTML = `<table class="heatmap-table"><tr><th>Uur</th><th>Passages</th></tr>${rows}</table>`;
 }
 
+const DAGNAMEN = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"];
+
+/** Verwachtingsbord: welke bekende systemen rijden vandaag doorgaans? */
+export function renderVerwachtingsbord() {
+    const container = document.getElementById("verwachtingsbord-output");
+    const trainPatterns = getState().trainPatterns;
+    if (!container || !trainPatterns) return;
+
+    const vandaag = DAGNAMEN[(new Date().getDay() + 6) % 7];
+    const verwacht = Object.values(trainPatterns)
+        .filter(p => Array.isArray(p.frequentDays) && p.frequentDays.includes(vandaag))
+        .sort((a, b) => (b.frequency || 0) - (a.frequency || 0));
+
+    if (!verwacht.length) {
+        container.innerHTML = '<p class="muted">Geen vaste systemen bekend voor vandaag.</p>';
+        return;
+    }
+
+    const rijen = verwacht.map(p => {
+        const vensters = (p.vensters || []).map(v =>
+            `${v.van}–${v.tot}${v.richting ? ` ${v.richting}waarts` : ''}`).join(' · ');
+        return `<li class="bord-rij">
+            <span class="bord-venster">${vensters || 'tijden wisselen'}</span>
+            <span class="bord-naam"><strong>${p.name}</strong>${p.carrier ? ` · ${p.carrier}` : ''}</span>
+        </li>`;
+    }).join('');
+
+    container.innerHTML = `
+        <ul class="bord-lijst">${rijen}</ul>
+        <p class="somda-bron">Op basis van 14 maanden groepsspots — kansen, geen dienstregeling.</p>`;
+}
+
 export function renderPatronen() {
     const container = document.getElementById("patronen-output");
     const trainPatterns = getState().trainPatterns;
     if (!container || !trainPatterns) return;
 
-    container.innerHTML = Object.values(trainPatterns).map(p => `
+    container.innerHTML = Object.values(trainPatterns).filter(p => p.name).map(p => {
+        const dagen = Array.isArray(p.frequentDays) ? p.frequentDays.join(', ') : '';
+        return `
         <div class="pattern-block">
             <div class="pattern-name">${p.name}</div>
             <div class="pattern-desc">${p.description}</div>
             <div class="pattern-route">Route: ${p.commonRouteCodes.map(c => getStationByCode(c)?.name_long || c).join(" → ")}</div>
-        </div>`).join("");
+            ${dagen ? `<div class="pattern-route">Vooral op: ${dagen}</div>` : ''}
+        </div>`;
+    }).join("");
+
+    renderVerwachtingsbord();
 }
 
 function getTrainInfoImages(parsedMessage) {
@@ -254,13 +292,15 @@ export function displayResults(analysis) {
     const images = getTrainInfoImages(analysis.parsedMessage);
     const imagesHtml = images.map(img => `<img src="${img.src}" alt="" onerror="this.style.display='none'" />`).join('');
 
+    const cargoNamen = { 'uc': 'unit cargo-trein', 'militair': 'militaire trein' };
     let cargoText = "goederentrein";
     if (analysis.parsedMessage.stock) {
         cargoText = "treinstel";
     } else if (analysis.parsedMessage.llt) {
         cargoText = "losse lok (llt)";
     } else if (analysis.parsedMessage.cargo) {
-        cargoText = analysis.parsedMessage.cargo.charAt(0).toUpperCase() + analysis.parsedMessage.cargo.slice(1) + 'trein';
+        cargoText = cargoNamen[analysis.parsedMessage.cargo]
+            || analysis.parsedMessage.cargo.charAt(0).toUpperCase() + analysis.parsedMessage.cargo.slice(1) + 'trein';
     }
 
     const carrier = analysis.parsedMessage.carrier;
@@ -319,11 +359,23 @@ export function displayResults(analysis) {
     const aantalTussen = analysis.journey.filter((s, i) => !isKern(s, i)).length;
     const inklappen = aantalTussen >= 4;
 
+    // Live: de spot is van korter dan zes uur geleden en de trein is nog
+    // onderweg — dan tellen we per station af en kan de onderschepping
+    const nu = new Date();
+    const eersteTijd = analysis.journey[0].finalTime;
+    const laatsteTijd = analysis.journey[laatste].finalTime;
+    const isLive = eersteTijd && laatsteTijd
+        && (nu - eersteTijd) < 6 * 3600000 && (nu - eersteTijd) > -15 * 60000
+        && (laatsteTijd - nu) > -30 * 60000;
+
     let timelineHtml = `<div class="journey-timeline${inklappen ? ' ingeklapt' : ''}" id="journey-timeline">`;
     analysis.journey.forEach((station, index) => {
         const markerClass = (index === 0 || index === laatste) ? 'start-end' : 'intermediate';
-        const waitTimeHtml = station.waitTime > 0 && (station.code === 'AMF' || station.code === 'STO')
-            ? `<div class="timeline-wait">verwachte wachttijd ${station.waitTime} min</div>` : '';
+        const waitLabel = station.grens
+            ? `grensoponthoud ±${station.waitTime} min`
+            : `verwachte wachttijd ${station.waitTime} min`;
+        const waitTimeHtml = station.waitTime > 0
+            ? `<div class="timeline-wait">${waitLabel}</div>` : '';
         const kopmakenHtml = station.kopmaken
             ? '<div class="timeline-wait">maakt hier kop</div>' : '';
         const isSpot = index === 0;
@@ -332,6 +384,10 @@ export function displayResults(analysis) {
             : (station.viaPad
                 ? '<span class="badge badge-pad">✓ pad</span>'
                 : '<span class="badge badge-schatting">±</span>');
+        const overMin = (isLive && index > 0 && station.finalTime > nu)
+            ? Math.round((station.finalTime - nu) / 60000) : null;
+        const countdownHtml = overMin !== null
+            ? `<span class="countdown">over ${overMin} min</span>` : '';
         const tussenClass = (inklappen && !isKern(station, index)) ? ' timeline-tussen' : '';
 
         timelineHtml += `
@@ -341,7 +397,7 @@ export function displayResults(analysis) {
                     <div class="timeline-marker ${markerClass}"></div>
                 </div>
                 <div class="timeline-station-name-col">
-                    <span>${station.name}</span>${badge}
+                    <span>${station.name}</span>${badge}${countdownHtml}
                     ${waitTimeHtml}${kopmakenHtml}
                 </div>
             </div>`;
@@ -357,6 +413,15 @@ export function displayResults(analysis) {
         <p class="reliability-legend"><span class="badge badge-pad">✓ pad</span> = uitgelijnd op vaste goederenpaden · <span class="badge badge-schatting">±</span> = berekend op afstand/snelheid</p>
       </div>
     `;
+
+    // Onderschepping: alleen bij een trein die nu onderweg is
+    const onderscheppingHtml = isLive ? `
+      <div class="segment segment-groen onderschepping-block">
+        <h2 class="segment-titel">Haal ik hem nog?</h2>
+        <p class="somda-bron">Op basis van je locatie en de verwachte doorkomsten hieronder.</p>
+        <button id="onderschepping-btn" class="btn" type="button">📍 Check vanaf mijn locatie</button>
+        <div id="onderschepping-output"></div>
+      </div>` : '';
 
     const somdaHtml = buildSomdaBlock(analysis, targetCode);
 
@@ -401,10 +466,82 @@ export function displayResults(analysis) {
       </div>
     `;
 
-    journeyOutput.innerHTML = headerHtml + timelineSegment + staatHtml + somdaHtml + waBlockHtml;
+    journeyOutput.innerHTML = headerHtml + timelineSegment + onderscheppingHtml + staatHtml + somdaHtml + waBlockHtml;
     setupWhatsAppBlock(analysis);
     setupDienstregelingBlock(staat);
     setupTimelineToggle(aantalTussen);
+    if (isLive) setupOnderschepping(analysis);
+}
+
+// Reissnelheden voor de haalbaarheidsschatting (incl. wegzetten/lopen)
+const ONDERSCHEPPING_MODI = [
+    { naam: 'fiets', kmU: 16, bufferMin: 2 },
+    { naam: 'auto', kmU: 42, bufferMin: 4 }
+];
+
+function haversineKm(lat1, lon1, lat2, lon2) {
+    const r = Math.PI / 180;
+    const a = Math.sin((lat2 - lat1) * r / 2) ** 2
+        + Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin((lon2 - lon1) * r / 2) ** 2;
+    return 2 * 6371 * Math.asin(Math.sqrt(a));
+}
+
+/**
+ * "Haal ik hem nog?" — vergelijkt per komend station de reistijd vanaf de
+ * eigen locatie (fiets/auto, hemelsbreed × 1,3 wegfactor) met de tijd tot de
+ * verwachte doorkomst. Volledig op het apparaat; de locatie verlaat de browser niet.
+ */
+function setupOnderschepping(analysis) {
+    const btn = document.getElementById('onderschepping-btn');
+    const output = document.getElementById('onderschepping-output');
+    if (!btn || !output) return;
+
+    btn.addEventListener('click', () => {
+        if (!navigator.geolocation) {
+            output.innerHTML = '<p class="muted">Locatiebepaling is niet beschikbaar in deze browser.</p>';
+            return;
+        }
+        btn.disabled = true;
+        btn.textContent = 'Locatie bepalen…';
+        navigator.geolocation.getCurrentPosition(pos => {
+            btn.disabled = false;
+            btn.textContent = '📍 Check vanaf mijn locatie';
+            const { latitude, longitude } = pos.coords;
+            const coords = getState().stationCoords || {};
+            const nu = new Date();
+
+            const opties = analysis.journey
+                .filter((s, i) => i > 0 && s.finalTime > nu && coords[s.code])
+                .map(s => {
+                    const c = coords[s.code];
+                    const km = haversineKm(latitude, longitude, Number(c.lat), Number(c.lon)) * 1.3;
+                    const overMin = (s.finalTime - nu) / 60000;
+                    const modi = ONDERSCHEPPING_MODI
+                        .filter(m => (km / m.kmU) * 60 + m.bufferMin <= overMin)
+                        .map(m => m.naam);
+                    return { s, km, overMin, modi };
+                })
+                .sort((a, b) => a.km - b.km)
+                .slice(0, 5);
+
+            if (!opties.length) {
+                output.innerHTML = '<p class="muted">Geen komende stations met bekende locatie gevonden.</p>';
+                return;
+            }
+            output.innerHTML = `<ul class="onderschepping-lijst">${opties.map(o => {
+                const oordeel = o.modi.length
+                    ? `<span class="badge badge-pad">haalbaar per ${o.modi.join(' of ')}</span>`
+                    : '<span class="badge badge-schatting">niet haalbaar</span>';
+                return `<li><strong>${o.s.name}</strong> · ${o.km.toFixed(1)} km ·
+                    doorkomst ${o.s.time} (over ${Math.round(o.overMin)} min) ${oordeel}</li>`;
+            }).join('')}</ul>
+            <p class="somda-bron">Afstand hemelsbreed × 1,3; fiets ±16 km/u, auto ±42 km/u. Kom veilig en blijf van het spoor.</p>`;
+        }, () => {
+            btn.disabled = false;
+            btn.textContent = '📍 Check vanaf mijn locatie';
+            output.innerHTML = '<p class="muted">Locatie niet beschikbaar — sta locatietoegang toe en probeer opnieuw.</p>';
+        }, { enableHighAccuracy: true, timeout: 8000 });
+    });
 }
 
 /** Vult het dienstregeling-voorbeeld en koppelt de PDF-download. */
