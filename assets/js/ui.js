@@ -454,7 +454,7 @@ export function displayResults(analysis) {
         timelineHtml += `<div class="timeline-toggle"><button id="timeline-toggle-btn" type="button">▾ toon ${aantalTussen} tussenstations</button></div>`;
     }
     const timelineSegment = `
-      <div class="segment segment-wit">
+      <div class="segment segment-wit timeline-block">
         <h2 class="segment-titel">Verwachte doorkomst</h2>
         ${timelineHtml}
         <p class="reliability-legend"><span class="badge badge-pad">✓ pad</span> = uitgelijnd op vaste goederenpaden · <span class="badge badge-schatting">±</span> = berekend op afstand/snelheid</p>
@@ -518,8 +518,15 @@ export function displayResults(analysis) {
     const kaartBlok = kaartSegmentHtml(analysis.journey, targetCode);
     const stationInfoBlok = '<div id="stationinfo-block"></div>';
 
-    journeyOutput.innerHTML = headerHtml + werkzaamhedenBlok + kaartBlok + timelineSegment
-        + onderscheppingHtml + stationInfoBlok + staatHtml + somdaHtml + waBlockHtml;
+    // Twee kolommen op brede schermen: links het compacte (treininfo,
+    // werkzaamheden, stationsinfo, somda, groepsbericht), rechts het grote
+    // werk (tijdlijn, kaart, doorkomststaat). Op mobiel bepaalt CSS de
+    // volgorde per blok, met de tijdlijn direct na de treininfo.
+    journeyOutput.innerHTML = `
+      <div class="resultaat-grid">
+        <div class="res-smal">${headerHtml}${werkzaamhedenBlok}${stationInfoBlok}${somdaHtml}${waBlockHtml}</div>
+        <div class="res-breed">${timelineSegment}${onderscheppingHtml}${kaartBlok}${staatHtml}</div>
+      </div>`;
     setupWhatsAppBlock(analysis);
     setupDienstregelingBlock(staat);
     setupTimelineToggle(aantalTussen);

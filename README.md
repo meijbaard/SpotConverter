@@ -4,7 +4,7 @@
 
 Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de route, geschatte doorkomsttijden, materieelinfo en een deelbaar groepsbericht terug.
 
-**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.5.0 · **Licentie:** MIT
+**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.6.0 · **Licentie:** MIT
 
 ```
 13:07 Bh ri Asd RFO 193 150 met keteltrein
@@ -260,6 +260,13 @@ MIT © 2025–2026 Mark Eijbaard
 ---
 
 ## Changelog
+
+### v5.6.0 — Leesbare kaart & twee kolommen
+
+- **Kaart met context**: omtrek van Nederland als ondergrond (`nl_omtrek.json`, CBS/cartomap-gegeneraliseerd), plaatsnamen bij spot-, doel-, eindpunt en de grotere stations op de route, en beter zichtbare netlijnen
+- **Coördinatenfix Stroe (2)**: de eerdere correctie gebruikte de verkeerde breedtegraad (52.34 i.p.v. 52.055), wat een knik in de routekaart gaf — nu definitief goed, met een buren-afstandscheck als opsporingsmethode
+- **Analyse in twee kolommen** op brede schermen: links het grote werk (tijdlijn, kaart, doorkomststaat), rechts het compacte (treininfo, werkzaamheden, doelstation-info, somda, groepsbericht); op mobiel één kolom met de tijdlijn direct na de treininfo
+
 
 ### v5.5.0 — Routekaart & doelstation-info
 

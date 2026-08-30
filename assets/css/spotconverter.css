@@ -528,3 +528,37 @@ select.input { appearance: auto; }
 .stationinfo-lijst { list-style: none; margin: 0.3rem 0 0; padding: 0; }
 .stationinfo-lijst li { padding: 0.3rem 0; border-top: 1px solid var(--waas-diep); font-size: 0.92rem; }
 .stationinfo-lijst li:first-child { border-top: none; }
+
+/* Analyse in twee kolommen op brede schermen; op mobiel één kolom met de
+   tijdlijn direct na de treininfo */
+@media (min-width: 900px) {
+    .resultaat-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 23rem);
+        column-gap: 0.85rem;
+        align-items: start;
+    }
+    .res-smal { order: 2; } /* breed links, smal rechts */
+}
+@media (max-width: 899px) {
+    .res-smal, .res-breed { display: contents; }
+    .resultaat-grid { display: flex; flex-direction: column; }
+    .resultaat-grid .journey-header       { order: 1; }
+    .resultaat-grid .werkzaamheden-block  { order: 2; }
+    .resultaat-grid .timeline-block       { order: 3; }
+    .resultaat-grid .kaart-block          { order: 4; }
+    .resultaat-grid .onderschepping-block { order: 5; }
+    .resultaat-grid #stationinfo-block    { order: 6; }
+    .resultaat-grid .staat-block          { order: 7; }
+    .resultaat-grid .somda-block          { order: 8; }
+    .resultaat-grid .wa-block             { order: 9; }
+}
+
+/* Kaart: landomtrek en plaatsnamen */
+.kaart-omtrek path { fill: #f4f2ea; stroke: #d3d8c8; stroke-width: 0.35; }
+.kaart-net path { stroke: #c5d0ba; }
+.kaart-label {
+    font-size: 2.6px; font-weight: 600; fill: var(--groen-donker);
+    paint-order: stroke; stroke: #f4f2ea; stroke-width: 0.8px;
+    font-family: inherit;
+}

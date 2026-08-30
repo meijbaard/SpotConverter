@@ -20,7 +20,8 @@ export async function initializeData() {
             loadExtrapolationRules(),
             loadSnelheden(),
             loadWerkzaamheden(),
-            loadSpoorkaart()
+            loadSpoorkaart(),
+            loadNlOmtrek()
         ]);
         return true;
     } catch (error) {
@@ -121,6 +122,15 @@ async function loadExtrapolationRules() {
         updateState('extrapolationRules', data);
     } catch (error) {
         console.warn("Kon extrapolatie.json niet laden; route-extrapolatie staat uit.", error);
+    }
+}
+
+async function loadNlOmtrek() {
+    try {
+        const data = await fetchJSON(`${BASE_URL}/nl_omtrek.json`);
+        if (Array.isArray(data.lijnen)) updateState('nlOmtrek', data);
+    } catch (error) {
+        // Zonder omtrek tekent de kaart alleen het spoornet
     }
 }
 

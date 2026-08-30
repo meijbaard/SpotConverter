@@ -14,6 +14,7 @@ const state = {
     speedProfile: null,
     werkzaamheden: [],
     spoorkaart: null,
+    nlOmtrek: null,
     materieelDatabase: {
         exact: {},
         types: {},

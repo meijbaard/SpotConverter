@@ -4,7 +4,7 @@
 // getekend. Daaroverheen: de berekende route, de spot-/doel-/eindpunten en —
 // bij een trein die nu onderweg is — de geschatte actuele positie.
 
-import { getState } from './state.js';
+import { getState, getStationByCode } from './state.js';
 
 // Vaste tekenruimte; de projectie schaalt de route hierin met wat marge
 const VB_B = 100, VB_H = 78;
@@ -101,6 +101,13 @@ export function kaartSvg(journey, { targetCode = null, nu = new Date() } = {}) {
         return x > -25 && x < VB_B + 25 && y > -25 && y < VB_H + 25;
     };
 
+    // Landomtrek (gevuld) als geografische referentie, daaroverheen het spoornet
+    let omtrekPaden = '';
+    for (const ring of getState().nlOmtrek?.lijnen || []) {
+        if (!ring.some(binnen)) continue;
+        omtrekPaden += `<path d="${pad(ring, prj)}Z"/>`;
+    }
+
     // Achtergrondnet: alleen lijnen die (deels) in beeld zijn
     let netPaden = '';
     for (const lijn of netwerkLijnen()) {
@@ -109,6 +116,24 @@ export function kaartSvg(journey, { targetCode = null, nu = new Date() } = {}) {
     }
 
     const routePad = pad(route.map(p => [p.lon, p.lat]), prj);
+
+    // Plaatsnamen: spot, doel en eindpunt altijd; grotere stations op de route
+    // erbij zolang labels elkaar niet verdringen
+    const labelPunten = route.filter((p, i) => {
+        if (i === 0 || i === route.length - 1) return true;
+        if (targetCode && p.code === targetCode) return true;
+        const type = getStationByCode(p.code)?.type || '';
+        return /knooppunt|intercity/i.test(type);
+    });
+    let labels = '';
+    let vorige = null;
+    for (const p of labelPunten) {
+        const x = prj.x(p.lon), y = prj.y(p.lat);
+        if (vorige && Math.hypot(x - vorige[0], y - vorige[1]) < 11) continue;
+        vorige = [x, y];
+        const naam = getStationByCode(p.code)?.name_short || p.code;
+        labels += `<text class="kaart-label" x="${(x + 1.8).toFixed(2)}" y="${(y - 1.6).toFixed(2)}">${naam}</text>`;
+    }
 
     // Markeringen: spot (start), doelstation, eindpunt
     const punt = (p, klasse, straal) =>
@@ -124,9 +149,11 @@ export function kaartSvg(journey, { targetCode = null, nu = new Date() } = {}) {
 
     return `<svg class="kaart-svg" viewBox="0 0 ${VB_B} ${VB_H}" xmlns="http://www.w3.org/2000/svg"
                  role="img" aria-label="Route op de kaart">
+        <g class="kaart-omtrek">${omtrekPaden}</g>
         <g class="kaart-net">${netPaden}</g>
         <path class="kaart-route" d="${routePad}"/>
         ${markers}${treinDot}
+        <g class="kaart-labels">${labels}</g>
     </svg>`;
 }
 
