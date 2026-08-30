@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-08-30T07:49:58+00:00",
+ "opgehaald": "2026-08-30T23:33:00+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -63,41 +63,6 @@
     "MUNST"
    ],
    "gevolg": "aangep. dienstregeling en businzet"
-  },
-  {
-   "id": "7008152",
-   "type": "MAINTENANCE",
-   "titel": "Schiphol - Amersfoort; Amsterdam - Amersfoort; Hilversum - Amersfoort Vathorst; Utrecht - Almere.",
-   "van": "2026-08-29T01:05:00+02:00",
-   "tot": "2026-08-31T01:10:00+02:00",
-   "stations": [
-    "ALM",
-    "ALMM",
-    "AMF",
-    "AMFS",
-    "AMPO",
-    "ASD",
-    "ASDM",
-    "ASDZ",
-    "ASSP",
-    "AVAT",
-    "BRN",
-    "BSMZ",
-    "DMN",
-    "DMNZ",
-    "DVD",
-    "HOR",
-    "HVS",
-    "HVSM",
-    "HVSP",
-    "NDB",
-    "RAI",
-    "SHL",
-    "UT",
-    "UTO",
-    "WP"
-   ],
-   "gevolg": "er rijden bussen"
   },
   {
    "id": "7008006",
