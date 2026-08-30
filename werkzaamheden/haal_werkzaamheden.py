@@ -38,6 +38,17 @@ def bekende_stations():
     return codes
 
 
+import re
+
+
+def iso_norm(s):
+    """NS levert offsets zonder dubbele punt (+0200); Safari's Date-parser
+    vereist +02:00, dus normaliseren voordat het in de JSON komt."""
+    if not s:
+        return s
+    return re.sub(r"([+-]\d{2})(\d{2})$", r"\1:\2", s)
+
+
 def parse_disruptions(data, codes, nu=None):
     """Zet het NS-antwoord om naar compacte entries. Defensief: velden die
     ontbreken of van vorm veranderen leiden hooguit tot een overgeslagen entry."""
@@ -72,6 +83,13 @@ def parse_disruptions(data, codes, nu=None):
 
             if not stations or not start:
                 continue
+            # 'Aangepaste internationale dienstregeling' beschrijft de omweg
+            # van een reizigersdienst (bijv. IC Berlijn), niet gestremde
+            # infrastructuur — dat zou elke route langs die dienst onterecht
+            # laten waarschuwen
+            gevolg = gevolgen[0] if gevolgen else None
+            if gevolg and "internationale dienstregeling" in gevolg.lower():
+                continue
             begin_dt = datetime.fromisoformat(start)
             eind_dt = datetime.fromisoformat(eind) if eind else None
             if begin_dt > horizon:
@@ -83,10 +101,10 @@ def parse_disruptions(data, codes, nu=None):
                 "id": d.get("id"),
                 "type": str(d.get("type", "MAINTENANCE")).upper(),
                 "titel": titel,
-                "van": start,
-                "tot": eind,
+                "van": iso_norm(start),
+                "tot": iso_norm(eind),
                 "stations": sorted(stations),
-                "gevolg": gevolgen[0] if gevolgen else None
+                "gevolg": gevolg
             })
         except Exception as e:  # één rare entry mag de rest niet blokkeren
             print(f"waarschuwing: entry overgeslagen ({e})", file=sys.stderr)
@@ -98,7 +116,7 @@ ZELFTEST_DATA = [
     {
         "id": "test-weesp", "type": "MAINTENANCE",
         "title": "Amsterdam Muiderpoort - Weesp - Hilversum",
-        "start": "2026-08-29T01:00:00+02:00", "end": "2026-08-31T05:00:00+02:00",
+        "start": "2026-08-29T01:00:00+0200", "end": "2026-08-31T05:00:00+0200",
         "publicationSections": [{
             "section": {"stations": [
                 {"stationCode": "ASDM", "name": "Amsterdam Muiderpoort"},
@@ -113,7 +131,12 @@ ZELFTEST_DATA = [
     {"id": "kapot", "type": "MAINTENANCE"},  # ontbrekende velden -> overslaan
     {"id": "verleden", "type": "MAINTENANCE", "title": "Oud",
      "start": "2020-01-01T00:00:00+01:00", "end": "2020-01-02T00:00:00+01:00",
-     "publicationSections": [{"section": {"stations": [{"stationCode": "WP"}]}}]}
+     "publicationSections": [{"section": {"stations": [{"stationCode": "WP"}]}}]},
+    {"id": "int", "type": "MAINTENANCE", "title": "Amsterdam - Hannover - Berlin.",
+     "start": "2026-08-29T04:00:00+0200", "end": "2026-08-30T20:01:00+0200",
+     "publicationSections": [{
+         "section": {"stations": [{"stationCode": "BH"}, {"stationCode": "HGL"}]},
+         "consequence": {"description": "aangepaste internationale dienstregeling"}}]}
 ]
 
 
@@ -126,6 +149,8 @@ def main():
         assert len(entries) == 1, f"verwacht 1 entry, kreeg {len(entries)}"
         assert entries[0]["stations"] == ["ASDM", "HVS", "WP"], entries[0]["stations"]
         assert entries[0]["gevolg"] == "geen treinverkeer mogelijk"
+        assert entries[0]["van"].endswith("+02:00"), entries[0]["van"]
+        assert entries[0]["tot"].endswith("+02:00"), entries[0]["tot"]
         print("zelftest geslaagd")
         return
 

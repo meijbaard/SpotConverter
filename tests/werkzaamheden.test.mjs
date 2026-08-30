@@ -17,7 +17,7 @@ const iso = (dagenOffset, uur) => {
 const WEESP = {
     id: 'test-weesp', type: 'MAINTENANCE', titel: 'Werkzaamheden rond Weesp',
     van: iso(-1, 1), tot: iso(1, 5),
-    stations: ['ASDM', 'DMN', 'WP', 'NDB', 'BSMZ'],
+    stations: ['ASDM', 'DMN', 'WP', 'NDB', 'BSMZ', 'AMF'],
     gevolg: 'geen treinverkeer mogelijk'
 };
 
@@ -48,6 +48,13 @@ test('verlopen werkzaamheden matchen niet', () => {
 test('toekomstige werkzaamheden buiten de reis matchen niet', () => {
     updateState('werkzaamheden', [{ ...WEESP, van: iso(7, 1), tot: iso(9, 5) }]);
     const journey = journeyVan('13:07 Bh ri Asd RFO 193 150 met keteltrein');
+    assert.equal(werkzaamhedenOpRoute(journey).length, 0);
+});
+
+test('route die alleen een randstation aandoet (Amf ri Apd) matcht niet', () => {
+    // Amf staat wél in het Weesp-werkgebied, maar de Bentheimroute zelf niet:
+    // één gedeeld station is geen geraakte route
+    const journey = journeyVan('13:07 Amf ri Apd RFO 193 150 met keteltrein');
     assert.equal(werkzaamhedenOpRoute(journey).length, 0);
 });
 

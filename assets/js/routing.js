@@ -269,7 +269,11 @@ export function werkzaamhedenOpRoute(journey) {
     if (!reisStart || !reisEind) return [];
 
     return lijst.filter(w => {
-        if (!(w.stations || []).some(code => codes.has(code))) return false;
+        // Minstens twee routestations in het werkgebied: een route die alleen
+        // een randstation van het werkgebied aandoet (bijv. Amersfoort bij een
+        // Gooilijn-stremming) wordt zelf niet geraakt
+        const raak = (w.stations || []).filter(code => codes.has(code)).length;
+        if (raak < 2) return false;
         const van = w.van ? new Date(w.van) : null;
         const tot = w.tot ? new Date(w.tot) : null;
         if (van && isNaN(van) || tot && isNaN(tot)) return false;
