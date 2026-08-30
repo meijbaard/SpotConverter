@@ -19,7 +19,8 @@ export async function initializeData() {
             loadCoords(),
             loadExtrapolationRules(),
             loadSnelheden(),
-            loadWerkzaamheden()
+            loadWerkzaamheden(),
+            loadSpoorkaart()
         ]);
         return true;
     } catch (error) {
@@ -120,6 +121,15 @@ async function loadExtrapolationRules() {
         updateState('extrapolationRules', data);
     } catch (error) {
         console.warn("Kon extrapolatie.json niet laden; route-extrapolatie staat uit.", error);
+    }
+}
+
+async function loadSpoorkaart() {
+    try {
+        const data = await fetchJSON(`${BASE_URL}/spoorkaart.json`);
+        if (Array.isArray(data.lijnen)) updateState('spoorkaart', data);
+    } catch (error) {
+        // Geen spoorkaart.json: de kaart tekent lijnen tussen de trajectstations
     }
 }
 

@@ -502,3 +502,29 @@ select.input { appearance: auto; }
     background: #fdf6e3; border: 1px solid #e6ce8a;
     color: #7a5a12; font-size: 0.82rem; font-weight: 600;
 }
+
+/* Routekaart */
+.kaart-block { padding-bottom: 0.9rem; }
+.kaart-svg {
+    width: 100%; height: auto; display: block; border-radius: 10px;
+    background: var(--waas);
+}
+.kaart-net path { fill: none; stroke: var(--waas-diep); stroke-width: 0.45; stroke-linecap: round; }
+.kaart-route { fill: none; stroke: var(--groen); stroke-width: 1.15; stroke-linecap: round; stroke-linejoin: round; }
+.kaart-spot { fill: var(--groen-donker); }
+.kaart-doel { fill: #b07a1e; }
+.kaart-eind { fill: none; stroke: var(--groen-donker); stroke-width: 0.7; }
+.kaart-trein { fill: #c0392b; animation: kaartpuls 1.6s ease-in-out infinite; }
+@keyframes kaartpuls { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) { .kaart-trein { animation: none; } }
+.kaart-legenda { margin: 0.55rem 0 0; font-size: 0.78rem; color: var(--gedimd); }
+.kaart-leg-spot { color: var(--groen-donker); }
+.kaart-leg-doel { color: #b07a1e; }
+.kaart-leg-eind { color: var(--groen-donker); opacity: 0.55; }
+.kaart-leg-trein { color: #c0392b; }
+.kaart-bron { opacity: 0.8; }
+
+/* Doelstation-info (OV-fiets & voorzieningen) */
+.stationinfo-lijst { list-style: none; margin: 0.3rem 0 0; padding: 0; }
+.stationinfo-lijst li { padding: 0.3rem 0; border-top: 1px solid var(--waas-diep); font-size: 0.92rem; }
+.stationinfo-lijst li:first-child { border-top: none; }

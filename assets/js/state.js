@@ -13,6 +13,7 @@ const state = {
     extrapolationRules: null,
     speedProfile: null,
     werkzaamheden: [],
+    spoorkaart: null,
     materieelDatabase: {
         exact: {},
         types: {},

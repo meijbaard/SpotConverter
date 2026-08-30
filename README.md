@@ -4,7 +4,7 @@
 
 Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de route, geschatte doorkomsttijden, materieelinfo en een deelbaar groepsbericht terug.
 
-**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.4.1 · **Licentie:** MIT
+**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.5.0 · **Licentie:** MIT
 
 ```
 13:07 Bh ri Asd RFO 193 150 met keteltrein
@@ -37,6 +37,8 @@ Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de rout
 - 📡 **Groepsradar** — plak een stuk groepschat (meerdere berichten): de radar herkent welke meldingen bij dezelfde trein horen, toont per trein de laatste positie, de komende doorkomsten met aftelklok en de afwijking t.o.v. het model
 - 🏃 **"Haal ik hem nog?"** — bij een trein die nu onderweg is: per komend station een aftelklok, en met één tik op je locatie de haalbaarheid per fiets of auto (volledig op het apparaat)
 - 📋 **Verwachtingsbord** — welke vaste systemen (Katy, PCC, Volvo, Lovosice, …) rijden vandaag doorgaans, met tijdvenster — afgeleid uit 14 maanden groepsspots
+- 🗺️ **Routekaart** — elke analyse toont de route op een kaart van het spoornet (inline SVG, geen tiles of libraries), met spot-, doel- en eindpunt en bij een live trein de geschatte actuele positie; de spoorgeometrie komt uit de NS Spoorkaart-API (met schematische fallback)
+- 🚉 **Doelstation-info** — live OV-fietsaantallen en voorzieningen (koffie, winkels, toilet, kluizen, lift) van je doelstation, via de publieke NS places-dienst — geen sleutel nodig
 - 🚧 **Werkzaamheden-waarschuwing** — loopt de berekende route door een werkgebied (NS-opendata), dan waarschuwen analyse, radar en verwachtingsbord dat omleiding of uitval waarschijnlijk is
 - 🛤️ **Landelijke routeherkenning** — de trajecten vormen samen een spoorweggraaf die heel Nederland dekt (70 baanvakken, van Roodeschool tot Vlissingen). Benoemde goederencorridors winnen waar ze de rit dekken; daarbuiten zoekt een kortste-padalgoritme de route over willekeurig veel trajecten (bijv. Leeuwarden → Den Haag)
 - ⏱️ **Doorkomsttijden** — berekend uit afstanden (80 km/u) en waar beschikbaar uitgelijnd op vaste goederenpaden, inclusief wachttijden; elke tijd toont ✓ pad of ± schatting
@@ -161,6 +163,7 @@ Alle kennis zit in data, niet in code:
 | `heatmap_treinpassages.json` | Passages per station/dag/uur — gegenereerd uit de groepschat via `chatmining/` |
 | `treinpatronen.json` | Bekende systemen met dagen, tijdvensters en frequentie (basis voor het verwachtingsbord) |
 | `werkzaamheden.json` | Geplande werkzaamheden (NS-opendata) — automatisch ververst door de werkzaamheden-workflow |
+| `spoorkaart.json` | Spoorgeometrie (NS Spoorkaart-API) — maandelijks ververst door de spoorkaart-workflow; ontbreekt hij, dan tekent de kaart lijnen tussen de trajectstations |
 | `materieel.json` | Koppeling vervoerder/loctype → afbeelding |
 
 **Nieuw traject toevoegen — drie stappen, geen code:**
@@ -214,6 +217,8 @@ Stations die Nominatim niet kent (aansluitingen, emplacementen) staan met handma
 2. Kopieer de *primary key* en zet hem in de repo als secret: *Settings → Secrets and variables → Actions → New repository secret*, naam `NS_API_KEY`
 3. Start de workflow één keer handmatig (*Actions → Werkzaamheden verversen → Run workflow*) om de eerste echte vulling op te halen
 
+Voor de routekaart geldt hetzelfde patroon: `.github/workflows/spoorkaart.yml` haalt maandelijks de spoorgeometrie op (`spoorkaart/haal_spoorkaart.py`) — daarvoor moet het product **Spoorkaart-API** aan dezelfde sleutel gekoppeld zijn. Zonder abonnement meldt de workflow dat en houdt de app de schematische fallback.
+
 Zonder secret slaat de workflow zichzelf netjes over. Parser testen zonder API kan met `python3 werkzaamheden/haal_werkzaamheden.py --zelftest`.
 
 ## Deploy
@@ -255,6 +260,13 @@ MIT © 2025–2026 Mark Eijbaard
 ---
 
 ## Changelog
+
+### v5.5.0 — Routekaart & doelstation-info
+
+- 🗺️ **Routekaart** bij elke analyse: het spoornet als inline SVG in de huisstijl (geen kaart-libraries of tiles), route in flessengroen, markers voor spot/doel/eindpunt en een pulserende stip voor de geschatte actuele positie van een live trein. Achtergrondgeometrie uit de NS Spoorkaart-API via de nieuwe maandelijkse workflow (`spoorkaart.yml` + `spoorkaart/haal_spoorkaart.py`); zonder `spoorkaart.json` schakelt de kaart terug naar lijnen tussen de trajectstations
+- 🚉 **Doelstation-info**: kies een doelstation en zie live het aantal OV-fietsen, koffie/eten, winkels, toilet, kluizen, wachtruimte en lift — rechtstreeks client-side uit de publieke NS places-dienst (open CORS, geen sleutel), met stille terugval als de dienst niet antwoordt
+- Testsuite naar 77 tests (projectie, treinpositie-interpolatie, kaartopbouw, voorzieningen-samenvatting op vastgelegde API-antwoorden)
+
 
 ### v5.4.0 — Werkzaamheden uit NS-opendata
 

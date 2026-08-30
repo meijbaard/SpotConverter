@@ -1,0 +1,41 @@
+name: Spoorkaart verversen
+
+# Haalt de spoorgeometrie op uit de NS Spoorkaart-API (verandert zelden;
+# maandelijks is ruim voldoende) en commit spoorkaart.json bij wijziging.
+# Vereist het repo-secret NS_API_KEY met een abonnement op "Spoorkaart-API".
+
+on:
+  schedule:
+    - cron: '43 4 2 * *'   # maandelijks, de 2e om 04:43 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verversen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Spoorkaart ophalen
+        env:
+          NS_API_KEY: ${{ secrets.NS_API_KEY }}
+        run: |
+          if [ -z "$NS_API_KEY" ]; then
+            echo "::notice::NS_API_KEY-secret ontbreekt; run wordt overgeslagen."
+            exit 0
+          fi
+          python3 spoorkaart/haal_spoorkaart.py
+
+      - name: Committen bij wijziging
+        run: |
+          if git diff --quiet spoorkaart.json 2>/dev/null && ! git status --porcelain spoorkaart.json | grep -q .; then
+            echo "Geen wijzigingen."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add spoorkaart.json
+          git commit -m "spoorkaart.json ververst (NS Spoorkaart-API)"
+          git push

@@ -1,6 +1,8 @@
 // ui.js
 import { getState, getStationByCode } from './state.js';
 import { werkzaamhedenOpRoute } from './routing.js';
+import { kaartSegmentHtml } from './kaart.js';
+import { renderStationInfo } from './stationinfo.js';
 import { buildGroupMessage } from './message.js';
 import { buildDienstregeling, dienstregelingTekst } from './dienstregeling.js';
 import { downloadDienstregelingPdf } from './pdfstaat.js';
@@ -513,12 +515,16 @@ export function displayResults(analysis) {
 
     const werkzaamheden = werkzaamhedenOpRoute(analysis.journey);
     const werkzaamhedenBlok = werkzaamhedenHtml(werkzaamheden, { context: 'route' });
+    const kaartBlok = kaartSegmentHtml(analysis.journey, targetCode);
+    const stationInfoBlok = '<div id="stationinfo-block"></div>';
 
-    journeyOutput.innerHTML = headerHtml + werkzaamhedenBlok + timelineSegment + onderscheppingHtml + staatHtml + somdaHtml + waBlockHtml;
+    journeyOutput.innerHTML = headerHtml + werkzaamhedenBlok + kaartBlok + timelineSegment
+        + onderscheppingHtml + stationInfoBlok + staatHtml + somdaHtml + waBlockHtml;
     setupWhatsAppBlock(analysis);
     setupDienstregelingBlock(staat);
     setupTimelineToggle(aantalTussen);
     if (isLive) setupOnderschepping(analysis);
+    renderStationInfo(targetCode);
 }
 
 // Reissnelheden voor de haalbaarheidsschatting (incl. wegzetten/lopen)
