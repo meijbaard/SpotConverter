@@ -186,6 +186,8 @@ python3 chatmining/analyse_chat.py /pad/naar/_chat.txt
 
 In `afstanden_check/` (allemaal zonder externe dependencies, tenzij vermeld):
 
+**`valideer_trajecten_geometrie.py`** — legt trajecten.json langs de echte spoorgeometrie (spoorkaart.json): ligt elk station op het spoor, ligt er spoor tussen opeenvolgende stations, en klopt de geregistreerde afstand met de hemelsbrede? Diagnostisch hulpmiddel (niet in CI): de NS-kaart dekt alleen het reizigersnet, dus haven- en goederenlijnen geven verwachte meldingen.
+
 **`valideer_data.py`** — controleert de samenhang van alle databestanden: bestaan alle trajectcodes, zijn er coördinaten en afstanden, is de JSON geldig. Draait ook in CI bij elke push (`.github/workflows/test.yml`), samen met `npm test`.
 
 **`haal_coords.py`** — zoekt coördinaten op voor trajectstations die nog geen coördinaten hebben (Nominatim, met rate limit). Schrijft naar `out_osm/osm_stations_found.csv` en de coords-JSON.
