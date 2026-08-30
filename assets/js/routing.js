@@ -468,6 +468,27 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         }
     }
 
+    // --- Herpadering op regelstations ---
+    // Westwaarts stapt een doorgaande trein bij Amersfoort over van de
+    // Bentheimroute-paden op de Gooilijnpaden (oostwaarts bij Stroe): daar
+    // wordt een nieuw pad gepakt. Valt de al verschoven tijd daar buiten de
+    // marge, dan komt op dat station extra wachttijd bij.
+    const regelStations = directionKey === 'WEST' ? ['AMF'] : ['STO'];
+    for (const code of regelStations) {
+        const idx = journey.findIndex(s => s.code === code);
+        if (idx <= 0 || idx >= journey.length - 1) continue;
+        const pathInfo = pathData[code]?.[directionKey];
+        if (!pathInfo?.length) continue;
+        const minuut = journey[idx].finalTime.getMinutes();
+        const naarVoren = Math.min(...pathInfo.map(m => (m - minuut + 60) % 60));
+        const naarAchteren = Math.min(...pathInfo.map(m => (minuut - m + 60) % 60));
+        if (naarAchteren <= PAD_MARGE || naarVoren === 0) continue;
+        journey[idx].waitTime += naarVoren;
+        for (let i = idx; i < journey.length; i++) {
+            journey[i].finalTime = new Date(journey[i].finalTime.getTime() + naarVoren * 60000);
+        }
+    }
+
     // ✓ pad voor elk station waarvan de (verschoven) tijd op een padminuut
     // valt, binnen dezelfde marge
     for (const station of journey) {

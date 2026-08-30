@@ -170,7 +170,8 @@ test('padwachttijd valt vóór of op het ankerstation en tijden blijven oplopen'
     const eerstePad = analysis.journey.findIndex(s => s.viaPad);
     for (const [i, s] of analysis.journey.entries()) {
         if (s.waitTime > 0 && !s.grens) {
-            assert.ok(i <= eerstePad, `padwachttijd (${s.code}) ligt niet voorbij het anker`);
+            assert.ok(i <= eerstePad || ['AMF', 'STO'].includes(s.code),
+                `padwachttijd (${s.code}) ligt op het anker of een regelstation`);
         }
     }
     const tijden = analysis.journey.map(s => s.time);
