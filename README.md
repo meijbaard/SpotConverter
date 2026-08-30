@@ -4,7 +4,7 @@
 
 Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de route, geschatte doorkomsttijden, materieelinfo en een deelbaar groepsbericht terug.
 
-**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.3.0 · **Licentie:** MIT
+**Live:** https://spotconverter.markeijbaard.nl · **Versie:** 5.4.0 · **Licentie:** MIT
 
 ```
 13:07 Bh ri Asd RFO 193 150 met keteltrein
@@ -37,6 +37,7 @@ Webapp voor treinspotters: plak een WhatsApp-spotbericht en krijg direct de rout
 - 📡 **Groepsradar** — plak een stuk groepschat (meerdere berichten): de radar herkent welke meldingen bij dezelfde trein horen, toont per trein de laatste positie, de komende doorkomsten met aftelklok en de afwijking t.o.v. het model
 - 🏃 **"Haal ik hem nog?"** — bij een trein die nu onderweg is: per komend station een aftelklok, en met één tik op je locatie de haalbaarheid per fiets of auto (volledig op het apparaat)
 - 📋 **Verwachtingsbord** — welke vaste systemen (Katy, PCC, Volvo, Lovosice, …) rijden vandaag doorgaans, met tijdvenster — afgeleid uit 14 maanden groepsspots
+- 🚧 **Werkzaamheden-waarschuwing** — loopt de berekende route door een werkgebied (NS-opendata), dan waarschuwen analyse, radar en verwachtingsbord dat omleiding of uitval waarschijnlijk is
 - 🛤️ **Landelijke routeherkenning** — de trajecten vormen samen een spoorweggraaf die heel Nederland dekt (70 baanvakken, van Roodeschool tot Vlissingen). Benoemde goederencorridors winnen waar ze de rit dekken; daarbuiten zoekt een kortste-padalgoritme de route over willekeurig veel trajecten (bijv. Leeuwarden → Den Haag)
 - ⏱️ **Doorkomsttijden** — berekend uit afstanden (80 km/u) en waar beschikbaar uitgelijnd op vaste goederenpaden, inclusief wachttijden; elke tijd toont ✓ pad of ± schatting
 - 🧭 **Route-extrapolatie** — voorspelt de eindbestemming uit lading of shuttlenaam, ook zonder `e.v.` in het bericht
@@ -159,6 +160,7 @@ Alle kennis zit in data, niet in code:
 | `extrapolatie.json` | Regels lading/shuttle → voorspelde bestemming |
 | `heatmap_treinpassages.json` | Passages per station/dag/uur — gegenereerd uit de groepschat via `chatmining/` |
 | `treinpatronen.json` | Bekende systemen met dagen, tijdvensters en frequentie (basis voor het verwachtingsbord) |
+| `werkzaamheden.json` | Geplande werkzaamheden (NS-opendata) — automatisch ververst door de werkzaamheden-workflow |
 | `materieel.json` | Koppeling vervoerder/loctype → afbeelding |
 
 **Nieuw traject toevoegen — drie stappen, geen code:**
@@ -202,6 +204,18 @@ Stations die Nominatim niet kent (aansluitingen, emplacementen) staan met handma
 
 ---
 
+## Werkzaamheden (NS-opendata)
+
+`.github/workflows/werkzaamheden.yml` draait vier keer per dag `werkzaamheden/haal_werkzaamheden.py`: dat haalt geplande werkzaamheden op uit de NS Reisinformatie API (`/disruptions?type=MAINTENANCE`), filtert op bekende stations en de komende drie weken, en commit `werkzaamheden.json` alleen bij een inhoudelijke wijziging (de push triggert daarna de Pages-deploy). De app blijft volledig client-side: de API-sleutel staat uitsluitend als GitHub-secret.
+
+**Eenmalige setup:**
+
+1. Maak een gratis account op [apiportal.ns.nl](https://apiportal.ns.nl) en abonneer je op het product **Reisinformatie API**
+2. Kopieer de *primary key* en zet hem in de repo als secret: *Settings → Secrets and variables → Actions → New repository secret*, naam `NS_API_KEY`
+3. Start de workflow één keer handmatig (*Actions → Werkzaamheden verversen → Run workflow*) om de eerste echte vulling op te halen
+
+Zonder secret slaat de workflow zichzelf netjes over. Parser testen zonder API kan met `python3 werkzaamheden/haal_werkzaamheden.py --zelftest`.
+
 ## Deploy
 
 Automatisch via GitHub Actions (`.github/workflows/pages.yml`) naar GitHub Pages met custom domain `spotconverter.markeijbaard.nl` (CNAME + `.nojekyll`). Commit & push naar `main` publiceert.
@@ -241,6 +255,14 @@ MIT © 2025–2026 Mark Eijbaard
 ---
 
 ## Changelog
+
+### v5.4.0 — Werkzaamheden uit NS-opendata
+
+- Nieuw `werkzaamheden.json`: geplande werkzaamheden uit de NS Reisinformatie API, vier keer per dag automatisch ververst door een GitHub Action (`werkzaamheden.yml`); de sleutel staat als repo-secret `NS_API_KEY`, de app blijft client-side zonder secrets
+- Loopt een berekende route door een werkgebied binnen het reisvenster, dan toont de **spot-analyse** een waarschuwingsblok ("grote kans op omleiding — tijden gelden alleen zonder omleiding"), krijgt elke geraakte **radar**-trein een 🚧-regel en opent het **verwachtingsbord** met de werkzaamheden van vandaag
+- Voorbeeld: bij de werkzaamheden rond Weesp waarschuwt een Bh → Asd-analyse dat de goederentrein waarschijnlijk niet langs Baarn komt
+- `haal_werkzaamheden.py` schrijft alleen bij inhoudelijke wijzigingen (geen lege commits/deploys), heeft een `--zelftest` en filtert op bekende stations en de komende 21 dagen
+- Testsuite naar 70 tests
 
 ### v5.3.0 — Groepsradar & datagedreven voorspellingen
 

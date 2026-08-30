@@ -12,6 +12,7 @@ const state = {
     avoidTrajecten: [],
     extrapolationRules: null,
     speedProfile: null,
+    werkzaamheden: [],
     materieelDatabase: {
         exact: {},
         types: {},

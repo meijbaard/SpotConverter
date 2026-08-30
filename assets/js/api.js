@@ -18,7 +18,8 @@ export async function initializeData() {
             loadMaterieel(),
             loadCoords(),
             loadExtrapolationRules(),
-            loadSnelheden()
+            loadSnelheden(),
+            loadWerkzaamheden()
         ]);
         return true;
     } catch (error) {
@@ -119,6 +120,15 @@ async function loadExtrapolationRules() {
         updateState('extrapolationRules', data);
     } catch (error) {
         console.warn("Kon extrapolatie.json niet laden; route-extrapolatie staat uit.", error);
+    }
+}
+
+async function loadWerkzaamheden() {
+    try {
+        const data = await fetchJSON(`${BASE_URL}/werkzaamheden.json`);
+        if (Array.isArray(data.werkzaamheden)) updateState('werkzaamheden', data.werkzaamheden);
+    } catch (error) {
+        console.warn("Kon werkzaamheden.json niet laden; werkzaamheden-waarschuwingen staan uit.", error);
     }
 }
 

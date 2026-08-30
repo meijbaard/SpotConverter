@@ -255,6 +255,29 @@ export function findFullTrajectory(routeCodes, { negeerMijden = false } = {}) {
 }
 
 /**
+ * Werkzaamheden (uit werkzaamheden.json, ververst via NS-opendata) die deze
+ * reis raken: minstens één routestation ligt in het werkgebied én het
+ * tijdvenster overlapt met de reis. Het standaardtraject is dan onzeker —
+ * grote kans op omleiding of uitval.
+ */
+export function werkzaamhedenOpRoute(journey) {
+    const lijst = getState().werkzaamheden || [];
+    if (!journey || journey.length < 2 || !lijst.length) return [];
+    const codes = new Set(journey.map(s => s.code));
+    const reisStart = journey[0].finalTime;
+    const reisEind = journey[journey.length - 1].finalTime;
+    if (!reisStart || !reisEind) return [];
+
+    return lijst.filter(w => {
+        if (!(w.stations || []).some(code => codes.has(code))) return false;
+        const van = w.van ? new Date(w.van) : null;
+        const tot = w.tot ? new Date(w.tot) : null;
+        if (van && isNaN(van) || tot && isNaN(tot)) return false;
+        return (!van || van <= reisEind) && (!tot || tot >= reisStart);
+    });
+}
+
+/**
  * Evalueert één extrapolatieregel uit extrapolatie.json tegen het bericht.
  * Een regel matcht als één van de aanwezige condities waar is:
  * - anyOf: minstens één term komt voor in het bericht

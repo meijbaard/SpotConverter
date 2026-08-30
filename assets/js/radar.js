@@ -5,7 +5,7 @@
 // verwachte doorkomsten vanaf dat punt.
 
 import { parseMessage } from './parser.js';
-import { analyzeTrajectory } from './routing.js';
+import { analyzeTrajectory, werkzaamhedenOpRoute } from './routing.js';
 import { getStationByCode } from './state.js';
 import { shortCode } from './message.js';
 
@@ -257,6 +257,11 @@ export function renderRadar(raw, containerId = 'radar-output') {
             .map(o => `${o.tijd} ${shortCode(o.station)}`)
             .join(' → ');
 
+        const werk = trein.journey ? werkzaamhedenOpRoute(trein.journey) : [];
+        const werkHtml = werk.length
+            ? `<div class="radar-werkzaamheden">🚧 ${esc(werk[0].titel)} — omleiding of uitval waarschijnlijk</div>`
+            : '';
+
         let komendHtml;
         if (!trein.journey) {
             komendHtml = '<p class="muted">Geen route te bepalen (richting onbekend).</p>';
@@ -274,6 +279,7 @@ export function renderRadar(raw, containerId = 'radar-output') {
             <div class="radar-titel"><strong>${esc(titelDelen.join(' · '))}</strong>${esc(doel)}</div>
             <div class="radar-meta">${meldingen}${drift ? esc(drift) : ''}</div>
             <div class="radar-spoor">${esc(spoor)}</div>
+            ${werkHtml}
             ${komendHtml}
           </div>`;
     }).join('');

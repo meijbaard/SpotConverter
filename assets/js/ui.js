@@ -1,5 +1,6 @@
 // ui.js
 import { getState, getStationByCode } from './state.js';
+import { werkzaamhedenOpRoute } from './routing.js';
 import { buildGroupMessage } from './message.js';
 import { buildDienstregeling, dienstregelingTekst } from './dienstregeling.js';
 import { downloadDienstregelingPdf } from './pdfstaat.js';
@@ -25,6 +26,39 @@ const CARRIER_SLUGS = {
 };
 
 const TARGET_STORAGE_KEY = 'sc-target-station';
+
+/** "t/m ma 31 aug 05:00" — compacte weergave van een werkzaamheden-einde. */
+export function werkzaamhedenTot(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d)) return '';
+    const dag = d.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' });
+    const tijd = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    return `t/m ${dag} ${tijd}`;
+}
+
+const escHtml = s => String(s).replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+));
+
+/** Waarschuwingsblokje voor werkzaamheden die een route of dag raken. */
+export function werkzaamhedenHtml(lijst, { context = 'route' } = {}) {
+    if (!lijst.length) return '';
+    const items = lijst.map(w => {
+        const tot = werkzaamhedenTot(w.tot);
+        const gevolg = w.gevolg ? ` — ${escHtml(w.gevolg)}` : '';
+        return `<li><strong>${escHtml(w.titel)}</strong>${tot ? ` (${tot})` : ''}${gevolg}</li>`;
+    }).join('');
+    const uitleg = context === 'route'
+        ? 'Grote kans dat de trein wordt omgeleid of niet rijdt; de tijden hieronder gelden alleen zonder omleiding.'
+        : 'Systemen over dit gebied rijden vandaag waarschijnlijk om, of niet.';
+    return `
+      <div class="segment werkzaamheden-block" role="alert">
+        <div class="werkzaamheden-kop">🚧 Werkzaamheden op ${context === 'route' ? 'deze route' : 'de corridor'}</div>
+        <ul class="werkzaamheden-lijst">${items}</ul>
+        <p class="werkzaamheden-uitleg">${uitleg} <span class="werkzaamheden-bron">Bron: NS-opendata.</span></p>
+      </div>`;
+}
 
 export function populateStationDropdowns() {
     const { stations, heatmapData } = getState();
@@ -162,8 +196,19 @@ export function renderVerwachtingsbord() {
         .filter(p => Array.isArray(p.frequentDays) && p.frequentDays.includes(vandaag))
         .sort((a, b) => (b.frequency || 0) - (a.frequency || 0));
 
+    // Werkzaamheden die vandaag actief zijn: het bord is dan minder zeker
+    const nu = new Date();
+    const dagStart = new Date(nu); dagStart.setHours(0, 0, 0, 0);
+    const dagEind = new Date(nu); dagEind.setHours(23, 59, 59, 0);
+    const vandaagWerk = (getState().werkzaamheden || []).filter(w => {
+        const van = w.van ? new Date(w.van) : null;
+        const tot = w.tot ? new Date(w.tot) : null;
+        return (!van || van <= dagEind) && (!tot || tot >= dagStart);
+    });
+    const werkHtml = werkzaamhedenHtml(vandaagWerk, { context: 'dag' });
+
     if (!verwacht.length) {
-        container.innerHTML = '<p class="muted">Geen vaste systemen bekend voor vandaag.</p>';
+        container.innerHTML = werkHtml + '<p class="muted">Geen vaste systemen bekend voor vandaag.</p>';
         return;
     }
 
@@ -176,7 +221,7 @@ export function renderVerwachtingsbord() {
         </li>`;
     }).join('');
 
-    container.innerHTML = `
+    container.innerHTML = werkHtml + `
         <ul class="bord-lijst">${rijen}</ul>
         <p class="somda-bron">Op basis van 14 maanden groepsspots — kansen, geen dienstregeling.</p>`;
 }
@@ -466,7 +511,10 @@ export function displayResults(analysis) {
       </div>
     `;
 
-    journeyOutput.innerHTML = headerHtml + timelineSegment + onderscheppingHtml + staatHtml + somdaHtml + waBlockHtml;
+    const werkzaamheden = werkzaamhedenOpRoute(analysis.journey);
+    const werkzaamhedenBlok = werkzaamhedenHtml(werkzaamheden, { context: 'route' });
+
+    journeyOutput.innerHTML = headerHtml + werkzaamhedenBlok + timelineSegment + onderscheppingHtml + staatHtml + somdaHtml + waBlockHtml;
     setupWhatsAppBlock(analysis);
     setupDienstregelingBlock(staat);
     setupTimelineToggle(aantalTussen);

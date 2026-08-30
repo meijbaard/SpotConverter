@@ -1,0 +1,16 @@
+{
+ "_comment": "Wordt automatisch ververst door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Deze eerste vulling is handmatig: de werkzaamheden rond Weesp van het weekend van 29-31 aug 2026.",
+ "bron": "handmatige startvulling — wordt overschreven door de GitHub Action",
+ "opgehaald": "2026-08-30T12:00:00+00:00",
+ "werkzaamheden": [
+  {
+   "id": "start-weesp-2026-08",
+   "type": "MAINTENANCE",
+   "titel": "Werkzaamheden rond Weesp",
+   "van": "2026-08-29T01:00:00+02:00",
+   "tot": "2026-08-31T05:00:00+02:00",
+   "stations": ["ASDM", "DMN", "WP", "NDB", "BSMZ"],
+   "gevolg": "geen treinverkeer mogelijk"
+  }
+ ]
+}

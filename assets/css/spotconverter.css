@@ -487,3 +487,18 @@ select.input { appearance: auto; }
 }
 .bord-naam { font-size: 0.95rem; }
 .bord-subkop { margin-top: 1.6rem; }
+
+/* Werkzaamheden-waarschuwingen (NS-opendata) */
+.werkzaamheden-block {
+    background: #fdf6e3; border: 1px solid #e6ce8a;
+    padding: 0.9rem 1.1rem;
+}
+.werkzaamheden-kop { font-weight: 700; color: #7a5a12; font-size: 0.95rem; }
+.werkzaamheden-lijst { margin: 0.4rem 0 0; padding-left: 1.2rem; font-size: 0.9rem; color: #5c4a1a; }
+.werkzaamheden-uitleg { margin: 0.45rem 0 0; font-size: 0.82rem; color: #7a5a12; }
+.werkzaamheden-bron { opacity: 0.75; }
+.radar-werkzaamheden {
+    margin-top: 0.5rem; padding: 0.35rem 0.6rem; border-radius: 8px;
+    background: #fdf6e3; border: 1px solid #e6ce8a;
+    color: #7a5a12; font-size: 0.82rem; font-weight: 600;
+}
