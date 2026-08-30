@@ -42,6 +42,7 @@ test('kaartSvg: analyse Bh ri Asd levert een kaart met route en markers', () => 
     assert.match(svg, /kaart-route/);
     assert.match(svg, /kaart-spot/);
     assert.match(svg, /kaart-doel/, 'doelstation Baarn gemarkeerd');
+    assert.match(svg, />Baarn</, 'doelstation heeft altijd een naamlabel');
     assert.match(svg, /kaart-net/, 'achtergrondnet aanwezig (traject-fallback)');
 });
 

@@ -117,22 +117,29 @@ export function kaartSvg(journey, { targetCode = null, nu = new Date() } = {}) {
 
     const routePad = pad(route.map(p => [p.lon, p.lat]), prj);
 
-    // Plaatsnamen: spot, doel en eindpunt altijd; grotere stations op de route
-    // erbij zolang labels elkaar niet verdringen
-    const labelPunten = route.filter((p, i) => {
-        if (i === 0 || i === route.length - 1) return true;
-        if (targetCode && p.code === targetCode) return true;
-        const type = getStationByCode(p.code)?.type || '';
-        return /knooppunt|intercity/i.test(type);
+    // Plaatsnamen: spot, doel en eindpunt altijd (die winnen van alles);
+    // grotere stations op de route erbij zolang labels elkaar niet verdringen
+    const verplicht = [], optioneel = [];
+    const verplichteCodes = new Set();
+    route.forEach((p, i) => {
+        if (i === 0 || i === route.length - 1 || (targetCode && p.code === targetCode)) {
+            if (!verplichteCodes.has(p.code)) { verplicht.push(p); verplichteCodes.add(p.code); }
+        } else if (/knooppunt|intercity/i.test(getStationByCode(p.code)?.type || '')) {
+            optioneel.push(p);
+        }
     });
     let labels = '';
-    let vorige = null;
-    for (const p of labelPunten) {
+    const geplaatst = [];
+    const plaatsLabel = p => {
         const x = prj.x(p.lon), y = prj.y(p.lat);
-        if (vorige && Math.hypot(x - vorige[0], y - vorige[1]) < 11) continue;
-        vorige = [x, y];
+        geplaatst.push([x, y]);
         const naam = getStationByCode(p.code)?.name_short || p.code;
         labels += `<text class="kaart-label" x="${(x + 1.8).toFixed(2)}" y="${(y - 1.6).toFixed(2)}">${naam}</text>`;
+    };
+    verplicht.forEach(plaatsLabel);
+    for (const p of optioneel) {
+        const x = prj.x(p.lon), y = prj.y(p.lat);
+        if (geplaatst.every(g => Math.hypot(x - g[0], y - g[1]) >= 11)) plaatsLabel(p);
     }
 
     // Markeringen: spot (start), doelstation, eindpunt

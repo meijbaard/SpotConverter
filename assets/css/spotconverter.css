@@ -325,11 +325,15 @@ select.input { appearance: auto; }
   font-size: 0.78rem; line-height: 1.55;
   color: var(--inkt);
   border: 1.5px solid var(--inkt);
-  padding: 0.9rem 1.1rem;
+  padding: 0.8rem 0.7rem;
   margin: 0;
   white-space: pre;
   min-width: max-content;
 }
+/* De staat is breed (Courier); minder witruimte links en rechts zodat hij
+   zonder scrollen in de brede kolom past */
+.staat-block { padding-left: 0.55rem; padding-right: 0.55rem; }
+.staat-block .segment-titel, .staat-block .staat-acties { padding-left: 0.6rem; }
 .staat-acties { margin-top: 0.85rem; }
 
 /* --------------------------------------------------------------------------

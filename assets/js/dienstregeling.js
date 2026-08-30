@@ -40,8 +40,15 @@ export function buildDienstregeling(analysis, datum = new Date()) {
     const laatste = journey.length - 1;
     const rijen = [];
 
+    // Toelichtingen tussen haakjes horen niet in een klassieke staat en
+    // maken de naamkolom onnodig breed ("Oosterdoksluis (brug tussen ...)")
+    const kortNaam = naam => {
+        const kaal = naam.replace(/\s*\(.*\)\s*$/, '');
+        return kaal.length > 30 ? kaal.slice(0, 29) + '…' : kaal;
+    };
+
     journey.forEach((station, i) => {
-        const basis = { code: shortCode(station.code), naam: station.name };
+        const basis = { code: shortCode(station.code), naam: kortNaam(station.name) };
         if (i === 0) {
             rijen.push({ ...basis, type: 'V', tijd: HHMM(station.finalTime) });
         } else if (i === laatste) {
@@ -80,7 +87,7 @@ export function dienstregelingRijRegels(staat) {
     const codeBreedte = Math.max(4, ...staat.rijen.map(r => r.code.length));
     const naamBreedte = Math.max(...staat.rijen.map(r => r.naam.length));
     return staat.rijen.map(r =>
-        `${r.code.padEnd(codeBreedte + 3)}${r.naam.padEnd(naamBreedte + 4)}${r.type} ${r.tijd}`
+        `${r.code.padEnd(codeBreedte + 2)}${r.naam.padEnd(naamBreedte + 2)}${r.type} ${r.tijd}`
     );
 }
 
