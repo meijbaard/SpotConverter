@@ -456,14 +456,24 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
     }
 
     if (totalDelay > 0 && ankerIndex !== -1) {
-        // Wachten gebeurt op het klassieke wachtstation als dat vóór het
-        // anker op de route ligt, anders op het ankerstation zelf
-        const waitStationCode = directionKey === 'WEST' ? 'AMF' : 'STO';
-        let waitStationIndex = journey.findIndex(s => s.code === waitStationCode);
-        if (waitStationIndex === -1 || waitStationIndex > ankerIndex) waitStationIndex = ankerIndex;
+        // Goederentreinen wachten niet zomaar midden op de corridor: de
+        // wachttijd valt op het eerste echte wachtpunt tussen spot en anker —
+        // een grensstation of het klassieke regelstation (Amf west / Sto
+        // oost). Ligt er geen wachtpunt vóór het anker, dan staat de trein
+        // gewoon nog even op het spotstation zelf.
+        const klassiek = directionKey === 'WEST' ? 'AMF' : 'STO';
+        let waitStationIndex = 0;
+        for (let i = 1; i <= ankerIndex; i++) {
+            if (grensoponthoud[journey[i].code] || journey[i].code === klassiek) {
+                waitStationIndex = i;
+                break;
+            }
+        }
 
         journey[waitStationIndex].waitTime += totalDelay;
-        for (let i = waitStationIndex; i < journey.length; i++) {
+        // Het spotstation houdt zijn gespotte tijd; de verschuiving begint
+        // bij het eerstvolgende station
+        for (let i = Math.max(1, waitStationIndex); i < journey.length; i++) {
             journey[i].finalTime = new Date(journey[i].idealTime.getTime() + totalDelay * 60000);
         }
     }

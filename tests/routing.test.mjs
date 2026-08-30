@@ -167,11 +167,10 @@ test('paduitlijning ankert ook zonder doelstation (viaPad aanwezig)', () => {
 
 test('padwachttijd valt vóór of op het ankerstation en tijden blijven oplopen', () => {
     const analysis = analyzeTrajectory(parseMessage('10:42 Bh ri Bvhc RFO 193 150 met staaltrein'), null);
-    const eerstePad = analysis.journey.findIndex(s => s.viaPad);
     for (const [i, s] of analysis.journey.entries()) {
         if (s.waitTime > 0 && !s.grens) {
-            assert.ok(i <= eerstePad || ['AMF', 'STO'].includes(s.code),
-                `padwachttijd (${s.code}) ligt op het anker of een regelstation`);
+            assert.ok(['AMF', 'STO', 'BH'].includes(s.code) || i === 0,
+                `padwachttijd (${s.code}) valt op een grens-/regelstation of het spotstation`);
         }
     }
     const tijden = analysis.journey.map(s => s.time);
