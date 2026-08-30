@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bronnen &amp; spelregels – SpotConverter</title>
+    <meta name="description" content="Welke openbare bronnen SpotConverter gebruikt, onder welke voorwaarden, en waar je ze zelf vindt." />
+    <link rel="canonical" href="https://spotconverter.markeijbaard.nl/bronnen.html" />
+    <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#2b5c45" />
+    <link rel="stylesheet" href="assets/css/spotconverter.css" />
+  </head>
+  <body>
+    <header class="top-bar">
+      <div class="container top-bar-inner">
+        <a class="brand" href="/" aria-label="SpotConverter home">
+          <span class="logo-dot">
+            <svg class="brand-logo" viewBox="0 0 100 35" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M 5 15 C 5 5, 15 5, 25 15 S 45 35, 55 25 C 65 15, 75 15, 85 25" stroke="currentColor" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M 75 15 C 75 5, 85 5, 95 15" stroke="currentColor" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="brand-name">SpotConverter</span>
+        </a>
+        <a class="btn btn-ghost" href="/">← Naar de app</a>
+      </div>
+    </header>
+
+    <main class="container main-content infopagina">
+      <div class="segment segment-wit">
+        <h1 class="panel-title">Bronnen &amp; spelregels</h1>
+        <p>SpotConverter is gebouwd op openbare bronnen. Op deze pagina staat per bron wat er wordt gebruikt, onder welke voorwaarden, en waar je de bron zelf vindt. De spelregels die overal gelden:</p>
+        <ul>
+          <li>Data wordt met bronvermelding gebruikt en waar de bron regels stelt (hotlinks, aantallen, niet-commercieel gebruik) worden die gevolgd.</li>
+          <li>Automatisch verversen gebeurt beheerst: enkele keren per dag tot eens per maand, via <a href="https://github.com/meijbaard/SpotConverter/tree/main/.github/workflows" target="_blank" rel="noopener">GitHub Actions</a> — nooit vanuit de browsers van bezoekers.</li>
+          <li>SpotConverter is niet-commercieel en open source (<a href="https://github.com/meijbaard/SpotConverter/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a>). Klopt een vermelding niet, of wil je als bron liever niet gebruikt worden? <a href="https://github.com/meijbaard/SpotConverter/issues" target="_blank" rel="noopener">Meld het</a> en het wordt aangepast.</li>
+        </ul>
+      </div>
+
+      <div class="segment segment-wit">
+        <h2 class="panel-title">Databronnen</h2>
+        <dl class="bronnen-lijst">
+          <dt>Rijden de Treinen — open data</dt>
+          <dd>Basislijst van stations (codes, namen) en afstanden. Beschikbaar gesteld als open data (CC BY 4.0). → <a href="https://www.rijdendetreinen.nl/open-data" target="_blank" rel="noopener">rijdendetreinen.nl/open-data</a></dd>
+
+          <dt>NS Reisinformatie API — werkzaamheden</dt>
+          <dd>Geplande werkzaamheden (type MAINTENANCE), enkele keren per dag opgehaald met een gratis API-sleutel volgens de voorwaarden van het NS API-portaal. → <a href="https://apiportal.ns.nl" target="_blank" rel="noopener">apiportal.ns.nl</a></dd>
+
+          <dt>NS Spoorkaart-API — spoorgeometrie</dt>
+          <dd>De ligging van het Nederlandse spoornet voor de routekaart, maandelijks ververst via hetzelfde API-portaal. → <a href="https://apiportal.ns.nl" target="_blank" rel="noopener">apiportal.ns.nl</a></dd>
+
+          <dt>NS places — OV-fiets en stationsvoorzieningen</dt>
+          <dd>Actuele OV-fietsaantallen en voorzieningen van het gekozen doelstation, alleen-lezen weergegeven vanuit de publieke places-dienst die ook de NS-app voedt, met bronvermelding in beeld.</dd>
+
+          <dt>Somda — doorkomststaat</dt>
+          <dd>De dienstregeling rond jouw verwachte doorkomst, via de officiële embedbare feed van Somda en volgens hun embed-regels, met link naar de bron. → <a href="https://somda.nl/feeds/" target="_blank" rel="noopener">somda.nl/feeds</a></dd>
+
+          <dt>ProRail — spoorkaart (PDF)</dt>
+          <dd>Basis voor de indeling van trajecten en corridors in de routering. → <a href="https://www.prorail.nl/reizen/spoorkaart" target="_blank" rel="noopener">prorail.nl</a></dd>
+
+          <dt>OpenStreetMap / Nominatim — stationscoördinaten</dt>
+          <dd>Coördinaten van stations, aansluitingen en emplacementen. &copy; OpenStreetMap-bijdragers, ODbL; Nominatim wordt met rate-limit en User-Agent gebruikt conform het gebruiksbeleid. → <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">osm.org/copyright</a></dd>
+
+          <dt>CBS / Kadaster via cartomap — omtrek van Nederland</dt>
+          <dd>De gegeneraliseerde landgrens als ondergrond van de routekaart (CC BY 4.0). → <a href="https://cartomap.github.io/nl/" target="_blank" rel="noopener">cartomap.github.io/nl</a></dd>
+
+          <dt>Arthur's treinenpagina — materieeltekeningen</dt>
+          <dd>Enkele tekeningen lokaal opgenomen en deep-links naar de cataloguspagina's, precies volgens de gebruiksregels van de site: niet-commercieel, maximaal twintig tekeningen, geen hotlinks. → <a href="https://www.arthurstreinenpagina.nl/info/regelsgebruik.html" target="_blank" rel="noopener">arthurstreinenpagina.nl</a></dd>
+
+          <dt>Nico Spilt — spottersafkortingen</dt>
+          <dd>Achtergrond bij de afkortingen die spotters gebruiken. → <a href="https://www.nicospilt.com" target="_blank" rel="noopener">nicospilt.com</a></dd>
+
+          <dt>Michael Dittrich — Duitse stationsafkortingen</dt>
+          <dd>Afkortingen van Duitse stations op de corridor. → <a href="https://www.michaeldittrich.de/abkuerzungen/index.php" target="_blank" rel="noopener">michaeldittrich.de</a></dd>
+
+          <dt>treinposities.nl — vervoerders en locomotieven</dt>
+          <dd>Deep-links bij herkende vervoerders en locnummers; er wordt niets van de site overgenomen. → <a href="https://treinposities.nl" target="_blank" rel="noopener">treinposities.nl</a></dd>
+
+          <dt>OMa Stoomlok — fotografie</dt>
+          <dd>De foto op de startpagina is gemaakt door OMa Stoomlok en wordt met toestemming en naamsvermelding gebruikt. → <a href="https://omastoomlok.nl" target="_blank" rel="noopener">omastoomlok.nl</a></dd>
+
+          <dt>Spotberichten uit de eigen WhatsApp-groep</dt>
+          <dd>De goederenpaden, snelheden, treinpatronen en heatmap zijn afgeleid uit ruim een jaar spotberichten. Alleen geaggregeerde patronen (tijden, dagen, routes) worden opgenomen; berichten, namen en telefoonnummers komen nooit in de app of de broncode terecht.</dd>
+        </dl>
+      </div>
+    </main>
+
+    <footer class="site-footer-groot">
+      <div class="container footer-kolommen">
+        <div class="footer-merk">
+          <p class="footer-merknaam">SpotConverter</p>
+          <p class="footer-tagline">Van WhatsApp-spot naar route, doorkomsttijden en een deelbaar groepsbericht.</p>
+        </div>
+        <nav class="footer-kolom" aria-label="Onderdelen">
+          <h3>Onderdelen</h3>
+          <a href="/">Naar de app</a>
+          <a href="/#uitleg">Wat kan SpotConverter?</a>
+        </nav>
+        <nav class="footer-kolom" aria-label="Informatie">
+          <h3>Informatie</h3>
+          <a href="bronnen.html">Bronnen &amp; spelregels</a>
+          <a href="disclaimer.html">Disclaimer &amp; privacy</a>
+          <a href="https://github.com/meijbaard/SpotConverter" target="_blank" rel="noopener">Broncode op GitHub</a>
+        </nav>
+        <nav class="footer-kolom" aria-label="Contact">
+          <h3>Contact</h3>
+          <a href="https://markeijbaard.nl" target="_blank" rel="noopener">markeijbaard.nl</a>
+          <a href="https://github.com/meijbaard/SpotConverter/issues" target="_blank" rel="noopener">Via GitHub Issues</a>
+        </nav>
+      </div>
+      <div class="container footer-onder">
+        <p>&copy; 2025–2026 Mark Eijbaard · <a href="https://github.com/meijbaard/SpotConverter/blob/main/LICENSE" target="_blank" rel="noopener">MIT-licentie</a> · Geen officiële dienst van NS of ProRail.</p>
+      </div>
+    </footer>
+  </body>
+</html>

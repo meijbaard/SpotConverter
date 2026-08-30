@@ -5,13 +5,15 @@
 //   beschikbaar blijft maar online altijd vers is.
 // Verhoog VERSION bij elke release om oude caches op te ruimen.
 
-const VERSION = 'v5.6.1';
+const VERSION = 'v5.7.0';
 const STATIC_CACHE = `spotconverter-static-${VERSION}`;
 const DATA_CACHE = `spotconverter-data-${VERSION}`;
 
 const PRECACHE_URLS = [
   './',
   'index.html',
+  'disclaimer.html',
+  'bronnen.html',
   'assets/css/spotconverter.css',
   'assets/fonts/bricolage-latin.woff2',
   'assets/fonts/figtree-latin.woff2',

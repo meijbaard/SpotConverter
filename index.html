@@ -111,13 +111,33 @@
           <p class="muted">Plak een spotbericht om het reisoverzicht te genereren.</p>
         </div>
 
+        <section id="uitleg" class="uitleg-sectie" aria-label="Wat kan SpotConverter">
+          <figure class="uitleg-hero">
+            <img src="assets/images/hero-omastoomlok.jpg" alt="Stoomlocomotief 23 076 komt met rijtuigen onder stoom door een station" width="1600" height="850" />
+            <figcaption>Foto: <a href="https://omastoomlok.nl" target="_blank" rel="noopener">OMa Stoomlok</a></figcaption>
+          </figure>
+          <h2 class="panel-title">Wat kan SpotConverter?</h2>
+          <p class="uitleg-intro">Plak een spotbericht uit de WhatsApp-groep en SpotConverter vertaalt het naar route, verwachte doorkomsttijden en een kant-en-klaar groepsbericht. Alles draait in je browser: geen account, geen tracking, en de app werkt ook offline langs de baan.</p>
+          <div class="uitleg-grid">
+            <div class="uitleg-kaart"><span class="uitleg-emoji">🔍</span><h3>Spot-analyse</h3><p>Herkent tijd, station, richting, vervoerder, locnummer en lading in vrije berichttekst — ook spottersafkortingen, NVR-nummers en locaties tussen twee stations.</p></div>
+            <div class="uitleg-kaart"><span class="uitleg-emoji">⏱️</span><h3>Doorkomsttijden</h3><p>Berekend met gemeten snelheden per baanvak en uitgelijnd op de vaste goederenpaden, afgeleid uit ruim een jaar echte groepsspots.</p></div>
+            <div class="uitleg-kaart"><span class="uitleg-emoji">🗺️</span><h3>Routekaart</h3><p>De route op het echte spoornet, met plaatsnamen en — bij een trein die nu rijdt — de geschatte actuele positie.</p></div>
+            <div class="uitleg-kaart"><span class="uitleg-emoji">📡</span><h3>Groepsradar</h3><p>Plak een stuk groepschat en zie welke treinen er nu onderweg zijn: meldingen worden automatisch per trein gebundeld, met aftelklok.</p></div>
+            <div class="uitleg-kaart"><span class="uitleg-emoji">🏃</span><h3>Haal ik hem nog?</h3><p>Eén tik op je locatie en je ziet per station of je de trein nog haalt, per fiets of auto. Je locatie verlaat je apparaat niet.</p></div>
+            <div class="uitleg-kaart"><span class="uitleg-emoji">🚧</span><h3>Werkzaamheden</h3><p>Loopt de route door een werkgebied (NS-opendata), dan zie je direct dat omleiding of uitval waarschijnlijk is.</p></div>
+            <div class="uitleg-kaart"><span class="uitleg-emoji">📋</span><h3>Verwachtingsbord</h3><p>Welke vaste systemen — Katy, PCC, Volvo, Lovosice — rijden vandaag doorgaans, met tijdvenster.</p></div>
+            <div class="uitleg-kaart"><span class="uitleg-emoji">🚉</span><h3>Doelstation-info</h3><p>Live OV-fietsaantallen en voorzieningen (koffie, toilet, kluizen) van je doelstation.</p></div>
+            <div class="uitleg-kaart"><span class="uitleg-emoji">💬</span><h3>Groepsbericht</h3><p>Een bericht volgens de Gouden Formule, met optionele verwachte doorkomst — kopieer of deel direct via WhatsApp. Plus een klassieke doorkomststaat als PDF.</p></div>
+          </div>
+        </section>
+          <pre id="parsed-data-output" class="debug-output" style="display: none;"></pre>
+        </div>
+
         <div class="debug-block">
           <div class="debug-header">
             <h2>Geparsede data (voor analyse)</h2>
             <button id="toggle-data-btn" class="btn btn-small btn-ghost" type="button">(Toon)</button>
           </div>
-          <pre id="parsed-data-output" class="debug-output" style="display: none;"></pre>
-        </div>
       </section>
 
       <section class="tab-panel panel-naakt hidden" id="tab-radar" role="tabpanel">
@@ -164,11 +184,48 @@
         <div id="patronen-output" class="grid-2"></div>
       </section>
 
-      <footer class="site-footer">
-        <p>Versie 5.6.1 · Copyright &copy; 2025–2026 Mark Eijbaard · MIT-licentie</p>
-        <p><a href="https://github.com/meijbaard/SpotConverter/issues" target="_blank" rel="noopener">Meld een probleem of wens</a></p>
-      </footer>
     </main>
+
+    <footer class="site-footer-groot">
+      <div class="container footer-kolommen">
+        <div class="footer-merk">
+          <span class="logo-dot">
+            <svg class="brand-logo" viewBox="0 0 100 35" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M 5 15 C 5 5, 15 5, 25 15 S 45 35, 55 25 C 65 15, 75 15, 85 25" stroke="currentColor" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M 75 15 C 75 5, 85 5, 95 15" stroke="currentColor" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <p class="footer-merknaam">SpotConverter</p>
+          <p class="footer-tagline">Van WhatsApp-spot naar route, doorkomsttijden en een deelbaar groepsbericht. Voor treinspotters, door een treinspotter.</p>
+        </div>
+        <nav class="footer-kolom" aria-label="Onderdelen">
+          <h3>Onderdelen</h3>
+          <a href="#" data-tab-link="spot">Spot Analyse</a>
+          <a href="#" data-tab-link="radar">Groepsradar</a>
+          <a href="#" data-tab-link="zoeker">Stationszoeker</a>
+          <a href="#" data-tab-link="heatmap">Heatmap</a>
+          <a href="#" data-tab-link="patronen">Patronen &amp; verwachtingsbord</a>
+          <a href="#uitleg">Wat kan SpotConverter?</a>
+        </nav>
+        <nav class="footer-kolom" aria-label="Informatie">
+          <h3>Informatie</h3>
+          <a href="bronnen.html">Bronnen &amp; spelregels</a>
+          <a href="disclaimer.html">Disclaimer &amp; privacy</a>
+          <a href="https://github.com/meijbaard/SpotConverter" target="_blank" rel="noopener">Broncode op GitHub</a>
+          <a href="https://github.com/meijbaard/SpotConverter/issues" target="_blank" rel="noopener">Probleem of wens melden</a>
+        </nav>
+        <nav class="footer-kolom" aria-label="Contact">
+          <h3>Contact</h3>
+          <a href="https://markeijbaard.nl" target="_blank" rel="noopener">markeijbaard.nl</a>
+          <a href="https://github.com/meijbaard/SpotConverter/issues" target="_blank" rel="noopener">Via GitHub Issues</a>
+        </nav>
+      </div>
+      <div class="container footer-onder">
+        <p>Versie 5.7.0 · &copy; 2025–2026 Mark Eijbaard · <a href="https://github.com/meijbaard/SpotConverter/blob/main/LICENSE" target="_blank" rel="noopener">MIT-licentie</a></p>
+        <p>Gebouwd op openbare bronnen — zie <a href="bronnen.html">Bronnen &amp; spelregels</a>. Geen officiële dienst van NS of ProRail.</p>
+        <p>Fotografie: <a href="https://omastoomlok.nl" target="_blank" rel="noopener">OMa Stoomlok</a></p>
+      </div>
+    </footer>
 
     <script type="module" src="assets/js/app.js" defer></script>
   </body>

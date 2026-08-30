@@ -139,6 +139,16 @@ function setupEventListeners() {
     if (heatmapStation) heatmapStation.addEventListener('change', UI.updateHeatmap);
     if (heatmapDay) heatmapDay.addEventListener('change', UI.updateHeatmap);
 
+    // Footerlinks naar tabbladen: activeer de bijbehorende tab-knop
+    document.querySelectorAll('[data-tab-link]').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            const doel = link.getAttribute('data-tab-link');
+            document.querySelector(`.tab-btn[data-tab="${doel}"]`)?.click();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+
     // Groepsradar: meerdere berichten plakken en als geheel analyseren
     const radarInput = document.getElementById('radarInput');
     const radarBtn = document.getElementById('radar-btn');
@@ -168,6 +178,11 @@ function setupEventListeners() {
 
 function processMessage() {
     const messageInput = document.getElementById('whatsappMessage')?.value;
+    // De uitlegsectie is de landingservaring: zichtbaar zolang er nog geen
+    // spot geplakt is, daarna maakt hij plaats voor de analyse
+    const uitleg = document.getElementById('uitleg');
+    if (uitleg) uitleg.style.display = (!messageInput || !messageInput.trim()) ? '' : 'none';
+
     if (!messageInput || !messageInput.trim()) {
         const journeyOutput = document.getElementById('journey-output');
         if (journeyOutput) journeyOutput.innerHTML = '<p class="muted">Plak een spotbericht om het reisoverzicht te genereren.</p>';
