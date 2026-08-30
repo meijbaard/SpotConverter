@@ -531,7 +531,30 @@ export function displayResults(analysis) {
     setupDienstregelingBlock(staat);
     setupTimelineToggle(aantalTussen);
     if (isLive) setupOnderschepping(analysis);
+    setupSomdaZoom();
     renderStationInfo(targetCode);
+}
+
+/** De somda-staat is in de smalle kolom klein; een tik opent hem schermvullend. */
+function setupSomdaZoom() {
+    const knop = document.querySelector('.somda-zoom-knop');
+    const img = knop?.querySelector('img');
+    if (!knop || !img) return;
+    knop.addEventListener('click', () => {
+        const overlay = document.createElement('div');
+        overlay.className = 'lichtbak';
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-label', 'Vergrote doorkomststaat — tik om te sluiten');
+        const groot = document.createElement('img');
+        groot.src = img.src;
+        groot.alt = img.alt;
+        overlay.appendChild(groot);
+        const sluit = () => { overlay.remove(); document.removeEventListener('keydown', opEsc); };
+        const opEsc = e => { if (e.key === 'Escape') sluit(); };
+        overlay.addEventListener('click', sluit);
+        document.addEventListener('keydown', opEsc);
+        document.body.appendChild(overlay);
+    });
 }
 
 // Reissnelheden voor de haalbaarheidsschatting (incl. wegzetten/lopen)
@@ -634,11 +657,11 @@ function buildSomdaBlock(analysis, targetCode) {
     return `
       <div class="segment segment-groen somda-block">
         <h2 class="segment-titel">Rond jouw doorkomst in ${station.name}</h2>
-        <div class="somda-img-wrap">
+        <button class="somda-img-wrap somda-zoom-knop" type="button" title="Tik om te vergroten" aria-label="Doorkomststaat vergroten">
           <img src="${url}" alt="Doorkomststaat ${station.name} rond ${station.time} (bron: somda.nl)"
                loading="lazy" onerror="this.closest('.somda-block').style.display='none'" />
-        </div>
-        <p class="somda-bron">Dienstregeling rond ±${station.time} · bron: <a href="https://somda.nl/doorkomststaat/" target="_blank" rel="noopener">somda.nl</a></p>
+        </button>
+        <p class="somda-bron">Dienstregeling rond ±${station.time} · tik om te vergroten · bron: <a href="https://somda.nl/doorkomststaat/" target="_blank" rel="noopener">somda.nl</a></p>
       </div>
     `;
 }
