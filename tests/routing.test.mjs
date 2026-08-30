@@ -150,3 +150,29 @@ test('journey heeft oplopende tijden', () => {
     const sorted = [...times].sort();
     assert.deepEqual(times, sorted, 'tijden lopen op');
 });
+
+// --- v5.7.2: paduitlijning onafhankelijk van doelstationkeuze ---
+
+test('tijden veranderen niet met de doelstationkeuze (10:42 Bh ri Bvhc)', () => {
+    const parsed = parseMessage('10:42 Bh ri Bvhc RFO 193 150 met staaltrein');
+    const tijden = target => analyzeTrajectory(parsed, target).journey.map(s => s.time);
+    assert.deepEqual(tijden('BRN'), tijden('HVL'), 'Baarn vs Hoevelaken');
+    assert.deepEqual(tijden('BRN'), tijden(null), 'met vs zonder doelstation');
+});
+
+test('paduitlijning ankert ook zonder doelstation (viaPad aanwezig)', () => {
+    const analysis = analyzeTrajectory(parseMessage('10:42 Bh ri Bvhc RFO 193 150 met staaltrein'), null);
+    assert.ok(analysis.journey.some(s => s.viaPad), 'minstens één station op pad');
+});
+
+test('padwachttijd valt vóór of op het ankerstation en tijden blijven oplopen', () => {
+    const analysis = analyzeTrajectory(parseMessage('10:42 Bh ri Bvhc RFO 193 150 met staaltrein'), null);
+    const eerstePad = analysis.journey.findIndex(s => s.viaPad);
+    for (const [i, s] of analysis.journey.entries()) {
+        if (s.waitTime > 0 && !s.grens) {
+            assert.ok(i <= eerstePad, `padwachttijd (${s.code}) ligt niet voorbij het anker`);
+        }
+    }
+    const tijden = analysis.journey.map(s => s.time);
+    assert.deepEqual(tijden, [...tijden].sort(), 'tijden lopen op');
+});

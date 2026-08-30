@@ -426,36 +426,57 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
         lastStationCode = stationCode;
     }
 
-    const targetStation = journey.find(s => s.code === targetStationCode);
+    // --- Uitlijnen op goederenpaden (goederenpaden.csv) ---
+    // Het anker is het éérste station na de spot met bekende padminuten voor
+    // deze rijrichting — bewust onafhankelijk van het gekozen doelstation,
+    // anders zouden de tijden veranderen met je doelstationkeuze. Ligt de
+    // berekende tijd vlak ná een padminuut (de trein rijdt het pad al), dan
+    // is er geen wachttijd; anders wacht de trein tot de volgende padminuut.
+    const PAD_MARGE = 7; // minuten "achterop" die nog als hetzelfde pad tellen
     let totalDelay = 0;
+    let ankerIndex = -1;
 
-    if (targetStation) {
-        const pathInfo = pathData[targetStation.code]?.[directionKey];
-        if (pathInfo?.length) {
-            const idealMinutes = targetStation.idealTime.getMinutes();
-            let targetMinute = pathInfo.sort((a, b) => a - b).find(m => m >= idealMinutes) ?? (pathInfo[0] + 60);
+    // Kandidaat-ankers: de eerste drie padstations na de spot. Het anker met
+    // de kleinste wachttijd wint — een dun bemeten station (weinig bekende
+    // padminuten) kan zo geen onrealistisch lange wachttijd afdwingen.
+    let kandidaten = 0;
+    for (let i = 1; i < journey.length && kandidaten < 3; i++) {
+        const pathInfo = pathData[journey[i].code]?.[directionKey];
+        if (!pathInfo?.length) continue;
+        kandidaten++;
+        const idealMinutes = journey[i].idealTime.getMinutes();
+        const naarVoren = Math.min(...pathInfo.map(m => (m - idealMinutes + 60) % 60));
+        const naarAchteren = Math.min(...pathInfo.map(m => (idealMinutes - m + 60) % 60));
+        const delay = naarAchteren <= PAD_MARGE ? 0 : naarVoren;
+        if (ankerIndex === -1 || delay < totalDelay) {
+            ankerIndex = i;
+            totalDelay = delay;
+        }
+        if (totalDelay === 0) break;
+    }
 
-            const targetTime = new Date(targetStation.idealTime.getTime());
-            if (targetMinute >= 60) {
-                targetTime.setHours(targetTime.getHours() + 1);
-                targetMinute -= 60;
-            }
-            targetTime.setMinutes(targetMinute, 0, 0);
-            totalDelay = Math.round((targetTime - targetStation.idealTime) / 60000);
-            targetStation.viaPad = true; // tijd uitgelijnd op goederenpaden.csv
+    if (totalDelay > 0 && ankerIndex !== -1) {
+        // Wachten gebeurt op het klassieke wachtstation als dat vóór het
+        // anker op de route ligt, anders op het ankerstation zelf
+        const waitStationCode = directionKey === 'WEST' ? 'AMF' : 'STO';
+        let waitStationIndex = journey.findIndex(s => s.code === waitStationCode);
+        if (waitStationIndex === -1 || waitStationIndex > ankerIndex) waitStationIndex = ankerIndex;
+
+        journey[waitStationIndex].waitTime += totalDelay;
+        for (let i = waitStationIndex; i < journey.length; i++) {
+            journey[i].finalTime = new Date(journey[i].idealTime.getTime() + totalDelay * 60000);
         }
     }
 
-    if (totalDelay > 0) {
-        const waitStationCode = directionKey === 'WEST' ? 'AMF' : 'STO';
-        const waitStationIndex = journey.findIndex(s => s.code === waitStationCode);
-
-        if (waitStationIndex !== -1) {
-            journey[waitStationIndex].waitTime = totalDelay;
-            for (let i = waitStationIndex; i < journey.length; i++) {
-                journey[i].finalTime = new Date(journey[i].idealTime.getTime() + totalDelay * 60000);
-            }
-        }
+    // ✓ pad voor elk station waarvan de (verschoven) tijd op een padminuut
+    // valt, binnen dezelfde marge
+    for (const station of journey) {
+        const pathInfo = pathData[station.code]?.[directionKey];
+        if (!pathInfo?.length) continue;
+        const minuut = station.finalTime.getMinutes();
+        const afwijking = Math.min(...pathInfo.map(m =>
+            Math.min((m - minuut + 60) % 60, (minuut - m + 60) % 60)));
+        if (afwijking <= PAD_MARGE) station.viaPad = true;
     }
 
     const finalJourney = journey.map(s => ({

@@ -45,7 +45,16 @@ export function laadTestData() {
     updateState('stationCoords', JSON.parse(readFileSync(join(root, 'afstanden_check', 'out_osm', 'osm_stations_coords.json'), 'utf8')));
     updateState('extrapolationRules', JSON.parse(readFileSync(join(root, 'extrapolatie.json'), 'utf8')));
     updateState('speedProfile', JSON.parse(readFileSync(join(root, 'snelheden.json'), 'utf8')));
-    updateState('pathData', {});
+
+    // Echte goederenpaden, zodat de paduitlijning meedraait in de tests
+    const padCsv = readFileSync(join(root, 'goederenpaden.csv'), 'utf8').trim().split('\n');
+    const pathData = {};
+    padCsv.slice(1).forEach(line => {
+        const [station, richting, paden] = line.split(',').map(v => v.replace(/"/g, '').trim());
+        if (!pathData[station]) pathData[station] = {};
+        pathData[station][richting] = paden.split(';').map(Number);
+    });
+    updateState('pathData', pathData);
 
     const overgangen = JSON.parse(readFileSync(join(root, 'overgangen.json'), 'utf8'));
     updateState('bannedTurns', overgangen.verboden || []);
