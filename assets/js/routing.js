@@ -427,62 +427,12 @@ export function analyzeTrajectory(parsedData, targetStationCode) {
     }
 
     // --- Uitlijnen op goederenpaden (goederenpaden.csv) ---
-    // Het anker is het éérste station na de spot met bekende padminuten voor
-    // deze rijrichting — bewust onafhankelijk van het gekozen doelstation,
-    // anders zouden de tijden veranderen met je doelstationkeuze. Ligt de
-    // berekende tijd vlak ná een padminuut (de trein rijdt het pad al), dan
-    // is er geen wachttijd; anders wacht de trein tot de volgende padminuut.
+    // Goederentreinen rijden de corridor gewoon door; het pad wordt gepakt
+    // op de regelstations — Amersfoort westwaarts (overgang naar de
+    // Gooilijnpaden), Stroe oostwaarts. Valt de berekende tijd daar buiten
+    // de marge, dan wacht de trein er tot de volgende padminuut. De
+    // uitlijning is bewust onafhankelijk van het gekozen doelstation.
     const PAD_MARGE = 7; // minuten "achterop" die nog als hetzelfde pad tellen
-    let totalDelay = 0;
-    let ankerIndex = -1;
-
-    // Kandidaat-ankers: de eerste drie padstations na de spot. Het anker met
-    // de kleinste wachttijd wint — een dun bemeten station (weinig bekende
-    // padminuten) kan zo geen onrealistisch lange wachttijd afdwingen.
-    let kandidaten = 0;
-    for (let i = 1; i < journey.length && kandidaten < 3; i++) {
-        const pathInfo = pathData[journey[i].code]?.[directionKey];
-        if (!pathInfo?.length) continue;
-        kandidaten++;
-        const idealMinutes = journey[i].idealTime.getMinutes();
-        const naarVoren = Math.min(...pathInfo.map(m => (m - idealMinutes + 60) % 60));
-        const naarAchteren = Math.min(...pathInfo.map(m => (idealMinutes - m + 60) % 60));
-        const delay = naarAchteren <= PAD_MARGE ? 0 : naarVoren;
-        if (ankerIndex === -1 || delay < totalDelay) {
-            ankerIndex = i;
-            totalDelay = delay;
-        }
-        if (totalDelay === 0) break;
-    }
-
-    if (totalDelay > 0 && ankerIndex !== -1) {
-        // Goederentreinen wachten niet zomaar midden op de corridor: de
-        // wachttijd valt op het eerste echte wachtpunt tussen spot en anker —
-        // een grensstation of het klassieke regelstation (Amf west / Sto
-        // oost). Ligt er geen wachtpunt vóór het anker, dan staat de trein
-        // gewoon nog even op het spotstation zelf.
-        const klassiek = directionKey === 'WEST' ? 'AMF' : 'STO';
-        let waitStationIndex = 0;
-        for (let i = 1; i <= ankerIndex; i++) {
-            if (grensoponthoud[journey[i].code] || journey[i].code === klassiek) {
-                waitStationIndex = i;
-                break;
-            }
-        }
-
-        journey[waitStationIndex].waitTime += totalDelay;
-        // Het spotstation houdt zijn gespotte tijd; de verschuiving begint
-        // bij het eerstvolgende station
-        for (let i = Math.max(1, waitStationIndex); i < journey.length; i++) {
-            journey[i].finalTime = new Date(journey[i].idealTime.getTime() + totalDelay * 60000);
-        }
-    }
-
-    // --- Herpadering op regelstations ---
-    // Westwaarts stapt een doorgaande trein bij Amersfoort over van de
-    // Bentheimroute-paden op de Gooilijnpaden (oostwaarts bij Stroe): daar
-    // wordt een nieuw pad gepakt. Valt de al verschoven tijd daar buiten de
-    // marge, dan komt op dat station extra wachttijd bij.
     const regelStations = directionKey === 'WEST' ? ['AMF'] : ['STO'];
     for (const code of regelStations) {
         const idx = journey.findIndex(s => s.code === code);
