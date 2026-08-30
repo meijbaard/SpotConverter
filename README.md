@@ -263,7 +263,7 @@ MIT © 2025–2026 Mark Eijbaard
 
 ### v5.7.0 — Landingspagina, volledige footer & informatiepagina's
 
-- De startpagina is nu ook een **landingspagina**: onder het invoerblok een foto van OMa Stoomlok (met naamsvermelding en link) en de sectie "Wat kan SpotConverter?" met negen functiekaartjes — die verdwijnt zodra je een spot plakt en komt terug bij een leeg invoerveld
+- De startpagina is nu ook een **landingspagina**: onder het invoerblok een foto van Oma Stoomlok (met naamsvermelding en link) en de sectie "Wat kan SpotConverter?" met negen functiekaartjes — die verdwijnt zodra je een spot plakt en komt terug bij een leeg invoerveld
 - **Volledige footer** in flessengroen met vier kolommen (merk, onderdelen, informatie, contact), versie/licentie en bronvermelding; de onderdeel-links activeren direct het juiste tabblad
 - Nieuwe pagina **disclaimer.html**: wat de berekeningen wel en niet zijn, veiligheid langs het spoor, en een privacyverklaring (geen tracking, alles client-side, welke externe diensten je browser benadert)
 - Nieuwe pagina **bronnen.html**: alle openbare bronnen met de regels waaronder ze gebruikt worden en links ernaartoe
