@@ -1,11 +1,11 @@
 {
-  "name": "SpotConverter Pro",
+  "name": "SpotConverter",
   "short_name": "SpotConverter",
   "description": "Analyseer WhatsApp-spotberichten over goederentreinen",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f0f6fb",
-  "theme_color": "#1976c8",
+  "background_color": "#efece3",
+  "theme_color": "#2b5c45",
   "icons": [
     {
       "src": "assets/images/web-app-manifest-192x192.png",
