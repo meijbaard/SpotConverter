@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-08-31T09:50:55+00:00",
+ "opgehaald": "2026-08-31T20:51:35+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -813,6 +813,21 @@
    "gevolg": "dienstregeling aangepast"
   },
   {
+   "id": "7008181",
+   "type": "MAINTENANCE",
+   "titel": "Sittard - Maastricht.",
+   "van": "2026-09-14T05:00:00+02:00",
+   "tot": "2026-09-14T05:45:00+02:00",
+   "stations": [
+    "BDE",
+    "BK",
+    "LUT",
+    "MT",
+    "STD"
+   ],
+   "gevolg": "geen Intercity's"
+  },
+  {
    "id": "7008140",
    "type": "MAINTENANCE",
    "titel": "Heerlen - Aachen Hbf.",
@@ -824,6 +839,24 @@
     "HRL",
     "HZ",
     "LG"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008326",
+   "type": "MAINTENANCE",
+   "titel": "Hengelo - Bielefeld.",
+   "van": "2026-09-18T21:15:00+02:00",
+   "tot": "2026-09-20T01:00:00+02:00",
+   "stations": [
+    "BH",
+    "BIELEF",
+    "BUENDE",
+    "HGL",
+    "HGLO",
+    "ODZ",
+    "OSNH",
+    "RHEINE"
    ],
    "gevolg": "er rijden bussen"
   },
@@ -932,6 +965,23 @@
    "gevolg": "er rijden bussen"
   },
   {
+   "id": "7008211",
+   "type": "MAINTENANCE",
+   "titel": "Den Haag - Rotterdam.",
+   "van": "2026-09-20T01:30:00+02:00",
+   "tot": "2026-09-20T04:00:00+02:00",
+   "stations": [
+    "DT",
+    "DTCP",
+    "GV",
+    "GVMW",
+    "RSW",
+    "RTD",
+    "SDM"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
    "id": "7008295",
    "type": "MAINTENANCE",
    "titel": "Amsterdam - Haarlem.",
@@ -943,6 +993,22 @@
     "HLM",
     "HLMS",
     "HWZB"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008148",
+   "type": "MAINTENANCE",
+   "titel": "Maastricht - Liège / Luik.",
+   "van": "2026-09-21T22:30:00+02:00",
+   "tot": "2026-09-25T00:50:00+02:00",
+   "stations": [
+    "BRESSX",
+    "EDN",
+    "FVS",
+    "LUIK",
+    "MT",
+    "MTR"
    ],
    "gevolg": "er rijden bussen"
   }
