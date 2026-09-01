@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-08-31T20:51:35+00:00",
+ "opgehaald": "2026-09-01T00:39:28+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -37,27 +37,6 @@
     "RSD",
     "ZLW",
     "ZVB"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008154",
-   "type": "MAINTENANCE",
-   "titel": "Roosendaal - Vlissingen.",
-   "van": "2026-08-31T23:20:00+02:00",
-   "tot": "2026-09-01T01:30:00+02:00",
-   "stations": [
-    "ARN",
-    "BGN",
-    "BZL",
-    "GS",
-    "KBD",
-    "KRG",
-    "MDB",
-    "RB",
-    "RSD",
-    "VS",
-    "VSS"
    ],
    "gevolg": "er rijden bussen"
   },
