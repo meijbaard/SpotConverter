@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-01T18:35:44+00:00",
+ "opgehaald": "2026-09-01T23:21:04+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -70,7 +70,7 @@
     "RTD",
     "SDM"
    ],
-   "gevolg": "geen treinen"
+   "gevolg": "er rijden bussen"
   },
   {
    "id": "7008174",
