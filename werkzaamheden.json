@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-01T23:21:04+00:00",
+ "opgehaald": "2026-09-02T07:57:54+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -37,38 +37,6 @@
     "RSD",
     "ZLW",
     "ZVB"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008220",
-   "type": "MAINTENANCE",
-   "titel": "Schiphol - Leiden.",
-   "van": "2026-09-02T01:00:00+02:00",
-   "tot": "2026-09-02T05:30:00+02:00",
-   "stations": [
-    "HFD",
-    "LEDN",
-    "NVP",
-    "SHL",
-    "SSH"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008331",
-   "type": "MAINTENANCE",
-   "titel": "Den Haag - Rotterdam.",
-   "van": "2026-09-02T01:20:00+02:00",
-   "tot": "2026-09-02T05:15:00+02:00",
-   "stations": [
-    "DT",
-    "DTCP",
-    "GV",
-    "GVMW",
-    "RSW",
-    "RTD",
-    "SDM"
    ],
    "gevolg": "er rijden bussen"
   },
