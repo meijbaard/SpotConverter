@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-02T07:57:54+00:00",
+ "opgehaald": "2026-09-03T08:07:24+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -37,72 +37,6 @@
     "RSD",
     "ZLW",
     "ZVB"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008174",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Delfzijl; Groningen - Eemshaven.",
-   "van": "2026-09-03T00:10:00+02:00",
-   "tot": "2026-09-03T02:03:00+02:00",
-   "stations": [
-    "APG",
-    "BDM",
-    "BF",
-    "DZ",
-    "DZW",
-    "EEM",
-    "GN",
-    "GNN",
-    "LP",
-    "RD",
-    "STM",
-    "SWD",
-    "UHM",
-    "UHZ",
-    "UST",
-    "WFM",
-    "WSM"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008176",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Bad Nieuweschans; Groningen - Veendam.",
-   "van": "2026-09-03T00:10:00+02:00",
-   "tot": "2026-09-03T02:35:00+02:00",
-   "stations": [
-    "GERP",
-    "GN",
-    "HGZ",
-    "KW",
-    "MTH",
-    "NSCH",
-    "SDA",
-    "VDM",
-    "WS",
-    "ZB"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008173",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Leeuwarden.",
-   "van": "2026-09-03T01:27:00+02:00",
-   "tot": "2026-09-03T01:47:00+02:00",
-   "stations": [
-    "BP",
-    "DWE",
-    "FWD",
-    "GK",
-    "GN",
-    "HDG",
-    "LW",
-    "LWC",
-    "ZH"
    ],
    "gevolg": "er rijden bussen"
   },
