@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-03T08:07:24+00:00",
+ "opgehaald": "2026-09-03T13:37:26+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -73,6 +73,21 @@
     "VST"
    ],
    "gevolg": "geen Sprinters"
+  },
+  {
+   "id": "7008336",
+   "type": "MAINTENANCE",
+   "titel": "Amersfoort - Barneveld.",
+   "van": "2026-09-04T09:15:00+02:00",
+   "tot": "2026-09-04T16:15:00+02:00",
+   "stations": [
+    "AMF",
+    "BNC",
+    "BNN",
+    "BNZ",
+    "HVL"
+   ],
+   "gevolg": "minder stoptreinen"
   },
   {
    "id": "7006839",
