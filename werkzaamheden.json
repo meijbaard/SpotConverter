@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-03T23:18:58+00:00",
+ "opgehaald": "2026-09-04T08:02:05+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -57,22 +57,6 @@
     "RHEINE"
    ],
    "gevolg": "aangep. dienstregeling en businzet"
-  },
-  {
-   "id": "7008076",
-   "type": "MAINTENANCE",
-   "titel": "Leiden - Den Haag.",
-   "van": "2026-09-04T05:00:00+02:00",
-   "tot": "2026-09-04T05:20:00+02:00",
-   "stations": [
-    "DVNK",
-    "GVC",
-    "GVM",
-    "LAA",
-    "LEDN",
-    "VST"
-   ],
-   "gevolg": "geen Sprinters"
   },
   {
    "id": "7008336",
@@ -606,6 +590,24 @@
     "SM",
     "TG",
     "VL"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008337",
+   "type": "MAINTENANCE",
+   "titel": "Roosendaal - Antwerpen.",
+   "van": "2026-09-12T05:00:00+02:00",
+   "tot": "2026-09-14T01:00:00+02:00",
+   "stations": [
+    "ATW",
+    "ESN",
+    "FKTH",
+    "GKT",
+    "GWD",
+    "LKP",
+    "MID",
+    "RSD"
    ],
    "gevolg": "er rijden bussen"
   },
