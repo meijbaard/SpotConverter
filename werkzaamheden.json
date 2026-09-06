@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-05T22:57:13+00:00",
+ "opgehaald": "2026-09-06T07:57:17+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -155,21 +155,6 @@
     "SWK",
     "WV",
     "ZL"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008305",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Haarlem.",
-   "van": "2026-09-06T01:50:00+02:00",
-   "tot": "2026-09-06T05:50:00+02:00",
-   "stations": [
-    "ASD",
-    "ASS",
-    "HLM",
-    "HLMS",
-    "HWZB"
    ],
    "gevolg": "er rijden bussen"
   },
@@ -1042,6 +1027,22 @@
     "HRL",
     "HZ",
     "LG"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008241",
+   "type": "MAINTENANCE",
+   "titel": "Almelo - Hardenberg.",
+   "van": "2026-09-27T04:00:00+02:00",
+   "tot": "2026-09-28T02:00:00+02:00",
+   "stations": [
+    "AML",
+    "DA",
+    "HDB",
+    "MRB",
+    "VHP",
+    "VZ"
    ],
    "gevolg": "er rijden bussen"
   }
