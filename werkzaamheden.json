@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-07T23:32:27+00:00",
+ "opgehaald": "2026-09-08T08:09:09+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -57,76 +57,6 @@
     "RHEINE"
    ],
    "gevolg": "aangep. dienstregeling en businzet"
-  },
-  {
-   "id": "7008259",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Utrecht; Amsterdam - Gouda.",
-   "van": "2026-09-07T20:15:00+02:00",
-   "tot": "2026-09-08T02:00:00+02:00",
-   "stations": [
-    "AC",
-    "ASA",
-    "ASB",
-    "ASD",
-    "ASDM",
-    "ASHD",
-    "BKL",
-    "DVD",
-    "GD",
-    "GDG",
-    "MAS",
-    "UT",
-    "UTZL",
-    "WD"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008223",
-   "type": "MAINTENANCE",
-   "titel": "Utrecht - Amersfoort; Utrecht - Hilversum.",
-   "van": "2026-09-08T01:00:00+02:00",
-   "tot": "2026-09-08T05:00:00+02:00",
-   "stations": [
-    "AMF",
-    "BHV",
-    "DLD",
-    "HOR",
-    "HVS",
-    "HVSP",
-    "UT",
-    "UTO"
-   ],
-   "gevolg": "aangep. dienstregeling en businzet"
-  },
-  {
-   "id": "7008232",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Alkmaar; Haarlem - Alkmaar.",
-   "van": "2026-09-08T04:45:00+02:00",
-   "tot": "2026-09-08T05:20:00+02:00",
-   "stations": [
-    "AMR",
-    "ASD",
-    "ASS",
-    "BLL",
-    "BV",
-    "CAS",
-    "DRH",
-    "HK",
-    "HLM",
-    "HLO",
-    "KMA",
-    "KZ",
-    "SPTN",
-    "SPTZ",
-    "UTG",
-    "WM",
-    "ZD",
-    "ZZS"
-   ],
-   "gevolg": "geen treinen"
   },
   {
    "id": "7008260",
@@ -860,6 +790,41 @@
     "MRB",
     "VHP",
     "VZ"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008150",
+   "type": "MAINTENANCE",
+   "titel": "Maastricht - Liège / Luik.",
+   "van": "2026-09-28T22:30:00+02:00",
+   "tot": "2026-10-02T00:50:00+02:00",
+   "stations": [
+    "BRESSX",
+    "EDN",
+    "FVS",
+    "LUIK",
+    "MT",
+    "MTR"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008304",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Delfzijl.",
+   "van": "2026-09-28T23:00:00+02:00",
+   "tot": "2026-09-29T05:00:00+02:00",
+   "stations": [
+    "APG",
+    "BDM",
+    "DZ",
+    "DZW",
+    "GN",
+    "GNN",
+    "LP",
+    "STM",
+    "SWD"
    ],
    "gevolg": "er rijden bussen"
   }
