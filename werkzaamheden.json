@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-08T23:25:19+00:00",
+ "opgehaald": "2026-09-09T08:13:02+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -57,51 +57,6 @@
     "RHEINE"
    ],
    "gevolg": "aangep. dienstregeling en businzet"
-  },
-  {
-   "id": "7008260",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Utrecht; Amsterdam - Gouda.",
-   "van": "2026-09-08T21:15:00+02:00",
-   "tot": "2026-09-09T03:00:00+02:00",
-   "stations": [
-    "AC",
-    "ASA",
-    "ASB",
-    "ASD",
-    "ASDM",
-    "ASHD",
-    "BKL",
-    "DVD",
-    "GD",
-    "GDG",
-    "MAS",
-    "UT",
-    "UTZL",
-    "WD"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008250",
-   "type": "MAINTENANCE",
-   "titel": "Hoofddorp - Schiphol - Hoorn.",
-   "van": "2026-09-09T00:35:00+02:00",
-   "tot": "2026-09-09T01:30:00+02:00",
-   "stations": [
-    "ASDL",
-    "ASS",
-    "HFD",
-    "HN",
-    "HNK",
-    "PMO",
-    "PMR",
-    "PMW",
-    "SHL",
-    "ZD",
-    "ZDK"
-   ],
-   "gevolg": "er rijden bussen"
   },
   {
    "id": "7008139",
