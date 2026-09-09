@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-09T08:13:02+00:00",
+ "opgehaald": "2026-09-09T23:18:13+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -57,21 +57,6 @@
     "RHEINE"
    ],
    "gevolg": "aangep. dienstregeling en businzet"
-  },
-  {
-   "id": "7008139",
-   "type": "MAINTENANCE",
-   "titel": "Heerlen - Aachen Hbf.",
-   "van": "2026-09-09T21:50:00+02:00",
-   "tot": "2026-09-10T01:15:00+02:00",
-   "stations": [
-    "AHBF",
-    "EGHM",
-    "HRL",
-    "HZ",
-    "LG"
-   ],
-   "gevolg": "er rijden bussen"
   },
   {
    "id": "7008296",
@@ -782,6 +767,71 @@
     "SSH"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008307",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Delfzijl; Groningen - Eemshaven.",
+   "van": "2026-10-01T00:10:00+02:00",
+   "tot": "2026-10-01T02:25:00+02:00",
+   "stations": [
+    "APG",
+    "BDM",
+    "BF",
+    "DZ",
+    "DZW",
+    "EEM",
+    "GN",
+    "GNN",
+    "LP",
+    "RD",
+    "STM",
+    "SWD",
+    "UHM",
+    "UHZ",
+    "UST",
+    "WFM",
+    "WSM"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008308",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Bad Nieuweschans; Groningen - Veendam.",
+   "van": "2026-10-01T00:10:00+02:00",
+   "tot": "2026-10-01T02:35:00+02:00",
+   "stations": [
+    "GERP",
+    "GN",
+    "HGZ",
+    "KW",
+    "MTH",
+    "NSCH",
+    "SDA",
+    "VDM",
+    "WS",
+    "ZB"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008269",
+   "type": "MAINTENANCE",
+   "titel": "Zwolle - Groningen.",
+   "van": "2026-10-01T01:00:00+02:00",
+   "tot": "2026-10-01T05:00:00+02:00",
+   "stations": [
+    "ASN",
+    "BL",
+    "GERP",
+    "GN",
+    "HGV",
+    "HRN",
+    "MP",
+    "ZL"
+   ],
+   "gevolg": "aangep. dienstregeling en businzet"
   }
  ]
 }
