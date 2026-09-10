@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-09T23:18:13+00:00",
+ "opgehaald": "2026-09-10T08:12:07+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -71,67 +71,6 @@
     "LAA",
     "LEDN",
     "VST"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008242",
-   "type": "MAINTENANCE",
-   "titel": "Tilburg Universiteit - Eindhoven.",
-   "van": "2026-09-10T00:23:00+02:00",
-   "tot": "2026-09-10T05:30:00+02:00",
-   "stations": [
-    "BET",
-    "BTL",
-    "EHS",
-    "EHV",
-    "OT",
-    "TB",
-    "TBU"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008251",
-   "type": "MAINTENANCE",
-   "titel": "Hoofddorp - Schiphol - Hoorn.",
-   "van": "2026-09-10T00:40:00+02:00",
-   "tot": "2026-09-10T01:30:00+02:00",
-   "stations": [
-    "ASDL",
-    "ASS",
-    "HFD",
-    "HN",
-    "HNK",
-    "PMO",
-    "PMR",
-    "PMW",
-    "SHL",
-    "ZD",
-    "ZDK"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008249",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Enkhuizen.",
-   "van": "2026-09-10T04:20:00+02:00",
-   "tot": "2026-09-10T04:55:00+02:00",
-   "stations": [
-    "ASD",
-    "ASS",
-    "BKF",
-    "BKG",
-    "EKZ",
-    "HKS",
-    "HN",
-    "HNK",
-    "PMO",
-    "PMR",
-    "PMW",
-    "ZD",
-    "ZDK"
    ],
    "gevolg": "er rijden bussen"
   },
@@ -832,6 +771,53 @@
     "ZL"
    ],
    "gevolg": "aangep. dienstregeling en businzet"
+  },
+  {
+   "id": "7008306",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Leeuwarden.",
+   "van": "2026-10-01T01:25:00+02:00",
+   "tot": "2026-10-01T02:00:00+02:00",
+   "stations": [
+    "BP",
+    "DWE",
+    "FWD",
+    "GK",
+    "GN",
+    "HDG",
+    "LW",
+    "LWC",
+    "ZH"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008270",
+   "type": "MAINTENANCE",
+   "titel": "Amsterdam - Alkmaar; Haarlem - Alkmaar.",
+   "van": "2026-10-01T04:00:00+02:00",
+   "tot": "2026-10-01T05:20:00+02:00",
+   "stations": [
+    "AMR",
+    "ASD",
+    "ASS",
+    "BLL",
+    "BV",
+    "CAS",
+    "DRH",
+    "HK",
+    "HLM",
+    "HLO",
+    "KMA",
+    "KZ",
+    "SPTN",
+    "SPTZ",
+    "UTG",
+    "WM",
+    "ZD",
+    "ZZS"
+   ],
+   "gevolg": "dienstregeling aangepast"
   }
  ]
 }
