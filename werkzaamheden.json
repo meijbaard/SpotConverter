@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-10T13:39:06+00:00",
+ "opgehaald": "2026-09-11T08:07:14+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -59,52 +59,18 @@
    "gevolg": "aangep. dienstregeling en businzet"
   },
   {
-   "id": "7008296",
+   "id": "7008351",
    "type": "MAINTENANCE",
-   "titel": "Leiden - Den Haag HS.",
-   "van": "2026-09-10T00:15:00+02:00",
-   "tot": "2026-09-11T04:45:00+02:00",
+   "titel": "Deventer - Almelo.",
+   "van": "2026-09-11T10:30:00+02:00",
+   "tot": "2026-09-11T11:15:00+02:00",
    "stations": [
-    "DVNK",
-    "GV",
-    "GVM",
-    "LAA",
-    "LEDN",
-    "VST"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008243",
-   "type": "MAINTENANCE",
-   "titel": "Breda - Eindhoven.",
-   "van": "2026-09-11T00:23:00+02:00",
-   "tot": "2026-09-11T05:30:00+02:00",
-   "stations": [
-    "BD",
-    "BET",
-    "BTL",
-    "EHS",
-    "EHV",
-    "GZ",
-    "OT",
-    "TB",
-    "TBR",
-    "TBU"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008346",
-   "type": "MAINTENANCE",
-   "titel": "Roermond - Sittard.",
-   "van": "2026-09-11T05:00:00+02:00",
-   "tot": "2026-09-11T15:00:00+02:00",
-   "stations": [
-    "EC",
-    "RM",
-    "SRN",
-    "STD"
+    "AML",
+    "DV",
+    "DVC",
+    "HON",
+    "RSN",
+    "WDN"
    ],
    "gevolg": "geen treinen"
   },
@@ -914,6 +880,27 @@
     "ZZS"
    ],
    "gevolg": "dienstregeling aangepast"
+  },
+  {
+   "id": "7008343",
+   "type": "MAINTENANCE",
+   "titel": "Roosendaal - Vlissingen.",
+   "van": "2026-10-02T04:50:00+02:00",
+   "tot": "2026-10-05T01:40:00+02:00",
+   "stations": [
+    "ARN",
+    "BGN",
+    "BZL",
+    "GS",
+    "KBD",
+    "KRG",
+    "MDB",
+    "RB",
+    "RSD",
+    "VS",
+    "VSS"
+   ],
+   "gevolg": "er rijden bussen"
   }
  ]
 }
