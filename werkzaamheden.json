@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-12T12:53:37+00:00",
+ "opgehaald": "2026-09-12T23:04:25+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -1013,6 +1013,30 @@
     "LUIK",
     "MT",
     "MTR"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008265",
+   "type": "MAINTENANCE",
+   "titel": "Amersfoort - Zwolle; Lelystad - Zwolle.",
+   "van": "2026-10-04T00:42:00+02:00",
+   "tot": "2026-10-04T06:42:00+02:00",
+   "stations": [
+    "AMF",
+    "AMFS",
+    "AVAT",
+    "DRON",
+    "EML",
+    "HD",
+    "HDE",
+    "KPNZ",
+    "LLS",
+    "NKK",
+    "NS",
+    "PT",
+    "WZ",
+    "ZL"
    ],
    "gevolg": "er rijden bussen"
   }
