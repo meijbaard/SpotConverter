@@ -354,7 +354,8 @@ networks:
 Kopieer `homemachines/markeijbaard-nl/deploy.sh` en pas `REF` en `CONTAINER`
 aan. Het script haalt het image op, herstart alleen als er werkelijk iets nieuws
 is, en eindigt pas op "Klaar!" als de container zich gezond meldt — anders op
-exitcode 1, zodat cron een mail stuurt.
+exitcode 1. Dat die exitcode ook ergens terechtkomt, regel je in de cronregel;
+zie **Valkuilen 6**.
 
 ### 2c. `npm-advanced.conf`
 
@@ -444,8 +445,11 @@ En `.gitignore` in `<MAP>`, zodat alleen deze bestanden in git komen:
 7. **Cron**, en dezelfde regel in de tijdentabel van `KENNISBANK.md` §5b:
 
    ```
-   */10 * * * * <MAP>/deploy.sh >> <MAP>/deploy.log 2>&1
+   */10 * * * * <MAP>/deploy.sh >> <MAP>/deploy.log 2>&1 || tail -5 <MAP>/deploy.log
    ```
+
+   Het `|| tail` is geen franje — zonder dat stuk kan deze regel nooit alarm
+   slaan. Zie **Valkuilen 6**.
 
 8. **Uptime Kuma**: HTTP-monitor op `https://<DOMEIN>/healthz`, 2 pogingen,
    certificaatmelding aan.
@@ -496,7 +500,37 @@ en controleer het met echte verzoeken vóór je publiceert — `docker/smoketest
 in `SpotConverter` is daar een uitgewerkt voorbeeld van. Dat is ook de enige
 plek waar je de combinatie `read_only` + tmpfs test zonder de server te raken.
 
-**6. Committen kan struikelen op de YubiKey.** Bij een `git pull --rebase` moet
+**6. Cron mailt op uitvoer, niet op exitcode.** Met
+`>> deploy.log 2>&1` gaat álle uitvoer naar het logbestand en houdt cron niets
+over om te versturen. Een script dat stil op exitcode 1 eindigt is voor cron een
+geslaagde, zwijgzame run. De regel uit stap 7 kón dus nooit een mail opleveren,
+hoe goed je MTA ook stond. Daar kwam `markeijbaard-nl` op 12 september 2026
+achter: die cronjob faalde vanaf 11 september ruim een dag lang elke tien
+minuten op *Permission denied* — de site bleef met een oud image in de lucht,
+dus Uptime Kuma zag niets — en er kwam geen enkel signaal. Vandaar het
+`|| tail` op de cronregel. Controleer meteen ook of de MTA van de server
+überhaupt aflevert:
+
+```bash
+journalctl -u cron --since "2 days ago" | grep -i mta
+```
+
+Zie je `got status 0x004e from MTA`, dan is dat `EX_CONFIG` (78): de MTA
+weigert op een configuratiefout en er komt ook mét `|| tail` niets aan. Zolang
+dat zo is, is `deploy.log` je enige signaal — of een push-monitor in Uptime
+Kuma, die niet van mail afhangt.
+
+**7. Het image moet uitvoerbaar op de server aankomen.** `core.fileMode` staat
+in `homemachines` op `false`, omdat die repo in Nextcloud ligt. Een `chmod +x`
+op de Mac wordt daardoor door git genegeerd en `deploy.sh` belandt als `100644`
+op de server, waar cron hem afwijst met *Permission denied*. Zet de vlag in de
+index in plaats van op schijf:
+
+```bash
+git update-index --chmod=+x <MAP>/deploy.sh
+```
+
+**8. Committen kan struikelen op de YubiKey.** Bij een `git pull --rebase` moet
 git de commit opnieuw ondertekenen, en dat aanraakvenster mis je makkelijk;
 je krijgt dan `Couldn't sign message: device not found`. Werkt dat tegen:
 
