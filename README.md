@@ -137,9 +137,14 @@ bericht ─→ parser.js ─→ routing.js ─→ ui.js
 ├── afstanden_check/        # datascripts (coördinaten, afstanden, validatie)
 ├── chatmining/             # chatdump -> kandidaat-data-updates (output in .gitignore)
 ├── tests/                  # node --test suite (parser, routering & dienstregeling)
-├── .github/workflows/      # deploy naar Pages + CI (tests & datavalidatie)
+├── docker/
+│   ├── nginx.conf          # serverblok van de container (mime, gzip, cache, 404)
+│   └── smoketest.sh        # rooktest op het gebouwde image (draait in CI)
+├── Dockerfile              # nginx + de repo; geen build-stap, geen RUN
+├── .dockerignore           # wat er níét in de webroot hoort
+├── .github/workflows/      # publiceren naar Pages + GHCR, CI (tests & datavalidatie)
 ├── *.csv / *.json          # datasets (zie hieronder)
-├── CNAME                   # spotconverter.markeijbaard.nl
+├── CNAME                   # spotconverter.markeijbaard.nl (alleen voor Pages)
 └── .nojekyll
 ```
 
@@ -225,7 +230,25 @@ Zonder secret slaat de workflow zichzelf netjes over. Parser testen zonder API k
 
 ## Deploy
 
-Automatisch via GitHub Actions (`.github/workflows/pages.yml`) naar GitHub Pages met custom domain `spotconverter.markeijbaard.nl` (CNAME + `.nojekyll`). Commit & push naar `main` publiceert.
+Commit & push naar `main` publiceert. `.github/workflows/pages.yml` levert daarna aan **twee** kanten af:
+
+| Doel | Wat | Waar het landt |
+|---|---|---|
+| GitHub Pages | de repo als Pages-artefact | `spotconverter.markeijbaard.nl` (CNAME + `.nojekyll`) |
+| GHCR | een nginx-image met de repo erin | `ghcr.io/meijbaard/spotconverter:main` |
+
+De homeserver haalt dat image elke tien minuten op en draait het als container `spotconverter-site`. Beide doelen staan los van elkaar: gaat het publiceren van het image mis, dan wordt Pages gewoon bijgewerkt, en andersom. Zolang dat zo blijft, is terugvallen op Pages één DNS-wijziging. De serverkant staat in [`homemachines/spotconverter/`](https://github.com/meijbaard/homemachines); de achtergrond bij de verhuizing in [HOMESERVER-MIGRATIE.md](HOMESERVER-MIGRATIE.md).
+
+Er is geen build-stap: de repo *ís* de site. Wat er in het image belandt is dus precies wat `.dockerignore` overlaat — de HTML, `assets/`, de CSV- en JSON-bestanden in de root en `afstanden_check/out_osm/osm_stations_coords.json`. De Python-scripts, de testsuite en de documentatie blijven erbuiten.
+
+Het image lokaal bouwen en nalopen:
+
+```bash
+docker build -t spotconverter:test .
+./docker/smoketest.sh spotconverter:test
+```
+
+Die rooktest draait ook in de workflow, vóór het publiceren: hij start de container met dezelfde beperkingen als de server (`read_only`, tmpfs) en controleert de pagina's, elk bestand uit `PRECACHE_URLS` in `sw.js`, alle databestanden, de mime-types, gzip, de cachekoppen, de 404-pagina en of er geen broncode in de webroot is beland. Faalt er iets, dan komt het image niet in GHCR.
 
 > ⚠️ Verhoog bij elke release `VERSION` in `sw.js` (en het versienummer in de footer van `index.html`), anders blijven bezoekers op de geprecachte oude app-shell hangen.
 

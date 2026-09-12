@@ -1,3 +1,23 @@
+# .github/workflows/pages.yml
+#
+# De site wordt naar twee plekken gepubliceerd:
+#
+#   1. GitHub Pages                          — het huidige adres, blijft draaien
+#                                              tot de overstap rond is
+#   2. ghcr.io/meijbaard/spotconverter       — het image dat de homeserver draait
+#
+# De twee publicatiejobs staan bewust los van elkaar en hangen allebei alleen
+# aan 'build'. Gaat het duwen van het image mis, dan is de run rood en zie je
+# dat, maar de site op Pages wordt gewoon bijgewerkt — en andersom.
+#
+# Er is geen build-stap: de repo ís de site (variant B uit
+# HOMESERVER-MIGRATIE.md). De job 'build' pakt de checkout alleen in tot een
+# Pages-artefact; de job 'image' doet zijn eigen checkout.
+#
+# Na de overstap kunnen de jobs 'build' en 'deploy' weg, samen met het
+# CNAME-bestand, .nojekyll en Pages in de repo-instellingen. Haal dan ook
+# `needs: build` uit de job 'image', want die job blijft als enige over.
+# Zolang alles blijft staan, is terugvallen op Pages één DNS-wijziging.
 name: Deploy SpotConverter
 
 on:
@@ -5,10 +25,11 @@ on:
     branches: [ main ]
   workflow_dispatch:   # ← hiermee kun je 'm handmatig starten
 
+# Hieronder staat de bodem; de echte rechten staan per job. Zo mag alleen
+# 'deploy' bij Pages en alleen 'image' bij het pakketregister — niet elke job
+# allebei, zoals bij één blok op workflowniveau.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: "pages"
@@ -17,17 +38,134 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./
+
+  # --- publicatiedoel 1: GitHub Pages ---------------------------------------
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # --- publicatiedoel 2: image voor de homeserver ---------------------------
+  image:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Nginx-configuratie controleren
+        # Native op de runner, dus zonder emulatie. Vangt een tikfout in
+        # nginx.conf met een duidelijke melding, vóór de rooktest hieronder
+        # hem als "container start niet" zou tegenkomen.
+        run: |
+          docker run --rm \
+            -v "$PWD/docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
+            nginx:1.30.4-alpine nginx -t
+
+      - name: Buildx klaarzetten
+        # Nodig voor een build met meerdere platforms; de standaard-driver
+        # van Docker kan dat niet.
+        uses: docker/setup-buildx-action@v3
+
+      - name: Testimage bouwen
+        # Alleen amd64 en met load: true, zodat de rooktest hieronder het
+        # image echt kan starten op de runner. Een multi-arch build laat zich
+        # niet in de lokale docker-daemon laden.
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          platforms: linux/amd64
+          tags: spotconverter:test
+
+      - name: Rooktest op het image
+        # Start de container met dezelfde beperkingen als de server en
+        # controleert pagina's, precache, databestanden, mime-types, gzip,
+        # cachekoppen, de 404-pagina en wat er níét in de webroot mag staan.
+        run: ./docker/smoketest.sh spotconverter:test
+
+      - name: Inloggen bij GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Imagenaam en tags bepalen
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/meijbaard/spotconverter
+          # 'main' is de tag die de server volgt; 'sha-<commit>' blijft staan en
+          # is waar je op terugvalt als een publicatie stukgaat.
+          tags: |
+            type=raw,value=main
+            type=sha
+
+      - name: Image bouwen en publiceren
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          # De runner is amd64, de homeserver arm64. Zonder deze regel krijg je
+          # een image dat op de server meteen afslaat met "exec format error",
+          # in een eindeloze herstartlus.
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Controleren dat er een arm64-variant in zit
+        # De runner is amd64 en kan de arm64-variant niet draaien, maar wél
+        # nakijken of hij bestaat. Ontbreekt hij, dan komt de container op de
+        # homeserver in een herstartlus met "exec format error" — de valkuil
+        # die op 11 september 2026 een avond kostte. Hier faalt de run in
+        # plaats daarvan meteen.
+        run: |
+          set -euo pipefail
+          docker buildx imagetools inspect ghcr.io/meijbaard/spotconverter:main \
+            --format '{{json .Manifest}}' > "$RUNNER_TEMP/manifest.json"
+          python3 - "$RUNNER_TEMP/manifest.json" <<'PY'
+          import json, sys
+          index = json.load(open(sys.argv[1]))
+          gevonden = {
+              f"{m['platform']['os']}/{m['platform']['architecture']}"
+              for m in index.get("manifests", [])
+              if "platform" in m
+              # buildx hangt er ook attestatie-manifesten aan; die melden zich
+              # als unknown/unknown en zijn hier geen architectuur.
+              and m["platform"]["architecture"] != "unknown"
+          }
+          print("Gepubliceerde platforms:", ", ".join(sorted(gevonden)) or "(geen index — single-arch)")
+          ontbreekt = [p for p in ("linux/amd64", "linux/arm64") if p not in gevonden]
+          if ontbreekt:
+              print(f"::error::Ontbreekt in het gepubliceerde image: {', '.join(ontbreekt)}")
+              sys.exit(1)
+          PY
+
+      - name: Meld welk image er klaarstaat
+        run: |
+          {
+            echo "### Image gepubliceerd"
+            echo '```'
+            echo "${{ steps.meta.outputs.tags }}"
+            echo '```'
+            echo "Voor linux/amd64 én linux/arm64. De homeserver pakt de tag \`main\` binnen tien minuten op."
+          } >> "$GITHUB_STEP_SUMMARY"

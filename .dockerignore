@@ -1,0 +1,50 @@
+# Wat er níét in het image hoort.
+#
+# Variant B: de buildcontext is de hele repo en `COPY . /usr/share/nginx/html/`
+# neemt alles mee wat hier overblijft. Dit is dus een opsomming van wat er niet
+# publiek mag komen te staan — niet andersom.
+#
+# docker/ kan hier bewust NIET in: die map moet in de buildcontext blijven,
+# want de COPY van nginx.conf haalt hem daaruit. Gevolg is dat hij in de
+# webroot belandt; `location ^~ /docker/ { deny all; }` in nginx.conf zorgt
+# dat hij niet wordt uitgeleverd. Het testscript is wél overbodig in het
+# image — de workflow draait dat vanuit de checkout.
+docker/smoketest.sh
+
+# Git, CI en editorconfiguratie
+.git
+.gitattributes
+.gitignore
+.github
+.claude
+
+# Bouw- en publicatiebestanden zelf
+Dockerfile
+.dockerignore
+package.json
+package-lock.json
+node_modules
+
+# Alleen voor GitHub Pages; de container heeft er niets aan
+CNAME
+.nojekyll
+
+# Documentatie en testsuite: horen op GitHub, niet op de site
+*.md
+tests
+
+# Python-gereedschap dat de data ophaalt en valideert. Let op: het JSON-bestand
+# afstanden_check/out_osm/osm_stations_coords.json blijft er wél in — de app
+# laadt daar de stationscoördinaten uit. De CSV's ernaast zijn bijvangst van de
+# OSM-controle en horen niet op de site.
+chatmining/
+spoorkaart/
+werkzaamheden/
+afstanden_check/*.py
+afstanden_check/out_osm/*.csv
+**/__pycache__
+
+# Lokale rommel
+**/.DS_Store
+.venv
+graphify-out

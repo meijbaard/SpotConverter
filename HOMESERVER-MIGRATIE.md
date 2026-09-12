@@ -25,6 +25,15 @@ vóór je begint, want twee ervan kosten je anders een avond.
 Hieronder heet dat `<DOMEIN>`, `<IMAGE>`, `<CONTAINER>` en `<MAP>`. `<PAKKET>` is
 het laatste stuk van `<IMAGE>` — dus `tijmenopstoom-nl` of `spotconverter`.
 
+> [!note] Stand voor SpotConverter, 12 september 2026
+> Hoofdstuk 1 is uitgevoerd in deze repo: `docker/nginx.conf`, `Dockerfile`,
+> `.dockerignore` en de job `image` in `.github/workflows/pages.yml` staan
+> klaar. Hoofdstuk 2 staat klaar in `homemachines/spotconverter/`. Er is één
+> ding bij gekomen dat hier nog niet stond: `docker/smoketest.sh`, dat het
+> gebouwde image start en nakijkt vóór het naar GHCR gaat — zie de toelichting
+> onder **Valkuilen 5**. Wat er nog moet gebeuren is hoofdstuk 3, en dat begint
+> met pushen.
+
 ---
 
 ## 1. In deze repo
@@ -477,7 +486,17 @@ de eerste keer lokaal en verandert niet vanzelf. Zonder `docker compose pull`
 start je gewoon opnieuw hetzelfde image — ook als er allang een nieuwe versie in
 GHCR ligt. `deploy.sh` doet die pull; met de hand doe je hem zelf.
 
-**5. Committen kan struikelen op de YubiKey.** Bij een `git pull --rebase` moet
+**5. `nginx -t` ziet de stille fouten niet.** Een configuratie kan foutloos
+laden en tóch de verkeerde site uitleveren: een `types`-blok binnen een
+serverblok vervangt de hele mime-tabel (alles wordt `application/octet-stream`
+en de browser downloadt je voorpagina in plaats van hem te tonen), een te brede
+regel in `.dockerignore` laat een databestand wegvallen, en bij variant B staat
+je broncode zomaar in de webroot. Start het image daarom één keer op de runner
+en controleer het met echte verzoeken vóór je publiceert — `docker/smoketest.sh`
+in `SpotConverter` is daar een uitgewerkt voorbeeld van. Dat is ook de enige
+plek waar je de combinatie `read_only` + tmpfs test zonder de server te raken.
+
+**6. Committen kan struikelen op de YubiKey.** Bij een `git pull --rebase` moet
 git de commit opnieuw ondertekenen, en dat aanraakvenster mis je makkelijk;
 je krijgt dan `Couldn't sign message: device not found`. Werkt dat tegen:
 
