@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-12T07:58:16+00:00",
+ "opgehaald": "2026-09-12T12:53:37+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -54,28 +54,6 @@
     "HLM",
     "LEDN",
     "VH"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008231",
-   "type": "MAINTENANCE",
-   "titel": "Zwolle - Arnhem.",
-   "van": "2026-09-12T01:00:00+02:00",
-   "tot": "2026-09-14T02:00:00+02:00",
-   "stations": [
-    "AH",
-    "AHP",
-    "AHPR",
-    "BMN",
-    "DR",
-    "DV",
-    "OST",
-    "RH",
-    "VP",
-    "WH",
-    "ZL",
-    "ZP"
    ],
    "gevolg": "er rijden bussen"
   },
@@ -154,6 +132,41 @@
     "SHL"
    ],
    "gevolg": "minder treinen"
+  },
+  {
+   "id": "7008357",
+   "type": "MAINTENANCE",
+   "titel": "Zutphen.",
+   "van": "2026-09-12T14:15:00+02:00",
+   "tot": "2026-09-14T02:00:00+02:00",
+   "stations": [
+    "AH",
+    "AHP",
+    "AHPR",
+    "APD",
+    "APDM",
+    "BMN",
+    "DDN",
+    "DR",
+    "DV",
+    "GO",
+    "HGL",
+    "HGLG",
+    "HGLO",
+    "KBK",
+    "LC",
+    "LTV",
+    "ODZ",
+    "RH",
+    "RL",
+    "VD",
+    "VEM",
+    "VP",
+    "WW",
+    "WWW",
+    "ZP"
+   ],
+   "gevolg": "er rijden bussen"
   },
   {
    "id": "7008180",
