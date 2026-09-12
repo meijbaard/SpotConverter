@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-11T23:18:36+00:00",
+ "opgehaald": "2026-09-12T07:58:16+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -21,22 +21,6 @@
     "WR",
     "WS",
     "ZB"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7006838",
-   "type": "MAINTENANCE",
-   "titel": "Dordrecht - Roosendaal.",
-   "van": "2026-08-31T04:00:00+02:00",
-   "tot": "2026-09-12T02:15:00+02:00",
-   "stations": [
-    "DDR",
-    "DDZD",
-    "ODB",
-    "RSD",
-    "ZLW",
-    "ZVB"
    ],
    "gevolg": "er rijden bussen"
   },
@@ -948,6 +932,76 @@
     "ZZS"
    ],
    "gevolg": "metro ipv trein"
+  },
+  {
+   "id": "7008222",
+   "type": "MAINTENANCE",
+   "titel": "Rotterdam - Breda; Rotterdam - Breda - Brussel.",
+   "van": "2026-10-03T04:00:00+02:00",
+   "tot": "2026-10-05T02:00:00+02:00",
+   "stations": [
+    "ATW",
+    "ATWLB",
+    "BD",
+    "BDPB",
+    "BERCH",
+    "BRUSC",
+    "BRUSN",
+    "BRUSZ",
+    "MECH",
+    "NDKP",
+    "RLB",
+    "RTB",
+    "RTD",
+    "RTZ"
+   ],
+   "gevolg": "geen treinen op de HSL"
+  },
+  {
+   "id": "7008325",
+   "type": "MAINTENANCE",
+   "titel": "Eindhoven - Venlo; Nijmegen - Roermond.",
+   "van": "2026-10-03T05:00:00+02:00",
+   "tot": "2026-10-05T02:00:00+02:00",
+   "stations": [
+    "BMR",
+    "BR",
+    "CK",
+    "DN",
+    "EHV",
+    "HM",
+    "HMBH",
+    "HMBV",
+    "HMH",
+    "HRT",
+    "MMLH",
+    "NM",
+    "NMH",
+    "RM",
+    "RV",
+    "SM",
+    "TG",
+    "VL",
+    "VLB",
+    "VRY"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008151",
+   "type": "MAINTENANCE",
+   "titel": "Maastricht - Liège / Luik.",
+   "van": "2026-10-03T05:30:00+02:00",
+   "tot": "2026-10-05T02:00:00+02:00",
+   "stations": [
+    "BRESSX",
+    "EDN",
+    "FVS",
+    "LUIK",
+    "MT",
+    "MTR"
+   ],
+   "gevolg": "er rijden bussen"
   }
  ]
 }
