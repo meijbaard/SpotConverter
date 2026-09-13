@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-12T23:04:25+00:00",
+ "opgehaald": "2026-09-13T08:22:34+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -167,79 +167,6 @@
     "ZP"
    ],
    "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008180",
-   "type": "MAINTENANCE",
-   "titel": "Schiphol - Leiden.",
-   "van": "2026-09-13T00:30:00+02:00",
-   "tot": "2026-09-13T04:45:00+02:00",
-   "stations": [
-    "HFD",
-    "LEDN",
-    "NVP",
-    "SHL",
-    "SSH"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008179",
-   "type": "MAINTENANCE",
-   "titel": "Den Haag - Rotterdam; Rotterdam - Dordrecht; Utrecht - Rotterdam.",
-   "van": "2026-09-13T00:30:00+02:00",
-   "tot": "2026-09-13T05:00:00+02:00",
-   "stations": [
-    "BRD",
-    "CPS",
-    "DDR",
-    "DT",
-    "DTCP",
-    "GD",
-    "GDG",
-    "GV",
-    "GVMW",
-    "NWK",
-    "RLB",
-    "RSW",
-    "RTA",
-    "RTB",
-    "RTD",
-    "RTN",
-    "RTST",
-    "RTZ",
-    "SDM",
-    "UT",
-    "UTLR",
-    "UTT",
-    "VTN",
-    "WD",
-    "ZWD"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008248",
-   "type": "MAINTENANCE",
-   "titel": "Schiphol - Lelystad.",
-   "van": "2026-09-13T00:40:00+02:00",
-   "tot": "2026-09-13T09:07:00+02:00",
-   "stations": [
-    "ALM",
-    "ALMB",
-    "ALMM",
-    "ALMO",
-    "ALMP",
-    "AMPO",
-    "ASDZ",
-    "DMNZ",
-    "DVD",
-    "LLS",
-    "RAI",
-    "SHL",
-    "WP"
-   ],
-   "gevolg": "dienstregeling aangepast"
   },
   {
    "id": "7008181",
