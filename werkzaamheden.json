@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-13T08:22:34+00:00",
+ "opgehaald": "2026-09-13T23:12:01+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -99,39 +99,6 @@
     "VL"
    ],
    "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008337",
-   "type": "MAINTENANCE",
-   "titel": "Roosendaal - Antwerpen.",
-   "van": "2026-09-12T05:00:00+02:00",
-   "tot": "2026-09-14T01:00:00+02:00",
-   "stations": [
-    "ATW",
-    "ESN",
-    "FKTH",
-    "GKT",
-    "GWD",
-    "LKP",
-    "MID",
-    "RSD"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008162",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Schiphol - Hoofddorp.",
-   "van": "2026-09-12T06:00:00+02:00",
-   "tot": "2026-09-14T01:00:00+02:00",
-   "stations": [
-    "ASD",
-    "ASDL",
-    "ASS",
-    "HFD",
-    "SHL"
-   ],
-   "gevolg": "minder treinen"
   },
   {
    "id": "7008357",
@@ -949,6 +916,30 @@
    "titel": "Amersfoort - Zwolle; Lelystad - Zwolle.",
    "van": "2026-10-04T00:42:00+02:00",
    "tot": "2026-10-04T06:42:00+02:00",
+   "stations": [
+    "AMF",
+    "AMFS",
+    "AVAT",
+    "DRON",
+    "EML",
+    "HD",
+    "HDE",
+    "KPNZ",
+    "LLS",
+    "NKK",
+    "NS",
+    "PT",
+    "WZ",
+    "ZL"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008272",
+   "type": "MAINTENANCE",
+   "titel": "Amersfoort - Zwolle; Lelystad - Zwolle.",
+   "van": "2026-10-04T23:18:00+02:00",
+   "tot": "2026-10-05T05:18:00+02:00",
    "stations": [
     "AMF",
     "AMFS",
