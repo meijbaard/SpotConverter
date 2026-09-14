@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-14T09:00:58+00:00",
+ "opgehaald": "2026-09-14T15:54:32+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -56,6 +56,28 @@
     "VL"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008359",
+   "type": "MAINTENANCE",
+   "titel": "Amsterdam - Hilversum; Amsterdam - Almere.",
+   "van": "2026-09-14T21:00:00+02:00",
+   "tot": "2026-09-14T23:00:00+02:00",
+   "stations": [
+    "ALM",
+    "ALMM",
+    "AMPO",
+    "ASD",
+    "ASDM",
+    "ASSP",
+    "BSMZ",
+    "DMN",
+    "HVS",
+    "HVSM",
+    "NDB",
+    "WP"
+   ],
+   "gevolg": "veel minder treinen"
   },
   {
    "id": "7008328",
