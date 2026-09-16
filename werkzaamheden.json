@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-14T23:53:32+00:00",
+ "opgehaald": "2026-09-16T08:40:09+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -54,21 +54,6 @@
     "SM",
     "TG",
     "VL"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008328",
-   "type": "MAINTENANCE",
-   "titel": "Schiphol - Leiden.",
-   "van": "2026-09-16T01:00:00+02:00",
-   "tot": "2026-09-16T05:30:00+02:00",
-   "stations": [
-    "HFD",
-    "LEDN",
-    "NVP",
-    "SHL",
-    "SSH"
    ],
    "gevolg": "er rijden bussen"
   },
@@ -903,6 +888,36 @@
     "RTZ"
    ],
    "gevolg": "treinen stoppen niet"
+  },
+  {
+   "id": "7008273",
+   "type": "MAINTENANCE",
+   "titel": "Heerlen - Aachen Hbf.",
+   "van": "2026-10-05T21:50:00+02:00",
+   "tot": "2026-10-06T01:15:00+02:00",
+   "stations": [
+    "AHBF",
+    "EGHM",
+    "HRL",
+    "HZ",
+    "LG"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008274",
+   "type": "MAINTENANCE",
+   "titel": "Heerlen - Aachen Hbf.",
+   "van": "2026-10-06T21:50:00+02:00",
+   "tot": "2026-10-07T01:15:00+02:00",
+   "stations": [
+    "AHBF",
+    "EGHM",
+    "HRL",
+    "HZ",
+    "LG"
+   ],
+   "gevolg": "er rijden bussen"
   }
  ]
 }
