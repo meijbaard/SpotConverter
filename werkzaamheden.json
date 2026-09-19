@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-18T23:20:16+00:00",
+ "opgehaald": "2026-09-19T08:06:47+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -883,6 +883,56 @@
     "HRL",
     "HZ",
     "LG"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008224",
+   "type": "MAINTENANCE",
+   "titel": "Haarlem - Leiden.",
+   "van": "2026-10-10T04:00:00+02:00",
+   "tot": "2026-10-12T02:00:00+02:00",
+   "stations": [
+    "HAD",
+    "HIL",
+    "HLM",
+    "LEDN",
+    "VH"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008338",
+   "type": "MAINTENANCE",
+   "titel": "Leeuwarden - Stavoren.",
+   "van": "2026-10-10T05:00:00+02:00",
+   "tot": "2026-10-18T01:00:00+02:00",
+   "stations": [
+    "HNP",
+    "IJT",
+    "KMW",
+    "LW",
+    "MG",
+    "SK",
+    "SKND",
+    "STV",
+    "WK"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008333",
+   "type": "MAINTENANCE",
+   "titel": "Maastricht - Liège / Luik.",
+   "van": "2026-10-10T06:00:00+02:00",
+   "tot": "2026-10-12T01:30:00+02:00",
+   "stations": [
+    "BRESSX",
+    "EDN",
+    "FVS",
+    "LUIK",
+    "MT",
+    "MTR"
    ],
    "gevolg": "er rijden bussen"
   }
