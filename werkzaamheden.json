@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-20T13:36:12+00:00",
+ "opgehaald": "2026-09-20T23:16:10+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -72,46 +72,38 @@
    "gevolg": "er rijden bussen"
   },
   {
-   "id": "7008297",
+   "id": "7008367",
    "type": "MAINTENANCE",
-   "titel": "Utrecht - Den Haag.",
-   "van": "2026-09-19T05:00:00+02:00",
-   "tot": "2026-09-21T01:00:00+02:00",
+   "titel": "Amersfoort - Barneveld.",
+   "van": "2026-09-21T05:55:00+02:00",
+   "tot": "2026-09-21T10:00:00+02:00",
    "stations": [
-    "GD",
-    "GDG",
-    "GVC",
-    "LLZM",
-    "UT",
-    "UTLR",
-    "UTT",
-    "VB",
-    "VTN",
-    "WD",
-    "YPB",
-    "ZTM",
-    "ZTMO"
+    "AMF",
+    "BNC",
+    "BNN",
+    "BNZ",
+    "HVL"
    ],
-   "gevolg": "dienstregeling aangepast"
+   "gevolg": "minder stoptreinen"
   },
   {
-   "id": "7008182",
+   "id": "7008366",
    "type": "MAINTENANCE",
-   "titel": "Leeuwarden - Stavoren.",
-   "van": "2026-09-19T06:10:00+02:00",
-   "tot": "2026-09-21T00:01:00+02:00",
+   "titel": "Venlo - Mönchengladbach - Düsseldorf.",
+   "van": "2026-09-21T06:05:00+02:00",
+   "tot": "2026-09-21T14:05:00+02:00",
    "stations": [
-    "HNP",
-    "IJT",
-    "KMW",
-    "LW",
-    "MG",
-    "SK",
-    "SKND",
-    "STV",
-    "WK"
+    "DUSSEL",
+    "KBOI",
+    "KBRY",
+    "KDUL",
+    "KN",
+    "MCGB",
+    "NEUSS",
+    "VIERS",
+    "VL"
    ],
-   "gevolg": "er rijden bussen"
+   "gevolg": "minder stoptreinen"
   },
   {
    "id": "7008148",
