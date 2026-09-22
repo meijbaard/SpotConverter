@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-22T00:09:48+00:00",
+ "opgehaald": "2026-09-22T08:36:56+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -60,25 +60,6 @@
     "MTR"
    ],
    "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008384",
-   "type": "MAINTENANCE",
-   "titel": "Venlo - Mönchengladbach - Düsseldorf.",
-   "van": "2026-09-22T06:05:00+02:00",
-   "tot": "2026-09-22T14:05:00+02:00",
-   "stations": [
-    "DUSSEL",
-    "KBOI",
-    "KBRY",
-    "KDUL",
-    "KN",
-    "MCGB",
-    "NEUSS",
-    "VIERS",
-    "VL"
-   ],
-   "gevolg": "minder stoptreinen"
   },
   {
    "id": "7008201",
