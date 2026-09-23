@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-23T14:15:56+00:00",
+ "opgehaald": "2026-09-23T23:44:54+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -970,6 +970,24 @@
     "SSH"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008392",
+   "type": "MAINTENANCE",
+   "titel": "Zwolle - Groningen.",
+   "van": "2026-10-15T01:00:00+02:00",
+   "tot": "2026-10-15T05:00:00+02:00",
+   "stations": [
+    "ASN",
+    "BL",
+    "GERP",
+    "GN",
+    "HGV",
+    "HRN",
+    "MP",
+    "ZL"
+   ],
+   "gevolg": "aangep. dienstregeling en businzet"
   }
  ]
 }
