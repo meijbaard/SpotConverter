@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-23T08:39:05+00:00",
+ "opgehaald": "2026-09-23T14:15:56+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -331,6 +331,25 @@
     "NVP",
     "SHL",
     "SSH"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008395",
+   "type": "MAINTENANCE",
+   "titel": "Amsterdam - Haarlem - Leiden; Amsterdam - Haarlem.",
+   "van": "2026-10-01T00:00:00+02:00",
+   "tot": "2026-10-01T02:00:00+02:00",
+   "stations": [
+    "ASD",
+    "ASS",
+    "HAD",
+    "HIL",
+    "HLM",
+    "HLMS",
+    "HWZB",
+    "LEDN",
+    "VH"
    ],
    "gevolg": "er rijden bussen"
   },
