@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-24T08:31:58+00:00",
+ "opgehaald": "2026-09-24T23:53:37+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -25,37 +25,6 @@
    "gevolg": "er rijden bussen"
   },
   {
-   "id": "7008148",
-   "type": "MAINTENANCE",
-   "titel": "Maastricht - Liège / Luik.",
-   "van": "2026-09-21T22:30:00+02:00",
-   "tot": "2026-09-25T00:50:00+02:00",
-   "stations": [
-    "BRESSX",
-    "EDN",
-    "FVS",
-    "LUIK",
-    "MT",
-    "MTR"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008141",
-   "type": "MAINTENANCE",
-   "titel": "Heerlen - Aachen Hbf.",
-   "van": "2026-09-24T21:50:00+02:00",
-   "tot": "2026-09-25T01:15:00+02:00",
-   "stations": [
-    "AHBF",
-    "EGHM",
-    "HRL",
-    "HZ",
-    "LG"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
    "id": "7008303",
    "type": "MAINTENANCE",
    "titel": "Leiden - Den Haag HS.",
@@ -70,6 +39,40 @@
     "VST"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008397",
+   "type": "MAINTENANCE",
+   "titel": "Venlo - Mönchengladbach - Düsseldorf.",
+   "van": "2026-09-25T05:45:00+02:00",
+   "tot": "2026-09-25T14:15:00+02:00",
+   "stations": [
+    "DUSSEL",
+    "KBOI",
+    "KBRY",
+    "KDUL",
+    "KN",
+    "MCGB",
+    "NEUSS",
+    "VIERS",
+    "VL"
+   ],
+   "gevolg": "geen Sneltreinen"
+  },
+  {
+   "id": "7008396",
+   "type": "MAINTENANCE",
+   "titel": "Amersfoort - Barneveld.",
+   "van": "2026-09-25T07:45:00+02:00",
+   "tot": "2026-09-25T16:00:00+02:00",
+   "stations": [
+    "AMF",
+    "BNC",
+    "BNN",
+    "BNZ",
+    "HVL"
+   ],
+   "gevolg": "minder Sprinters"
   },
   {
    "id": "7008143",
@@ -972,6 +975,21 @@
     "ZL"
    ],
    "gevolg": "aangep. dienstregeling en businzet"
+  },
+  {
+   "id": "7008276",
+   "type": "MAINTENANCE",
+   "titel": "Heerlen - Aachen Hbf.",
+   "van": "2026-10-15T21:50:00+02:00",
+   "tot": "2026-10-16T01:15:00+02:00",
+   "stations": [
+    "AHBF",
+    "EGHM",
+    "HRL",
+    "HZ",
+    "LG"
+   ],
+   "gevolg": "er rijden bussen"
   }
  ]
 }
