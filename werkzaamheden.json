@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-25T14:37:49+00:00",
+ "opgehaald": "2026-09-25T19:17:08+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -1051,6 +1051,27 @@
     "LW",
     "LWC",
     "ZH"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008364",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Leer.",
+   "van": "2026-10-16T21:00:00+02:00",
+   "tot": "2026-10-16T23:10:00+02:00",
+   "stations": [
+    "GERP",
+    "GN",
+    "HGZ",
+    "KW",
+    "LEER",
+    "MTH",
+    "NSCH",
+    "SDA",
+    "WR",
+    "WS",
+    "ZB"
    ],
    "gevolg": "er rijden bussen"
   }
