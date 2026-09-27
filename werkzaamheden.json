@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-27T09:19:56+00:00",
+ "opgehaald": "2026-09-27T18:59:52+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -151,6 +151,30 @@
     "NVP",
     "SHL",
     "SSH"
+   ],
+   "gevolg": "geen Sprinters"
+  },
+  {
+   "id": "7008402",
+   "type": "MAINTENANCE",
+   "titel": "Utrecht - Breukelen; Amsterdam - Gouda.",
+   "van": "2026-09-28T11:00:00+02:00",
+   "tot": "2026-09-28T11:45:00+02:00",
+   "stations": [
+    "AC",
+    "ASA",
+    "ASB",
+    "ASD",
+    "ASDM",
+    "ASHD",
+    "BKL",
+    "DVD",
+    "GD",
+    "GDG",
+    "MAS",
+    "UT",
+    "UTZL",
+    "WD"
    ],
    "gevolg": "geen Sprinters"
   },
@@ -1109,6 +1133,21 @@
    "titel": "Heerlen - Aachen Hbf.",
    "van": "2026-10-17T21:50:00+02:00",
    "tot": "2026-10-18T01:15:00+02:00",
+   "stations": [
+    "AHBF",
+    "EGHM",
+    "HRL",
+    "HZ",
+    "LG"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008279",
+   "type": "MAINTENANCE",
+   "titel": "Heerlen - Aachen Hbf.",
+   "van": "2026-10-18T20:50:00+02:00",
+   "tot": "2026-10-19T01:45:00+02:00",
    "stations": [
     "AHBF",
     "EGHM",
