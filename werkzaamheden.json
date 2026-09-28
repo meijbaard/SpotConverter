@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-27T18:59:52+00:00",
+ "opgehaald": "2026-09-28T09:53:02+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -23,160 +23,6 @@
     "ZB"
    ],
    "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008324",
-   "type": "MAINTENANCE",
-   "titel": "Hilversum - Amersfoort; Utrecht - Baarn.",
-   "van": "2026-09-26T01:00:00+02:00",
-   "tot": "2026-09-28T02:00:00+02:00",
-   "stations": [
-    "AMF",
-    "BHV",
-    "BRN",
-    "DLD",
-    "HVS",
-    "SD",
-    "ST",
-    "STZ",
-    "UT",
-    "UTO"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008347",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Schiphol - Rotterdam; Schiphol - Rotterdam.",
-   "van": "2026-09-26T03:00:00+02:00",
-   "tot": "2026-09-28T02:00:00+02:00",
-   "stations": [
-    "ASDZ",
-    "HFD",
-    "RTD",
-    "SHL"
-   ],
-   "gevolg": "geen treinen op de HSL"
-  },
-  {
-   "id": "7008300",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Leeuwarden.",
-   "van": "2026-09-26T04:00:00+02:00",
-   "tot": "2026-09-28T02:00:00+02:00",
-   "stations": [
-    "BP",
-    "DWE",
-    "FWD",
-    "GK",
-    "GN",
-    "HDG",
-    "LW",
-    "LWC",
-    "ZH"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008299",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Delfzijl; Groningen - Eemshaven.",
-   "van": "2026-09-26T04:00:00+02:00",
-   "tot": "2026-09-28T02:00:00+02:00",
-   "stations": [
-    "APG",
-    "BDM",
-    "BF",
-    "DZ",
-    "DZW",
-    "EEM",
-    "GN",
-    "GNN",
-    "LP",
-    "RD",
-    "STM",
-    "SWD",
-    "UHM",
-    "UHZ",
-    "UST",
-    "WFM",
-    "WSM"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008149",
-   "type": "MAINTENANCE",
-   "titel": "Maastricht - Liège / Luik.",
-   "van": "2026-09-26T05:30:00+02:00",
-   "tot": "2026-09-28T02:00:00+02:00",
-   "stations": [
-    "BRESSX",
-    "EDN",
-    "FVS",
-    "LUIK",
-    "MT",
-    "MTR"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008241",
-   "type": "MAINTENANCE",
-   "titel": "Almelo - Hardenberg.",
-   "van": "2026-09-27T04:00:00+02:00",
-   "tot": "2026-09-28T02:00:00+02:00",
-   "stations": [
-    "AML",
-    "DA",
-    "HDB",
-    "MRB",
-    "VHP",
-    "VZ"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008348",
-   "type": "MAINTENANCE",
-   "titel": "Schiphol - Leiden; Amsterdam - Schiphol - Hoofddorp.",
-   "van": "2026-09-27T05:00:00+02:00",
-   "tot": "2026-09-28T02:00:00+02:00",
-   "stations": [
-    "ASD",
-    "ASDL",
-    "ASS",
-    "HFD",
-    "LEDN",
-    "NVP",
-    "SHL",
-    "SSH"
-   ],
-   "gevolg": "geen Sprinters"
-  },
-  {
-   "id": "7008402",
-   "type": "MAINTENANCE",
-   "titel": "Utrecht - Breukelen; Amsterdam - Gouda.",
-   "van": "2026-09-28T11:00:00+02:00",
-   "tot": "2026-09-28T11:45:00+02:00",
-   "stations": [
-    "AC",
-    "ASA",
-    "ASB",
-    "ASD",
-    "ASDM",
-    "ASHD",
-    "BKL",
-    "DVD",
-    "GD",
-    "GDG",
-    "MAS",
-    "UT",
-    "UTZL",
-    "WD"
-   ],
-   "gevolg": "geen Sprinters"
   },
   {
    "id": "7008150",
@@ -795,6 +641,30 @@
    "gevolg": "geen Sprinters"
   },
   {
+   "id": "7008393",
+   "type": "MAINTENANCE",
+   "titel": "Amersfoort - Zwolle; Lelystad - Zwolle.",
+   "van": "2026-10-11T21:20:00+02:00",
+   "tot": "2026-10-12T02:00:00+02:00",
+   "stations": [
+    "AMF",
+    "AMFS",
+    "AVAT",
+    "DRON",
+    "EML",
+    "HD",
+    "HDE",
+    "KPNZ",
+    "LLS",
+    "NKK",
+    "NS",
+    "PT",
+    "WZ",
+    "ZL"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
    "id": "7008399",
    "type": "MAINTENANCE",
    "titel": "Rotterdam - Dordrecht.",
@@ -1154,6 +1024,27 @@
     "HRL",
     "HZ",
     "LG"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008382",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Leer.",
+   "van": "2026-10-19T07:00:00+02:00",
+   "tot": "2026-10-26T02:00:00+01:00",
+   "stations": [
+    "GERP",
+    "GN",
+    "HGZ",
+    "KW",
+    "LEER",
+    "MTH",
+    "NSCH",
+    "SDA",
+    "WR",
+    "WS",
+    "ZB"
    ],
    "gevolg": "er rijden bussen"
   }
