@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-29T20:01:11+00:00",
+ "opgehaald": "2026-09-30T00:31:17+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -37,66 +37,6 @@
     "LUIK",
     "MT",
     "MTR"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008415",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Utrecht; Breukelen - Gouda.",
-   "van": "2026-09-29T23:30:00+02:00",
-   "tot": "2026-09-30T01:00:00+02:00",
-   "stations": [
-    "AC",
-    "ASA",
-    "ASB",
-    "ASD",
-    "ASDM",
-    "ASHD",
-    "BKL",
-    "DVD",
-    "GD",
-    "GDG",
-    "MAS",
-    "UT",
-    "UTZL",
-    "WD"
-   ],
-   "gevolg": "aangep. dienstregeling en businzet"
-  },
-  {
-   "id": "7008416",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Utrecht.",
-   "van": "2026-09-30T01:00:00+02:00",
-   "tot": "2026-09-30T05:00:00+02:00",
-   "stations": [
-    "AC",
-    "ASA",
-    "ASB",
-    "ASD",
-    "ASDM",
-    "ASHD",
-    "BKL",
-    "DVD",
-    "MAS",
-    "UT",
-    "UTZL"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008329",
-   "type": "MAINTENANCE",
-   "titel": "Schiphol - Leiden.",
-   "van": "2026-09-30T01:00:00+02:00",
-   "tot": "2026-09-30T05:30:00+02:00",
-   "stations": [
-    "HFD",
-    "LEDN",
-    "NVP",
-    "SHL",
-    "SSH"
    ],
    "gevolg": "er rijden bussen"
   },
@@ -1119,6 +1059,21 @@
     "VNDC",
     "VNDW",
     "WF"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008281",
+   "type": "MAINTENANCE",
+   "titel": "Heerlen - Aachen Hbf.",
+   "van": "2026-10-20T22:50:00+02:00",
+   "tot": "2026-10-21T01:35:00+02:00",
+   "stations": [
+    "AHBF",
+    "EGHM",
+    "HRL",
+    "HZ",
+    "LG"
    ],
    "gevolg": "er rijden bussen"
   }
