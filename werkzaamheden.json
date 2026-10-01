@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-09-30T00:31:17+00:00",
+ "opgehaald": "2026-10-01T00:35:14+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -41,72 +41,6 @@
    "gevolg": "er rijden bussen"
   },
   {
-   "id": "7008395",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Haarlem - Leiden; Amsterdam - Haarlem.",
-   "van": "2026-10-01T00:00:00+02:00",
-   "tot": "2026-10-01T02:00:00+02:00",
-   "stations": [
-    "ASD",
-    "ASS",
-    "HAD",
-    "HIL",
-    "HLM",
-    "HLMS",
-    "HWZB",
-    "LEDN",
-    "VH"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008307",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Delfzijl; Groningen - Eemshaven.",
-   "van": "2026-10-01T00:10:00+02:00",
-   "tot": "2026-10-01T02:25:00+02:00",
-   "stations": [
-    "APG",
-    "BDM",
-    "BF",
-    "DZ",
-    "DZW",
-    "EEM",
-    "GN",
-    "GNN",
-    "LP",
-    "RD",
-    "STM",
-    "SWD",
-    "UHM",
-    "UHZ",
-    "UST",
-    "WFM",
-    "WSM"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008308",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Bad Nieuweschans; Groningen - Veendam.",
-   "van": "2026-10-01T00:10:00+02:00",
-   "tot": "2026-10-01T02:35:00+02:00",
-   "stations": [
-    "GERP",
-    "GN",
-    "HGZ",
-    "KW",
-    "MTH",
-    "NSCH",
-    "SDA",
-    "VDM",
-    "WS",
-    "ZB"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
    "id": "7008269",
    "type": "MAINTENANCE",
    "titel": "Zwolle - Groningen.",
@@ -123,25 +57,6 @@
     "ZL"
    ],
    "gevolg": "aangep. dienstregeling en businzet"
-  },
-  {
-   "id": "7008306",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Leeuwarden.",
-   "van": "2026-10-01T01:25:00+02:00",
-   "tot": "2026-10-01T02:00:00+02:00",
-   "stations": [
-    "BP",
-    "DWE",
-    "FWD",
-    "GK",
-    "GN",
-    "HDG",
-    "LW",
-    "LWC",
-    "ZH"
-   ],
-   "gevolg": "er rijden bussen"
   },
   {
    "id": "7008270",
@@ -1068,6 +983,21 @@
    "titel": "Heerlen - Aachen Hbf.",
    "van": "2026-10-20T22:50:00+02:00",
    "tot": "2026-10-21T01:35:00+02:00",
+   "stations": [
+    "AHBF",
+    "EGHM",
+    "HRL",
+    "HZ",
+    "LG"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008282",
+   "type": "MAINTENANCE",
+   "titel": "Heerlen - Aachen Hbf.",
+   "van": "2026-10-21T22:50:00+02:00",
+   "tot": "2026-10-22T01:35:00+02:00",
    "stations": [
     "AHBF",
     "EGHM",
