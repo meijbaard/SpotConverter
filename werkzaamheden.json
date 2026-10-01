@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-01T00:35:14+00:00",
+ "opgehaald": "2026-10-01T10:13:33+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -39,52 +39,6 @@
     "MTR"
    ],
    "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008269",
-   "type": "MAINTENANCE",
-   "titel": "Zwolle - Groningen.",
-   "van": "2026-10-01T01:00:00+02:00",
-   "tot": "2026-10-01T05:00:00+02:00",
-   "stations": [
-    "ASN",
-    "BL",
-    "GERP",
-    "GN",
-    "HGV",
-    "HRN",
-    "MP",
-    "ZL"
-   ],
-   "gevolg": "aangep. dienstregeling en businzet"
-  },
-  {
-   "id": "7008270",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Alkmaar; Haarlem - Alkmaar.",
-   "van": "2026-10-01T04:00:00+02:00",
-   "tot": "2026-10-01T05:20:00+02:00",
-   "stations": [
-    "AMR",
-    "ASD",
-    "ASS",
-    "BLL",
-    "BV",
-    "CAS",
-    "DRH",
-    "HK",
-    "HLM",
-    "HLO",
-    "KMA",
-    "KZ",
-    "SPTN",
-    "SPTZ",
-    "UTG",
-    "WM",
-    "ZD",
-    "ZZS"
-   ],
-   "gevolg": "dienstregeling aangepast"
   },
   {
    "id": "7008343",
