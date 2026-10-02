@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-02T00:50:14+00:00",
+ "opgehaald": "2026-10-02T09:51:20+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -44,22 +44,6 @@
     "VSS"
    ],
    "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008200",
-   "type": "MAINTENANCE",
-   "titel": "Leiden - Den Haag.",
-   "van": "2026-10-02T05:00:00+02:00",
-   "tot": "2026-10-02T05:20:00+02:00",
-   "stations": [
-    "DVNK",
-    "GVC",
-    "GVM",
-    "LAA",
-    "LEDN",
-    "VST"
-   ],
-   "gevolg": "geen treinen"
   },
   {
    "id": "7008344",
