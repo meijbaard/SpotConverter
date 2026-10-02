@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-01T20:21:41+00:00",
+ "opgehaald": "2026-10-02T00:50:14+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -21,22 +21,6 @@
     "WR",
     "WS",
     "ZB"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008150",
-   "type": "MAINTENANCE",
-   "titel": "Maastricht - Liège / Luik.",
-   "van": "2026-09-28T22:30:00+02:00",
-   "tot": "2026-10-02T00:50:00+02:00",
-   "stations": [
-    "BRESSX",
-    "EDN",
-    "FVS",
-    "LUIK",
-    "MT",
-    "MTR"
    ],
    "gevolg": "er rijden bussen"
   },
