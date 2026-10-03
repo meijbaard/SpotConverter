@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-02T19:58:17+00:00",
+ "opgehaald": "2026-10-03T09:13:40+00:00",
  "werkzaamheden": [
   {
    "id": "7004492",
@@ -956,6 +956,78 @@
     "HRL",
     "HZ",
     "LG"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008418",
+   "type": "MAINTENANCE",
+   "titel": "Deventer - Enschede; Zwolle - Enschede.",
+   "van": "2026-10-24T03:00:00+02:00",
+   "tot": "2026-10-26T03:00:00+01:00",
+   "stations": [
+    "AML",
+    "AMRI",
+    "BN",
+    "DV",
+    "DVC",
+    "ES",
+    "ESK",
+    "HGL",
+    "HNO",
+    "HON",
+    "NVD",
+    "RAT",
+    "RSN",
+    "WDN",
+    "ZL"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008339",
+   "type": "MAINTENANCE",
+   "titel": "Zwolle - Leeuwarden.",
+   "van": "2026-10-24T05:00:00+02:00",
+   "tot": "2026-10-26T02:00:00+01:00",
+   "stations": [
+    "AKM",
+    "GW",
+    "HR",
+    "LW",
+    "MP",
+    "SWK",
+    "WV",
+    "ZL"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008335",
+   "type": "MAINTENANCE",
+   "titel": "Maastricht - Liège / Luik.",
+   "van": "2026-10-24T06:00:00+02:00",
+   "tot": "2026-10-26T01:30:00+01:00",
+   "stations": [
+    "BRESSX",
+    "EDN",
+    "FVS",
+    "LUIK",
+    "MT",
+    "MTR"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008349",
+   "type": "MAINTENANCE",
+   "titel": "Hengelo - Oldenzaal.",
+   "van": "2026-10-24T06:00:00+02:00",
+   "tot": "2026-10-26T02:00:00+01:00",
+   "stations": [
+    "HGL",
+    "HGLO",
+    "ODZ"
    ],
    "gevolg": "er rijden bussen"
   }
