@@ -1,50 +1,8 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-04T09:54:48+00:00",
+ "opgehaald": "2026-10-04T23:58:33+00:00",
  "werkzaamheden": [
-  {
-   "id": "7004492",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Leer.",
-   "van": "2024-02-01T04:00:00+01:00",
-   "tot": "2026-10-04T23:58:00+02:00",
-   "stations": [
-    "GERP",
-    "GN",
-    "HGZ",
-    "KW",
-    "LEER",
-    "MTH",
-    "NSCH",
-    "SDA",
-    "WR",
-    "WS",
-    "ZB"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008343",
-   "type": "MAINTENANCE",
-   "titel": "Roosendaal - Vlissingen.",
-   "van": "2026-10-02T04:50:00+02:00",
-   "tot": "2026-10-05T01:40:00+02:00",
-   "stations": [
-    "ARN",
-    "BGN",
-    "BZL",
-    "GS",
-    "KBD",
-    "KRG",
-    "MDB",
-    "RB",
-    "RSD",
-    "VS",
-    "VSS"
-   ],
-   "gevolg": "er rijden bussen"
-  },
   {
    "id": "7008344",
    "type": "MAINTENANCE",
