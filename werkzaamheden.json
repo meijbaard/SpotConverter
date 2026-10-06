@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-06T10:25:42+00:00",
+ "opgehaald": "2026-10-06T20:21:50+00:00",
  "werkzaamheden": [
   {
    "id": "7006841",
@@ -807,6 +807,25 @@
     "UST",
     "WFM",
     "WSM"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008498",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Delfzijl.",
+   "van": "2026-10-26T23:00:00+01:00",
+   "tot": "2026-10-27T05:00:00+01:00",
+   "stations": [
+    "APG",
+    "BDM",
+    "DZ",
+    "DZW",
+    "GN",
+    "GNN",
+    "LP",
+    "STM",
+    "SWD"
    ],
    "gevolg": "er rijden bussen"
   }
