@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-07T20:39:13+00:00",
+ "opgehaald": "2026-10-08T01:02:50+00:00",
  "werkzaamheden": [
   {
    "id": "7006841",
@@ -43,21 +43,6 @@
    "gevolg": "dienstregeling aangepast"
   },
   {
-   "id": "7008275",
-   "type": "MAINTENANCE",
-   "titel": "Heerlen - Aachen Hbf.",
-   "van": "2026-10-07T21:50:00+02:00",
-   "tot": "2026-10-08T01:15:00+02:00",
-   "stations": [
-    "AHBF",
-    "EGHM",
-    "HRL",
-    "HZ",
-    "LG"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
    "id": "7008506",
    "type": "MAINTENANCE",
    "titel": "Schiphol - Leiden.",
@@ -70,7 +55,7 @@
     "SHL",
     "SSH"
    ],
-   "gevolg": "geen treinen"
+   "gevolg": "bussen ipv treinen"
   },
   {
    "id": "7008224",
@@ -843,6 +828,24 @@
     "SSH"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008394",
+   "type": "MAINTENANCE",
+   "titel": "Zwolle - Groningen.",
+   "van": "2026-10-29T01:00:00+01:00",
+   "tot": "2026-10-29T05:00:00+01:00",
+   "stations": [
+    "ASN",
+    "BL",
+    "GERP",
+    "GN",
+    "HGV",
+    "HRN",
+    "MP",
+    "ZL"
+   ],
+   "gevolg": "aangep. dienstregeling en businzet"
   }
  ]
 }
