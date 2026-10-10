@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-10T09:55:42+00:00",
+ "opgehaald": "2026-10-10T19:18:46+00:00",
  "werkzaamheden": [
   {
    "id": "7006841",
@@ -89,6 +89,23 @@
     "SDTB"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008517",
+   "type": "MAINTENANCE",
+   "titel": "Den Haag - Rotterdam.",
+   "van": "2026-10-11T02:00:00+02:00",
+   "tot": "2026-10-11T05:35:00+02:00",
+   "stations": [
+    "DT",
+    "DTCP",
+    "GV",
+    "GVMW",
+    "RSW",
+    "RTD",
+    "SDM"
+   ],
+   "gevolg": "treinen via andere route"
   },
   {
    "id": "7008345",
