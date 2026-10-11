@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-10T19:18:46+00:00",
+ "opgehaald": "2026-10-11T10:05:21+00:00",
  "werkzaamheden": [
   {
    "id": "7006841",
@@ -69,45 +69,6 @@
    "gevolg": "er rijden bussen"
   },
   {
-   "id": "7008362",
-   "type": "MAINTENANCE",
-   "titel": "Dordrecht - Geldermalsen.",
-   "van": "2026-10-11T00:35:00+02:00",
-   "tot": "2026-10-11T03:15:00+02:00",
-   "stations": [
-    "AKL",
-    "BHDV",
-    "BSD",
-    "DDR",
-    "DDRS",
-    "GDM",
-    "GND",
-    "GR",
-    "HBZM",
-    "LDM",
-    "SDT",
-    "SDTB"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008517",
-   "type": "MAINTENANCE",
-   "titel": "Den Haag - Rotterdam.",
-   "van": "2026-10-11T02:00:00+02:00",
-   "tot": "2026-10-11T05:35:00+02:00",
-   "stations": [
-    "DT",
-    "DTCP",
-    "GV",
-    "GVMW",
-    "RSW",
-    "RTD",
-    "SDM"
-   ],
-   "gevolg": "treinen via andere route"
-  },
-  {
    "id": "7008345",
    "type": "MAINTENANCE",
    "titel": "Amsterdam - Utrecht; Amsterdam - Gouda.",
@@ -130,6 +91,25 @@
     "WD"
    ],
    "gevolg": "geen Sprinters"
+  },
+  {
+   "id": "7008518",
+   "type": "MAINTENANCE",
+   "titel": "Venlo - Mönchengladbach - Düsseldorf.",
+   "van": "2026-10-11T16:00:00+02:00",
+   "tot": "2026-10-11T22:05:00+02:00",
+   "stations": [
+    "DUSSEL",
+    "KBOI",
+    "KBRY",
+    "KDUL",
+    "KN",
+    "MCGB",
+    "NEUSS",
+    "VIERS",
+    "VL"
+   ],
+   "gevolg": "minder Sneltreinen"
   },
   {
    "id": "7008393",
