@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-13T10:42:12+00:00",
+ "opgehaald": "2026-10-13T20:42:44+00:00",
  "werkzaamheden": [
   {
    "id": "7008338",
@@ -105,25 +105,6 @@
     "WD"
    ],
    "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008519",
-   "type": "MAINTENANCE",
-   "titel": "Nijmegen - Venlo.",
-   "van": "2026-10-13T06:30:00+02:00",
-   "tot": "2026-10-13T19:00:00+02:00",
-   "stations": [
-    "BMR",
-    "BR",
-    "CK",
-    "MMLH",
-    "NM",
-    "NMH",
-    "VL",
-    "VLB",
-    "VRY"
-   ],
-   "gevolg": "minder stoptreinen"
   },
   {
    "id": "7008330",
