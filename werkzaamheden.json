@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-14T00:19:53+00:00",
+ "opgehaald": "2026-10-14T08:47:57+00:00",
  "werkzaamheden": [
   {
    "id": "7008338",
@@ -107,19 +107,26 @@
    "gevolg": "er rijden bussen"
   },
   {
-   "id": "7008330",
+   "id": "7008524",
    "type": "MAINTENANCE",
-   "titel": "Schiphol - Leiden.",
-   "van": "2026-10-14T01:00:00+02:00",
-   "tot": "2026-10-14T05:30:00+02:00",
+   "titel": "Arnhem - Duisburg - Düsseldorf.",
+   "van": "2026-10-14T09:00:00+02:00",
+   "tot": "2026-10-31T23:59:00+01:00",
    "stations": [
-    "HFD",
-    "LEDN",
-    "NVP",
-    "SHL",
-    "SSH"
+    "AH",
+    "AHP",
+    "DUISB",
+    "DUSSEL",
+    "DVN",
+    "EL",
+    "EM",
+    "KDFFH",
+    "OBERH",
+    "WESEL",
+    "WTV",
+    "ZV"
    ],
-   "gevolg": "er rijden bussen"
+   "gevolg": "vertraging en minder treinen"
   },
   {
    "id": "7008276",
@@ -435,6 +442,20 @@
     "WF"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008320",
+   "type": "MAINTENANCE",
+   "titel": "Zwolle - Deventer.",
+   "van": "2026-10-20T05:00:00+02:00",
+   "tot": "2026-10-26T01:00:00+01:00",
+   "stations": [
+    "DV",
+    "OST",
+    "WH",
+    "ZL"
+   ],
+   "gevolg": "dienstregeling aangepast"
   },
   {
    "id": "7008281",
@@ -871,6 +892,51 @@
     "HWZB"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008421",
+   "type": "MAINTENANCE",
+   "titel": "Amsterdam - Utrecht; Schiphol - Utrecht.",
+   "van": "2026-11-01T06:00:00+01:00",
+   "tot": "2026-11-02T01:00:00+01:00",
+   "stations": [
+    "AC",
+    "ASA",
+    "ASB",
+    "ASD",
+    "ASDM",
+    "ASDZ",
+    "ASHD",
+    "BKL",
+    "DVD",
+    "MAS",
+    "RAI",
+    "SHL",
+    "UT",
+    "UTZL"
+   ],
+   "gevolg": "dienstregeling aangepast"
+  },
+  {
+   "id": "7008422",
+   "type": "MAINTENANCE",
+   "titel": "Utrecht - Almere.",
+   "van": "2026-11-01T06:00:00+01:00",
+   "tot": "2026-11-02T01:00:00+01:00",
+   "stations": [
+    "ALM",
+    "ALMM",
+    "AMPO",
+    "BSMZ",
+    "HOR",
+    "HVS",
+    "HVSM",
+    "HVSP",
+    "NDB",
+    "UT",
+    "UTO"
+   ],
+   "gevolg": "dienstregeling aangepast"
   },
   {
    "id": "7006847",
