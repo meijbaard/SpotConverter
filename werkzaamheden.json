@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-15T08:23:00+00:00",
+ "opgehaald": "2026-10-15T23:41:50+00:00",
  "werkzaamheden": [
   {
    "id": "7008338",
@@ -127,21 +127,6 @@
     "ZV"
    ],
    "gevolg": "vertraging en minder treinen"
-  },
-  {
-   "id": "7008276",
-   "type": "MAINTENANCE",
-   "titel": "Heerlen - Aachen Hbf.",
-   "van": "2026-10-15T21:50:00+02:00",
-   "tot": "2026-10-16T01:15:00+02:00",
-   "stations": [
-    "AHBF",
-    "EGHM",
-    "HRL",
-    "HZ",
-    "LG"
-   ],
-   "gevolg": "er rijden bussen"
   },
   {
    "id": "7008360",
