@@ -1,27 +1,8 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-17T07:52:11+00:00",
+ "opgehaald": "2026-10-17T23:09:44+00:00",
  "werkzaamheden": [
-  {
-   "id": "7008338",
-   "type": "MAINTENANCE",
-   "titel": "Leeuwarden - Stavoren.",
-   "van": "2026-10-10T05:00:00+02:00",
-   "tot": "2026-10-18T01:00:00+02:00",
-   "stations": [
-    "HNP",
-    "IJT",
-    "KMW",
-    "LW",
-    "MG",
-    "SK",
-    "SKND",
-    "STV",
-    "WK"
-   ],
-   "gevolg": "er rijden bussen"
-  },
   {
    "id": "7006844",
    "type": "MAINTENANCE",
