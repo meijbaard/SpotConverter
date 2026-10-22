@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-22T00:01:05+00:00",
+ "opgehaald": "2026-10-22T23:59:59+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -138,19 +138,19 @@
    "gevolg": "dienstregeling aangepast"
   },
   {
-   "id": "7008283",
+   "id": "7008547",
    "type": "MAINTENANCE",
-   "titel": "Heerlen - Aachen Hbf.",
-   "van": "2026-10-22T21:50:00+02:00",
-   "tot": "2026-10-23T01:15:00+02:00",
+   "titel": "Amersfoort - Barneveld.",
+   "van": "2026-10-23T05:00:00+02:00",
+   "tot": "2026-10-23T08:30:00+02:00",
    "stations": [
-    "AHBF",
-    "EGHM",
-    "HRL",
-    "HZ",
-    "LG"
+    "AMF",
+    "BNC",
+    "BNN",
+    "BNZ",
+    "HVL"
    ],
-   "gevolg": "er rijden bussen"
+   "gevolg": "minder treinen"
   },
   {
    "id": "7008284",
@@ -998,6 +998,21 @@
     "ZL"
    ],
    "gevolg": "aangep. dienstregeling en businzet"
+  },
+  {
+   "id": "7008372",
+   "type": "MAINTENANCE",
+   "titel": "Heerlen - Aachen Hbf.",
+   "van": "2026-11-12T21:50:00+01:00",
+   "tot": "2026-11-13T01:15:00+01:00",
+   "stations": [
+    "AHBF",
+    "EGHM",
+    "HRL",
+    "HZ",
+    "LG"
+   ],
+   "gevolg": "er rijden bussen"
   }
  ]
 }
