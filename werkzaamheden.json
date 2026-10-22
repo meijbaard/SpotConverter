@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-20T23:56:08+00:00",
+ "opgehaald": "2026-10-22T00:01:05+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -136,21 +136,6 @@
     "ZL"
    ],
    "gevolg": "dienstregeling aangepast"
-  },
-  {
-   "id": "7008282",
-   "type": "MAINTENANCE",
-   "titel": "Heerlen - Aachen Hbf.",
-   "van": "2026-10-21T22:50:00+02:00",
-   "tot": "2026-10-22T01:35:00+02:00",
-   "stations": [
-    "AHBF",
-    "EGHM",
-    "HRL",
-    "HZ",
-    "LG"
-   ],
-   "gevolg": "er rijden bussen"
   },
   {
    "id": "7008283",
@@ -916,6 +901,103 @@
     "LW"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008526",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Delfzijl.",
+   "van": "2026-11-11T23:00:00+01:00",
+   "tot": "2026-11-12T05:00:00+01:00",
+   "stations": [
+    "APG",
+    "BDM",
+    "DZ",
+    "DZW",
+    "GN",
+    "GNN",
+    "LP",
+    "STM",
+    "SWD"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008525",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Eemshaven.",
+   "van": "2026-11-11T23:20:00+01:00",
+   "tot": "2026-11-12T05:00:00+01:00",
+   "stations": [
+    "BF",
+    "EEM",
+    "GN",
+    "GNN",
+    "RD",
+    "SWD",
+    "UHM",
+    "UHZ",
+    "UST",
+    "WFM",
+    "WSM"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008527",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Bad Nieuweschans; Groningen - Veendam.",
+   "van": "2026-11-12T00:10:00+01:00",
+   "tot": "2026-11-12T02:35:00+01:00",
+   "stations": [
+    "GERP",
+    "GN",
+    "HGZ",
+    "KW",
+    "MTH",
+    "NSCH",
+    "SDA",
+    "VDM",
+    "WS",
+    "ZB"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008528",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Leeuwarden.",
+   "van": "2026-11-12T00:45:00+01:00",
+   "tot": "2026-11-12T02:45:00+01:00",
+   "stations": [
+    "BP",
+    "DWE",
+    "FWD",
+    "GK",
+    "GN",
+    "HDG",
+    "LW",
+    "LWC",
+    "ZH"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008501",
+   "type": "MAINTENANCE",
+   "titel": "Zwolle - Groningen.",
+   "van": "2026-11-12T01:00:00+01:00",
+   "tot": "2026-11-12T05:00:00+01:00",
+   "stations": [
+    "ASN",
+    "BL",
+    "GERP",
+    "GN",
+    "HGV",
+    "HRN",
+    "MP",
+    "ZL"
+   ],
+   "gevolg": "aangep. dienstregeling en businzet"
   }
  ]
 }
