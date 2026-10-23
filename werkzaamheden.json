@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-22T23:59:59+00:00",
+ "opgehaald": "2026-10-23T08:37:10+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -136,21 +136,6 @@
     "ZL"
    ],
    "gevolg": "dienstregeling aangepast"
-  },
-  {
-   "id": "7008547",
-   "type": "MAINTENANCE",
-   "titel": "Amersfoort - Barneveld.",
-   "van": "2026-10-23T05:00:00+02:00",
-   "tot": "2026-10-23T08:30:00+02:00",
-   "stations": [
-    "AMF",
-    "BNC",
-    "BNN",
-    "BNZ",
-    "HVL"
-   ],
-   "gevolg": "minder treinen"
   },
   {
    "id": "7008284",
@@ -885,6 +870,24 @@
     "SGN"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008492",
+   "type": "MAINTENANCE",
+   "titel": "Zwolle - Leeuwarden.",
+   "van": "2026-11-09T05:00:00+01:00",
+   "tot": "2026-11-09T05:30:00+01:00",
+   "stations": [
+    "AKM",
+    "GW",
+    "HR",
+    "LW",
+    "MP",
+    "SWK",
+    "WV",
+    "ZL"
+   ],
+   "gevolg": "geen treinen"
   },
   {
    "id": "7008503",
