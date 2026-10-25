@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-24T23:19:00+00:00",
+ "opgehaald": "2026-10-25T08:29:58+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -1089,6 +1089,39 @@
     "HRL",
     "HZ",
     "LG"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008505",
+   "type": "MAINTENANCE",
+   "titel": "Amsterdam - Lelystad Centrum; Schiphol - Lelystad; Schiphol - Amersfoort; Amsterdam - Amersfoort.",
+   "van": "2026-11-15T01:00:00+01:00",
+   "tot": "2026-11-15T09:03:00+01:00",
+   "stations": [
+    "ALM",
+    "ALMB",
+    "ALMM",
+    "ALMO",
+    "ALMP",
+    "AMF",
+    "AMPO",
+    "ASD",
+    "ASDM",
+    "ASDZ",
+    "ASSP",
+    "BRN",
+    "BSMZ",
+    "DMN",
+    "DMNZ",
+    "DVD",
+    "HVS",
+    "HVSM",
+    "LLS",
+    "NDB",
+    "RAI",
+    "SHL",
+    "WP"
    ],
    "gevolg": "er rijden bussen"
   }
