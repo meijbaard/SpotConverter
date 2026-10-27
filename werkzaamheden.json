@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-27T09:05:20+00:00",
+ "opgehaald": "2026-10-27T15:23:53+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -600,6 +600,21 @@
    "gevolg": "er rijden bussen"
   },
   {
+   "id": "7008563",
+   "type": "MAINTENANCE",
+   "titel": "Amsterdam - Haarlem.",
+   "van": "2026-11-08T02:00:00+01:00",
+   "tot": "2026-11-08T04:30:00+01:00",
+   "stations": [
+    "ASD",
+    "ASS",
+    "HLM",
+    "HLMS",
+    "HWZB"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
    "id": "7008491",
    "type": "MAINTENANCE",
    "titel": "Schiphol - Amersfoort; Utrecht - Hilversum.",
@@ -800,7 +815,7 @@
     "MP",
     "ZL"
    ],
-   "gevolg": "aangep. dienstregeling en businzet"
+   "gevolg": "er rijden bussen"
   },
   {
    "id": "7008372",
@@ -829,6 +844,27 @@
     "HRL",
     "HZ",
     "LG"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008557",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Leer.",
+   "van": "2026-11-13T22:00:00+01:00",
+   "tot": "2026-11-14T02:00:00+01:00",
+   "stations": [
+    "GERP",
+    "GN",
+    "HGZ",
+    "KW",
+    "LEER",
+    "MTH",
+    "NSCH",
+    "SDA",
+    "WR",
+    "WS",
+    "ZB"
    ],
    "gevolg": "er rijden bussen"
   },
