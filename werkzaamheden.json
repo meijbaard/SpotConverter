@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-27T15:23:53+00:00",
+ "opgehaald": "2026-10-28T09:46:05+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -78,21 +78,6 @@
     "WC"
    ],
    "gevolg": "dienstregeling aangepast"
-  },
-  {
-   "id": "7008487",
-   "type": "MAINTENANCE",
-   "titel": "Schiphol - Leiden.",
-   "van": "2026-10-28T01:00:00+01:00",
-   "tot": "2026-10-28T05:30:00+01:00",
-   "stations": [
-    "HFD",
-    "LEDN",
-    "NVP",
-    "SHL",
-    "SSH"
-   ],
-   "gevolg": "er rijden bussen"
   },
   {
    "id": "7008510",
@@ -1001,6 +986,21 @@
     "HLM",
     "OVN",
     "ZVT"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008496",
+   "type": "MAINTENANCE",
+   "titel": "Venlo - Roermond.",
+   "van": "2026-11-18T08:30:00+01:00",
+   "tot": "2026-11-23T02:00:00+01:00",
+   "stations": [
+    "RM",
+    "RV",
+    "SM",
+    "TG",
+    "VL"
    ],
    "gevolg": "er rijden bussen"
   }
