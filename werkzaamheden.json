@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-28T09:46:05+00:00",
+ "opgehaald": "2026-10-29T10:04:39+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -78,103 +78,6 @@
     "WC"
    ],
    "gevolg": "dienstregeling aangepast"
-  },
-  {
-   "id": "7008510",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Delfzijl.",
-   "van": "2026-10-29T00:10:00+01:00",
-   "tot": "2026-10-29T02:15:00+01:00",
-   "stations": [
-    "APG",
-    "BDM",
-    "DZ",
-    "DZW",
-    "GN",
-    "GNN",
-    "LP",
-    "STM",
-    "SWD"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008512",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Bad Nieuweschans; Groningen - Veendam.",
-   "van": "2026-10-29T00:10:00+01:00",
-   "tot": "2026-10-29T02:35:00+01:00",
-   "stations": [
-    "GERP",
-    "GN",
-    "HGZ",
-    "KW",
-    "MTH",
-    "NSCH",
-    "SDA",
-    "VDM",
-    "WS",
-    "ZB"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008509",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Eemshaven.",
-   "van": "2026-10-29T00:15:00+01:00",
-   "tot": "2026-10-29T02:15:00+01:00",
-   "stations": [
-    "BF",
-    "EEM",
-    "GN",
-    "GNN",
-    "RD",
-    "SWD",
-    "UHM",
-    "UHZ",
-    "UST",
-    "WFM",
-    "WSM"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008513",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Leeuwarden.",
-   "van": "2026-10-29T00:45:00+01:00",
-   "tot": "2026-10-29T02:45:00+01:00",
-   "stations": [
-    "BP",
-    "DWE",
-    "FWD",
-    "GK",
-    "GN",
-    "HDG",
-    "LW",
-    "LWC",
-    "ZH"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008394",
-   "type": "MAINTENANCE",
-   "titel": "Zwolle - Groningen.",
-   "van": "2026-10-29T01:00:00+01:00",
-   "tot": "2026-10-29T05:00:00+01:00",
-   "stations": [
-    "ASN",
-    "BL",
-    "GERP",
-    "GN",
-    "HGV",
-    "HRN",
-    "MP",
-    "ZL"
-   ],
-   "gevolg": "aangep. dienstregeling en businzet"
   },
   {
    "id": "7008387",
