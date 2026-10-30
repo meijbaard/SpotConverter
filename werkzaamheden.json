@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-29T10:04:39+00:00",
+ "opgehaald": "2026-10-30T01:05:44+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -44,40 +44,6 @@
     "WF"
    ],
    "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008553",
-   "type": "MAINTENANCE",
-   "titel": "Zwolle - Deventer.",
-   "van": "2026-10-26T10:20:00+01:00",
-   "tot": "2026-10-29T23:30:00+01:00",
-   "stations": [
-    "DV",
-    "OST",
-    "WH",
-    "ZL"
-   ],
-   "gevolg": "dienstregeling aangepast"
-  },
-  {
-   "id": "7008554",
-   "type": "MAINTENANCE",
-   "titel": "Oss.",
-   "van": "2026-10-26T12:40:00+01:00",
-   "tot": "2026-10-30T01:00:00+01:00",
-   "stations": [
-    "HT",
-    "HTO",
-    "NM",
-    "NMD",
-    "NMGO",
-    "O",
-    "OW",
-    "RS",
-    "RVS",
-    "WC"
-   ],
-   "gevolg": "dienstregeling aangepast"
   },
   {
    "id": "7008387",
@@ -904,6 +870,21 @@
     "SM",
     "TG",
     "VL"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008376",
+   "type": "MAINTENANCE",
+   "titel": "Heerlen - Aachen Hbf.",
+   "van": "2026-11-19T21:50:00+01:00",
+   "tot": "2026-11-20T01:15:00+01:00",
+   "stations": [
+    "AHBF",
+    "EGHM",
+    "HRL",
+    "HZ",
+    "LG"
    ],
    "gevolg": "er rijden bussen"
   }
