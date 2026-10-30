@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-30T01:05:44+00:00",
+ "opgehaald": "2026-10-30T19:56:32+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -81,6 +81,50 @@
    "gevolg": "er rijden bussen"
   },
   {
+   "id": "7008577",
+   "type": "MAINTENANCE",
+   "titel": "Amsterdam - Enkhuizen.",
+   "van": "2026-10-31T04:00:00+01:00",
+   "tot": "2026-10-31T07:00:00+01:00",
+   "stations": [
+    "ASD",
+    "ASS",
+    "BKF",
+    "BKG",
+    "EKZ",
+    "HKS",
+    "HN",
+    "HNK",
+    "PMO",
+    "PMR",
+    "PMW",
+    "ZD",
+    "ZDK"
+   ],
+   "gevolg": "geen treinen"
+  },
+  {
+   "id": "7008581",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Leer.",
+   "van": "2026-10-31T04:00:00+01:00",
+   "tot": "2026-10-31T08:00:00+01:00",
+   "stations": [
+    "GERP",
+    "GN",
+    "HGZ",
+    "KW",
+    "LEER",
+    "MTH",
+    "NSCH",
+    "SDA",
+    "WR",
+    "WS",
+    "ZB"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
    "id": "7008379",
    "type": "MAINTENANCE",
    "titel": "Arnhem - Winterswijk.",
@@ -122,6 +166,27 @@
     "VRY"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008585",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Leer.",
+   "van": "2026-10-31T06:14:00+01:00",
+   "tot": "2026-11-01T21:45:00+01:00",
+   "stations": [
+    "GERP",
+    "GN",
+    "HGZ",
+    "KW",
+    "LEER",
+    "MTH",
+    "NSCH",
+    "SDA",
+    "WR",
+    "WS",
+    "ZB"
+   ],
+   "gevolg": "minder treinen"
   },
   {
    "id": "7008417",
@@ -168,6 +233,27 @@
    "gevolg": "er rijden bussen"
   },
   {
+   "id": "7008582",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Leer.",
+   "van": "2026-10-31T18:00:00+01:00",
+   "tot": "2026-11-01T02:00:00+01:00",
+   "stations": [
+    "GERP",
+    "GN",
+    "HGZ",
+    "KW",
+    "LEER",
+    "MTH",
+    "NSCH",
+    "SDA",
+    "WR",
+    "WS",
+    "ZB"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
    "id": "7008356",
    "type": "MAINTENANCE",
    "titel": "Amsterdam - Haarlem.",
@@ -179,6 +265,27 @@
     "HLM",
     "HLMS",
     "HWZB"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008583",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Leer.",
+   "van": "2026-11-01T04:00:00+01:00",
+   "tot": "2026-11-01T08:00:00+01:00",
+   "stations": [
+    "GERP",
+    "GN",
+    "HGZ",
+    "KW",
+    "LEER",
+    "MTH",
+    "NSCH",
+    "SDA",
+    "WR",
+    "WS",
+    "ZB"
    ],
    "gevolg": "er rijden bussen"
   },
@@ -245,6 +352,27 @@
     "MAS",
     "UT",
     "UTZL"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008584",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Leer.",
+   "van": "2026-11-01T20:00:00+01:00",
+   "tot": "2026-11-02T04:00:00+01:00",
+   "stations": [
+    "GERP",
+    "GN",
+    "HGZ",
+    "KW",
+    "LEER",
+    "MTH",
+    "NSCH",
+    "SDA",
+    "WR",
+    "WS",
+    "ZB"
    ],
    "gevolg": "er rijden bussen"
   },
