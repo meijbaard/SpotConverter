@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-31T00:50:15+00:00",
+ "opgehaald": "2026-10-31T09:43:50+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -77,50 +77,6 @@
     "EHV",
     "OT",
     "TB"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008577",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Enkhuizen.",
-   "van": "2026-10-31T04:00:00+01:00",
-   "tot": "2026-10-31T07:00:00+01:00",
-   "stations": [
-    "ASD",
-    "ASS",
-    "BKF",
-    "BKG",
-    "EKZ",
-    "HKS",
-    "HN",
-    "HNK",
-    "PMO",
-    "PMR",
-    "PMW",
-    "ZD",
-    "ZDK"
-   ],
-   "gevolg": "geen treinen"
-  },
-  {
-   "id": "7008581",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Leer.",
-   "van": "2026-10-31T04:00:00+01:00",
-   "tot": "2026-10-31T08:00:00+01:00",
-   "stations": [
-    "GERP",
-    "GN",
-    "HGZ",
-    "KW",
-    "LEER",
-    "MTH",
-    "NSCH",
-    "SDA",
-    "WR",
-    "WS",
-    "ZB"
    ],
    "gevolg": "er rijden bussen"
   },
@@ -1030,6 +986,72 @@
     "LG"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7006852",
+   "type": "MAINTENANCE",
+   "titel": "Zwolle - Leeuwarden.",
+   "van": "2026-11-21T04:00:00+01:00",
+   "tot": "2026-11-30T02:00:00+01:00",
+   "stations": [
+    "AKM",
+    "GW",
+    "HR",
+    "LW",
+    "MP",
+    "SWK",
+    "WV",
+    "ZL"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008522",
+   "type": "MAINTENANCE",
+   "titel": "Amsterdam - Oostvaarders; Amsterdam - Amersfoort.",
+   "van": "2026-11-21T04:30:00+01:00",
+   "tot": "2026-11-23T01:30:00+01:00",
+   "stations": [
+    "ALM",
+    "ALMB",
+    "ALMM",
+    "ALMO",
+    "ALMP",
+    "AMF",
+    "AMPO",
+    "ASD",
+    "ASDM",
+    "ASSP",
+    "BRN",
+    "BSMZ",
+    "DMN",
+    "HVS",
+    "HVSM",
+    "NDB",
+    "WP"
+   ],
+   "gevolg": "dienstregeling aangepast"
+  },
+  {
+   "id": "7008531",
+   "type": "MAINTENANCE",
+   "titel": "Hoofddorp - Schiphol - Hilversum.",
+   "van": "2026-11-21T09:00:00+01:00",
+   "tot": "2026-11-22T21:00:00+01:00",
+   "stations": [
+    "ASDZ",
+    "BSMZ",
+    "DMNZ",
+    "DVD",
+    "HFD",
+    "HVS",
+    "HVSM",
+    "NDB",
+    "RAI",
+    "SHL",
+    "WP"
+   ],
+   "gevolg": "minder Sprinters"
   }
  ]
 }
