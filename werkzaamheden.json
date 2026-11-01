@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-10-31T09:43:50+00:00",
+ "opgehaald": "2026-11-01T00:10:32+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -538,6 +538,30 @@
    "gevolg": "er rijden bussen"
   },
   {
+   "id": "7008390",
+   "type": "MAINTENANCE",
+   "titel": "Amsterdam - Almere; Amsterdam - Amersfoort.",
+   "van": "2026-11-08T00:05:00+01:00",
+   "tot": "2026-11-08T08:05:00+01:00",
+   "stations": [
+    "ALM",
+    "ALMM",
+    "AMF",
+    "AMPO",
+    "ASD",
+    "ASDM",
+    "ASSP",
+    "BRN",
+    "BSMZ",
+    "DMN",
+    "HVS",
+    "HVSM",
+    "NDB",
+    "WP"
+   ],
+   "gevolg": "minder Sprinters"
+  },
+  {
    "id": "7008563",
    "type": "MAINTENANCE",
    "titel": "Amsterdam - Haarlem.",
@@ -1052,6 +1076,21 @@
     "WP"
    ],
    "gevolg": "minder Sprinters"
+  },
+  {
+   "id": "7008378",
+   "type": "MAINTENANCE",
+   "titel": "Heerlen - Aachen Hbf.",
+   "van": "2026-11-21T21:50:00+01:00",
+   "tot": "2026-11-22T01:15:00+01:00",
+   "stations": [
+    "AHBF",
+    "EGHM",
+    "HRL",
+    "HZ",
+    "LG"
+   ],
+   "gevolg": "er rijden bussen"
   }
  ]
 }
