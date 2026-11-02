@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-01T10:33:34+00:00",
+ "opgehaald": "2026-11-02T00:48:10+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -80,135 +80,6 @@
     "ZV"
    ],
    "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008350",
-   "type": "MAINTENANCE",
-   "titel": "Nijmegen - Venlo.",
-   "van": "2026-10-31T05:00:00+01:00",
-   "tot": "2026-11-02T01:30:00+01:00",
-   "stations": [
-    "BMR",
-    "BR",
-    "CK",
-    "MMLH",
-    "NM",
-    "NMH",
-    "VL",
-    "VLB",
-    "VRY"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008585",
-   "type": "MAINTENANCE",
-   "titel": "Groningen - Leer.",
-   "van": "2026-10-31T06:14:00+01:00",
-   "tot": "2026-11-01T21:45:00+01:00",
-   "stations": [
-    "GERP",
-    "GN",
-    "HGZ",
-    "KW",
-    "LEER",
-    "MTH",
-    "NSCH",
-    "SDA",
-    "WR",
-    "WS",
-    "ZB"
-   ],
-   "gevolg": "minder treinen"
-  },
-  {
-   "id": "7008417",
-   "type": "MAINTENANCE",
-   "titel": "Leiden - Den Haag HS; Den Haag - Rotterdam.",
-   "van": "2026-10-31T06:30:00+01:00",
-   "tot": "2026-11-02T01:00:00+01:00",
-   "stations": [
-    "DT",
-    "DTCP",
-    "DVNK",
-    "GV",
-    "GVC",
-    "GVM",
-    "GVMW",
-    "LAA",
-    "LEDN",
-    "RSW",
-    "RTD",
-    "SDM",
-    "VST"
-   ],
-   "gevolg": "geen treinen"
-  },
-  {
-   "id": "7008499",
-   "type": "MAINTENANCE",
-   "titel": "Haarlem - Alkmaar.",
-   "van": "2026-10-31T06:30:00+01:00",
-   "tot": "2026-11-02T01:15:00+01:00",
-   "stations": [
-    "AMR",
-    "BLL",
-    "BV",
-    "CAS",
-    "DRH",
-    "HK",
-    "HLM",
-    "HLO",
-    "SPTN",
-    "SPTZ",
-    "UTG"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008421",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Utrecht; Schiphol - Utrecht.",
-   "van": "2026-11-01T06:00:00+01:00",
-   "tot": "2026-11-02T01:00:00+01:00",
-   "stations": [
-    "AC",
-    "ASA",
-    "ASB",
-    "ASD",
-    "ASDM",
-    "ASDZ",
-    "ASHD",
-    "BKL",
-    "DVD",
-    "MAS",
-    "RAI",
-    "SHL",
-    "UT",
-    "UTZL"
-   ],
-   "gevolg": "dienstregeling aangepast"
-  },
-  {
-   "id": "7008422",
-   "type": "MAINTENANCE",
-   "titel": "Utrecht - Almere.",
-   "van": "2026-11-01T06:00:00+01:00",
-   "tot": "2026-11-02T01:00:00+01:00",
-   "stations": [
-    "ALM",
-    "ALMM",
-    "AMPO",
-    "BSMZ",
-    "HOR",
-    "HVS",
-    "HVSM",
-    "HVSP",
-    "NDB",
-    "UT",
-    "UTO"
-   ],
-   "gevolg": "dienstregeling aangepast"
   },
   {
    "id": "7008419",
