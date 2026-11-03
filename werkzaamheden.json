@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-02T11:18:06+00:00",
+ "opgehaald": "2026-11-03T10:57:36+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -44,21 +44,6 @@
    "gevolg": "er rijden bussen"
   },
   {
-   "id": "7008369",
-   "type": "MAINTENANCE",
-   "titel": "Heerlen - Aachen Hbf.",
-   "van": "2026-11-02T21:50:00+01:00",
-   "tot": "2026-11-03T01:15:00+01:00",
-   "stations": [
-    "AHBF",
-    "EGHM",
-    "HRL",
-    "HZ",
-    "LG"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
    "id": "7008370",
    "type": "MAINTENANCE",
    "titel": "Heerlen - Aachen Hbf.",
@@ -85,36 +70,6 @@
     "HRL",
     "HZ",
     "LG"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008494",
-   "type": "MAINTENANCE",
-   "titel": "Enschede - Gronau - Dortmund.",
-   "van": "2026-11-06T20:30:00+01:00",
-   "tot": "2026-12-05T18:30:00+01:00",
-   "stations": [
-    "EAHS",
-    "EBOK",
-    "ECMF",
-    "EDD",
-    "EDKD",
-    "EDO",
-    "EDULH",
-    "EEPE",
-    "EHW",
-    "ELDH",
-    "ELET",
-    "ELGD",
-    "ELUE",
-    "EPRN",
-    "ES",
-    "ESE",
-    "ESEB",
-    "ESEM",
-    "G",
-    "GBR"
    ],
    "gevolg": "er rijden bussen"
   },
