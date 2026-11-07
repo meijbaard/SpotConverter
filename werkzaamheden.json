@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-07T00:57:33+00:00",
+ "opgehaald": "2026-11-07T10:20:19+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -19,27 +19,6 @@
     "UTT",
     "VTN",
     "WD"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7006847",
-   "type": "MAINTENANCE",
-   "titel": "Haarlem - Alkmaar.",
-   "van": "2026-11-02T04:00:00+01:00",
-   "tot": "2026-11-07T02:00:00+01:00",
-   "stations": [
-    "AMR",
-    "BLL",
-    "BV",
-    "CAS",
-    "DRH",
-    "HK",
-    "HLM",
-    "HLO",
-    "SPTN",
-    "SPTZ",
-    "UTG"
    ],
    "gevolg": "er rijden bussen"
   },
@@ -892,6 +871,86 @@
     "VK"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008403",
+   "type": "MAINTENANCE",
+   "titel": "Rotterdam - Breda.",
+   "van": "2026-11-28T04:00:00+01:00",
+   "tot": "2026-11-30T02:00:00+01:00",
+   "stations": [
+    "BD",
+    "BDPB",
+    "RLB",
+    "RTB",
+    "RTD",
+    "RTZ"
+   ],
+   "gevolg": "geen treinen op de HSL"
+  },
+  {
+   "id": "7008546",
+   "type": "MAINTENANCE",
+   "titel": "Amsterdam - Oostvaarders; Amsterdam - Amersfoort.",
+   "van": "2026-11-28T04:30:00+01:00",
+   "tot": "2026-11-30T01:30:00+01:00",
+   "stations": [
+    "ALM",
+    "ALMB",
+    "ALMM",
+    "ALMO",
+    "ALMP",
+    "AMF",
+    "AMPO",
+    "ASD",
+    "ASDM",
+    "ASSP",
+    "BRN",
+    "BSMZ",
+    "DMN",
+    "HVS",
+    "HVSM",
+    "NDB",
+    "WP"
+   ],
+   "gevolg": "dienstregeling aangepast"
+  },
+  {
+   "id": "7008383",
+   "type": "MAINTENANCE",
+   "titel": "Maastricht - Liège / Luik.",
+   "van": "2026-11-28T06:00:00+01:00",
+   "tot": "2026-11-30T02:30:00+01:00",
+   "stations": [
+    "BRESSX",
+    "EDN",
+    "FVS",
+    "LUIK",
+    "MT",
+    "MTR"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008576",
+   "type": "MAINTENANCE",
+   "titel": "Hoofddorp - Schiphol - Hilversum.",
+   "van": "2026-11-28T09:00:00+01:00",
+   "tot": "2026-11-29T21:00:00+01:00",
+   "stations": [
+    "ASDZ",
+    "BSMZ",
+    "DMNZ",
+    "DVD",
+    "HFD",
+    "HVS",
+    "HVSM",
+    "NDB",
+    "RAI",
+    "SHL",
+    "WP"
+   ],
+   "gevolg": "minder Sprinters"
   }
  ]
 }
