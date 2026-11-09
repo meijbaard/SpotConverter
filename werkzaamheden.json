@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-09T11:41:20+00:00",
+ "opgehaald": "2026-11-09T23:47:22+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -842,6 +842,21 @@
     "PMW",
     "ZD",
     "ZDK"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008375",
+   "type": "MAINTENANCE",
+   "titel": "Heerlen - Aachen Hbf.",
+   "van": "2026-11-30T21:50:00+01:00",
+   "tot": "2026-12-01T01:15:00+01:00",
+   "stations": [
+    "AHBF",
+    "EGHM",
+    "HRL",
+    "HZ",
+    "LG"
    ],
    "gevolg": "er rijden bussen"
   }
