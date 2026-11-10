@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-09T23:47:22+00:00",
+ "opgehaald": "2026-11-10T11:19:07+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -826,6 +826,31 @@
     "WP"
    ],
    "gevolg": "minder Sprinters"
+  },
+  {
+   "id": "7008623",
+   "type": "MAINTENANCE",
+   "titel": "Amersfoort - Enschede.",
+   "van": "2026-11-29T07:00:00+01:00",
+   "tot": "2026-11-29T07:20:00+01:00",
+   "stations": [
+    "AMF",
+    "AML",
+    "AMRI",
+    "APD",
+    "APDO",
+    "BN",
+    "DV",
+    "DVC",
+    "ES",
+    "ESK",
+    "HGL",
+    "HON",
+    "RSN",
+    "TWL",
+    "WDN"
+   ],
+   "gevolg": "dienstregeling aangepast"
   },
   {
    "id": "7008542",
