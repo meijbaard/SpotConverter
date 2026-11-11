@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-10T21:19:27+00:00",
+ "opgehaald": "2026-11-11T11:05:38+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -88,17 +88,24 @@
    "gevolg": "er rijden bussen"
   },
   {
-   "id": "7008620",
+   "id": "7008628",
    "type": "MAINTENANCE",
-   "titel": "Schiphol - Leiden.",
-   "van": "2026-11-11T01:00:00+01:00",
-   "tot": "2026-11-11T05:30:00+01:00",
+   "titel": "Arnhem - Duisburg - Düsseldorf.",
+   "van": "2026-11-11T11:55:00+01:00",
+   "tot": "2026-11-16T21:00:00+01:00",
    "stations": [
-    "HFD",
-    "LEDN",
-    "NVP",
-    "SHL",
-    "SSH"
+    "AH",
+    "AHP",
+    "DUISB",
+    "DUSSEL",
+    "DVN",
+    "EL",
+    "EM",
+    "KDFFH",
+    "OBERH",
+    "WESEL",
+    "WTV",
+    "ZV"
    ],
    "gevolg": "er rijden bussen"
   },
@@ -897,6 +904,21 @@
     "HRL",
     "HZ",
     "LG"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008624",
+   "type": "MAINTENANCE",
+   "titel": "Schiphol - Leiden.",
+   "van": "2026-12-02T01:00:00+01:00",
+   "tot": "2026-12-02T04:30:00+01:00",
+   "stations": [
+    "HFD",
+    "LEDN",
+    "NVP",
+    "SHL",
+    "SSH"
    ],
    "gevolg": "er rijden bussen"
   }
