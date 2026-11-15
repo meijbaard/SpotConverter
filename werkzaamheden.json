@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-15T11:03:10+00:00",
+ "opgehaald": "2026-11-15T20:25:05+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -180,6 +180,25 @@
     "ZVT"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008631",
+   "type": "MAINTENANCE",
+   "titel": "Arnhem - Doetinchem.",
+   "van": "2026-11-16T05:00:00+01:00",
+   "tot": "2026-11-16T21:00:00+01:00",
+   "stations": [
+    "AH",
+    "AHP",
+    "DID",
+    "DTC",
+    "DTCH",
+    "DVN",
+    "WL",
+    "WTV",
+    "ZV"
+   ],
+   "gevolg": "minder Sprinters"
   },
   {
    "id": "7008496",
