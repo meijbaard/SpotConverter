@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-17T22:56:02+00:00",
+ "opgehaald": "2026-11-18T11:50:33+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -692,21 +692,6 @@
    "gevolg": "er rijden bussen"
   },
   {
-   "id": "7008660",
-   "type": "MAINTENANCE",
-   "titel": "Schiphol - Leiden.",
-   "van": "2026-12-02T01:00:00+01:00",
-   "tot": "2026-12-02T05:30:00+01:00",
-   "stations": [
-    "HFD",
-    "LEDN",
-    "NVP",
-    "SHL",
-    "SSH"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
    "id": "7008588",
    "type": "MAINTENANCE",
    "titel": "Heerlen - Aachen Hbf.",
@@ -968,6 +953,21 @@
     "ZWD"
    ],
    "gevolg": "minder Intercity's"
+  },
+  {
+   "id": "7008622",
+   "type": "MAINTENANCE",
+   "titel": "Schiphol - Leiden.",
+   "van": "2026-12-09T01:00:00+01:00",
+   "tot": "2026-12-09T05:30:00+01:00",
+   "stations": [
+    "HFD",
+    "LEDN",
+    "NVP",
+    "SHL",
+    "SSH"
+   ],
+   "gevolg": "er rijden bussen"
   }
  ]
 }
