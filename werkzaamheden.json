@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-19T11:47:35+00:00",
+ "opgehaald": "2026-11-19T22:40:51+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -144,32 +144,6 @@
     "VL"
    ],
    "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008680",
-   "type": "MAINTENANCE",
-   "titel": "Hoofddorp - Schiphol - Hoorn; Amsterdam - Enkhuizen.",
-   "van": "2026-11-19T19:30:00+01:00",
-   "tot": "2026-11-20T05:00:00+01:00",
-   "stations": [
-    "ASD",
-    "ASDL",
-    "ASS",
-    "BKF",
-    "BKG",
-    "EKZ",
-    "HFD",
-    "HKS",
-    "HN",
-    "HNK",
-    "PMO",
-    "PMR",
-    "PMW",
-    "SHL",
-    "ZD",
-    "ZDK"
-   ],
-   "gevolg": "geen treinen"
   },
   {
    "id": "7008376",
@@ -1018,6 +992,61 @@
     "SKND",
     "STV",
     "WK"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008589",
+   "type": "MAINTENANCE",
+   "titel": "Heerlen - Aachen Hbf.",
+   "van": "2026-12-10T21:50:00+01:00",
+   "tot": "2026-12-11T01:15:00+01:00",
+   "stations": [
+    "AHBF",
+    "EGHM",
+    "HRL",
+    "HZ",
+    "LG"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008614",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Delfzijl.",
+   "van": "2026-12-10T23:00:00+01:00",
+   "tot": "2026-12-11T05:00:00+01:00",
+   "stations": [
+    "APG",
+    "BDM",
+    "DZ",
+    "DZW",
+    "GN",
+    "GNN",
+    "LP",
+    "STM",
+    "SWD"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008615",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Eemshaven.",
+   "van": "2026-12-10T23:20:00+01:00",
+   "tot": "2026-12-11T05:00:00+01:00",
+   "stations": [
+    "BF",
+    "EEM",
+    "GN",
+    "GNN",
+    "RD",
+    "SWD",
+    "UHM",
+    "UHZ",
+    "UST",
+    "WFM",
+    "WSM"
    ],
    "gevolg": "er rijden bussen"
   }
