@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-18T22:36:49+00:00",
+ "opgehaald": "2026-11-19T11:47:35+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -146,49 +146,30 @@
    "gevolg": "er rijden bussen"
   },
   {
-   "id": "7008536",
+   "id": "7008680",
    "type": "MAINTENANCE",
-   "titel": "Tilburg - Eindhoven.",
-   "van": "2026-11-19T00:15:00+01:00",
-   "tot": "2026-11-19T00:50:00+01:00",
-   "stations": [
-    "BET",
-    "BTL",
-    "EHS",
-    "EHV",
-    "OT",
-    "TB"
-   ],
-   "gevolg": "geen Intercity's"
-  },
-  {
-   "id": "7008679",
-   "type": "MAINTENANCE",
-   "titel": "Amsterdam - Schiphol.",
-   "van": "2026-11-19T01:30:00+01:00",
-   "tot": "2026-11-19T05:10:00+01:00",
+   "titel": "Hoofddorp - Schiphol - Hoorn; Amsterdam - Enkhuizen.",
+   "van": "2026-11-19T19:30:00+01:00",
+   "tot": "2026-11-20T05:00:00+01:00",
    "stations": [
     "ASD",
     "ASDL",
     "ASS",
-    "SHL"
-   ],
-   "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008661",
-   "type": "MAINTENANCE",
-   "titel": "Schiphol - Leiden.",
-   "van": "2026-11-19T02:30:00+01:00",
-   "tot": "2026-11-19T04:30:00+01:00",
-   "stations": [
+    "BKF",
+    "BKG",
+    "EKZ",
     "HFD",
-    "LEDN",
-    "NVP",
+    "HKS",
+    "HN",
+    "HNK",
+    "PMO",
+    "PMR",
+    "PMW",
     "SHL",
-    "SSH"
+    "ZD",
+    "ZDK"
    ],
-   "gevolg": "er rijden bussen"
+   "gevolg": "geen treinen"
   },
   {
    "id": "7008376",
@@ -980,6 +961,63 @@
     "NVP",
     "SHL",
     "SSH"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008616",
+   "type": "MAINTENANCE",
+   "titel": "Groningen - Bad Nieuweschans; Groningen - Veendam.",
+   "van": "2026-12-10T00:10:00+01:00",
+   "tot": "2026-12-10T02:35:00+01:00",
+   "stations": [
+    "GERP",
+    "GN",
+    "HGZ",
+    "KW",
+    "MTH",
+    "NSCH",
+    "SDA",
+    "VDM",
+    "WS",
+    "ZB"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008604",
+   "type": "MAINTENANCE",
+   "titel": "Zwolle - Groningen.",
+   "van": "2026-12-10T01:00:00+01:00",
+   "tot": "2026-12-10T05:00:00+01:00",
+   "stations": [
+    "ASN",
+    "BL",
+    "GERP",
+    "GN",
+    "HGV",
+    "HRN",
+    "MP",
+    "ZL"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008613",
+   "type": "MAINTENANCE",
+   "titel": "Leeuwarden - Stavoren.",
+   "van": "2026-12-10T04:00:00+01:00",
+   "tot": "2026-12-14T02:00:00+01:00",
+   "stations": [
+    "HNP",
+    "IJT",
+    "KMW",
+    "LW",
+    "MG",
+    "SK",
+    "SKND",
+    "STV",
+    "WK"
    ],
    "gevolg": "er rijden bussen"
   }
