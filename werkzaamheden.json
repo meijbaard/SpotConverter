@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-22T11:33:31+00:00",
+ "opgehaald": "2026-11-22T21:05:14+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -170,27 +170,6 @@
     "WP"
    ],
    "gevolg": "dienstregeling aangepast"
-  },
-  {
-   "id": "7008531",
-   "type": "MAINTENANCE",
-   "titel": "Hoofddorp - Schiphol - Hilversum.",
-   "van": "2026-11-21T09:00:00+01:00",
-   "tot": "2026-11-22T21:00:00+01:00",
-   "stations": [
-    "ASDZ",
-    "BSMZ",
-    "DMNZ",
-    "DVD",
-    "HFD",
-    "HVS",
-    "HVSM",
-    "NDB",
-    "RAI",
-    "SHL",
-    "WP"
-   ],
-   "gevolg": "minder Sprinters"
   },
   {
    "id": "7008535",
