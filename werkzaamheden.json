@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-22T01:22:49+00:00",
+ "opgehaald": "2026-11-22T11:33:31+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -193,21 +193,6 @@
    "gevolg": "minder Sprinters"
   },
   {
-   "id": "7008544",
-   "type": "MAINTENANCE",
-   "titel": "Utrecht - Hilversum.",
-   "van": "2026-11-22T01:15:00+01:00",
-   "tot": "2026-11-22T06:55:00+01:00",
-   "stations": [
-    "HOR",
-    "HVS",
-    "HVSP",
-    "UT",
-    "UTO"
-   ],
-   "gevolg": "er rijdt een bus"
-  },
-  {
    "id": "7008535",
    "type": "MAINTENANCE",
    "titel": "Leeuwarden - Harlingen Haven.",
@@ -222,21 +207,6 @@
     "LW"
    ],
    "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008548",
-   "type": "MAINTENANCE",
-   "titel": "Arnhem - Nijmegen.",
-   "van": "2026-11-22T02:00:00+01:00",
-   "tot": "2026-11-22T03:00:00+01:00",
-   "stations": [
-    "AH",
-    "AHZ",
-    "EST",
-    "NM",
-    "NML"
-   ],
-   "gevolg": "er rijdt een bus"
   },
   {
    "id": "7008558",
