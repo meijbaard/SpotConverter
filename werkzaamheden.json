@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-23T01:47:06+00:00",
+ "opgehaald": "2026-11-23T12:58:26+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -82,6 +82,28 @@
     "ZL"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008682",
+   "type": "MAINTENANCE",
+   "titel": "Dordrecht - Geldermalsen.",
+   "van": "2026-11-23T12:30:00+01:00",
+   "tot": "2026-11-23T22:00:00+01:00",
+   "stations": [
+    "AKL",
+    "BHDV",
+    "BSD",
+    "DDR",
+    "DDRS",
+    "GDM",
+    "GND",
+    "GR",
+    "HBZM",
+    "LDM",
+    "SDT",
+    "SDTB"
+   ],
+   "gevolg": "geen treinen"
   },
   {
    "id": "7008558",
@@ -405,6 +427,30 @@
    "gevolg": "er rijden bussen"
   },
   {
+   "id": "7008691",
+   "type": "MAINTENANCE",
+   "titel": "Amsterdam - Utrecht; Schiphol - Utrecht.",
+   "van": "2026-11-30T21:45:00+01:00",
+   "tot": "2026-12-01T05:25:00+01:00",
+   "stations": [
+    "AC",
+    "ASA",
+    "ASB",
+    "ASD",
+    "ASDM",
+    "ASDZ",
+    "ASHD",
+    "BKL",
+    "DVD",
+    "MAS",
+    "RAI",
+    "SHL",
+    "UT",
+    "UTZL"
+   ],
+   "gevolg": "dienstregeling aangepast"
+  },
+  {
    "id": "7008375",
    "type": "MAINTENANCE",
    "titel": "Heerlen - Aachen Hbf.",
@@ -487,6 +533,30 @@
     "LG"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008692",
+   "type": "MAINTENANCE",
+   "titel": "Amsterdam - Utrecht; Schiphol - Utrecht.",
+   "van": "2026-12-02T22:45:00+01:00",
+   "tot": "2026-12-03T06:25:00+01:00",
+   "stations": [
+    "AC",
+    "ASA",
+    "ASB",
+    "ASD",
+    "ASDM",
+    "ASDZ",
+    "ASHD",
+    "BKL",
+    "DVD",
+    "MAS",
+    "RAI",
+    "SHL",
+    "UT",
+    "UTZL"
+   ],
+   "gevolg": "dienstregeling aangepast"
   },
   {
    "id": "7008609",
