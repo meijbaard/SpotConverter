@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-24T02:15:39+00:00",
+ "opgehaald": "2026-11-24T13:50:46+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -84,30 +84,6 @@
    "gevolg": "er rijden bussen"
   },
   {
-   "id": "7008695",
-   "type": "MAINTENANCE",
-   "titel": "Maastricht - Heerlen - Aachen.",
-   "van": "2026-11-24T05:45:00+01:00",
-   "tot": "2026-11-24T10:00:00+01:00",
-   "stations": [
-    "AHBF",
-    "EGHM",
-    "HRL",
-    "HRLW",
-    "HZ",
-    "KMR",
-    "LG",
-    "MES",
-    "MT",
-    "MTN",
-    "SGL",
-    "SOG",
-    "VDL",
-    "VK"
-   ],
-   "gevolg": "geen Sneltreinen"
-  },
-  {
    "id": "7008558",
    "type": "MAINTENANCE",
    "titel": "Groningen - Leer.",
@@ -170,6 +146,30 @@
     "ZZS"
    ],
    "gevolg": "dienstregeling aangepast"
+  },
+  {
+   "id": "7008696",
+   "type": "MAINTENANCE",
+   "titel": "Maastricht - Heerlen - Aachen.",
+   "van": "2026-11-25T05:30:00+01:00",
+   "tot": "2026-11-25T10:15:00+01:00",
+   "stations": [
+    "AHBF",
+    "EGHM",
+    "HRL",
+    "HRLW",
+    "HZ",
+    "KMR",
+    "LG",
+    "MES",
+    "MT",
+    "MTN",
+    "SGL",
+    "SOG",
+    "VDL",
+    "VK"
+   ],
+   "gevolg": "geen Sneltreinen"
   },
   {
    "id": "7008502",
