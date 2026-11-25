@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-25T13:03:31+00:00",
+ "opgehaald": "2026-11-25T23:39:39+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -211,6 +211,18 @@
     "VST"
    ],
    "gevolg": "geen Sprinters"
+  },
+  {
+   "id": "7008703",
+   "type": "MAINTENANCE",
+   "titel": "Amsterdam - Amsterdam Sloterdijk.",
+   "van": "2026-11-28T00:00:00+01:00",
+   "tot": "2026-11-28T05:00:00+01:00",
+   "stations": [
+    "ASD",
+    "ASS"
+   ],
+   "gevolg": "veel minder treinen"
   },
   {
    "id": "7006854",
