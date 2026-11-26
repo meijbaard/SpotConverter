@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-26T12:43:59+00:00",
+ "opgehaald": "2026-11-26T23:53:01+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -131,23 +131,24 @@
    "gevolg": "er rijden bussen"
   },
   {
-   "id": "7008606",
+   "id": "7008714",
    "type": "MAINTENANCE",
-   "titel": "Venlo - Mönchengladbach - Düsseldorf.",
-   "van": "2026-11-26T20:45:00+01:00",
-   "tot": "2026-11-26T21:05:00+01:00",
+   "titel": "Schiphol - Utrecht.",
+   "van": "2026-11-27T01:00:00+01:00",
+   "tot": "2026-11-27T05:00:00+01:00",
    "stations": [
-    "DUSSEL",
-    "KBOI",
-    "KBRY",
-    "KDUL",
-    "KN",
-    "MCGB",
-    "NEUSS",
-    "VIERS",
-    "VL"
+    "AC",
+    "ASB",
+    "ASDZ",
+    "ASHD",
+    "BKL",
+    "MAS",
+    "RAI",
+    "SHL",
+    "UT",
+    "UTZL"
    ],
-   "gevolg": "er rijden bussen"
+   "gevolg": "dienstregeling aangepast"
   },
   {
    "id": "7008523",
@@ -187,6 +188,25 @@
     "VST"
    ],
    "gevolg": "geen Sprinters"
+  },
+  {
+   "id": "7008715",
+   "type": "MAINTENANCE",
+   "titel": "Arnhem - Doetinchem.",
+   "van": "2026-11-27T05:30:00+01:00",
+   "tot": "2026-11-27T21:00:00+01:00",
+   "stations": [
+    "AH",
+    "AHP",
+    "DID",
+    "DTC",
+    "DTCH",
+    "DVN",
+    "WL",
+    "WTV",
+    "ZV"
+   ],
+   "gevolg": "minder stoptreinen"
   },
   {
    "id": "7008703",
@@ -1066,6 +1086,21 @@
     "NVP",
     "SHL",
     "SSH"
+   ],
+   "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008590",
+   "type": "MAINTENANCE",
+   "titel": "Heerlen - Aachen Hbf.",
+   "van": "2026-12-17T21:50:00+01:00",
+   "tot": "2026-12-18T01:15:00+01:00",
+   "stations": [
+    "AHBF",
+    "EGHM",
+    "HRL",
+    "HZ",
+    "LG"
    ],
    "gevolg": "er rijden bussen"
   }
