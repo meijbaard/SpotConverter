@@ -1,7 +1,7 @@
 {
  "_comment": "Automatisch gegenereerd door werkzaamheden/haal_werkzaamheden.py (GitHub Action, NS-opendata). Niet met de hand bewerken.",
  "bron": "NS Reisinformatie API (disruptions, type MAINTENANCE)",
- "opgehaald": "2026-11-25T23:39:39+00:00",
+ "opgehaald": "2026-11-26T12:43:59+00:00",
  "werkzaamheden": [
   {
    "id": "7006842",
@@ -129,30 +129,6 @@
     "WK"
    ],
    "gevolg": "er rijden bussen"
-  },
-  {
-   "id": "7008702",
-   "type": "MAINTENANCE",
-   "titel": "Maastricht - Heerlen - Aachen.",
-   "van": "2026-11-26T05:45:00+01:00",
-   "tot": "2026-11-26T10:30:00+01:00",
-   "stations": [
-    "AHBF",
-    "EGHM",
-    "HRL",
-    "HRLW",
-    "HZ",
-    "KMR",
-    "LG",
-    "MES",
-    "MT",
-    "MTN",
-    "SGL",
-    "SOG",
-    "VDL",
-    "VK"
-   ],
-   "gevolg": "geen Sneltreinen"
   },
   {
    "id": "7008606",
@@ -1038,6 +1014,30 @@
     "VL"
    ],
    "gevolg": "er rijden bussen"
+  },
+  {
+   "id": "7008697",
+   "type": "MAINTENANCE",
+   "titel": "Den Haag - Rotterdam - Dordrecht.",
+   "van": "2026-12-12T05:00:00+01:00",
+   "tot": "2026-12-13T02:00:00+01:00",
+   "stations": [
+    "BRD",
+    "DDR",
+    "DT",
+    "DTCP",
+    "GV",
+    "GVC",
+    "GVMW",
+    "RLB",
+    "RSW",
+    "RTB",
+    "RTD",
+    "RTZ",
+    "SDM",
+    "ZWD"
+   ],
+   "gevolg": "minder treinen"
   },
   {
    "id": "7008593",
